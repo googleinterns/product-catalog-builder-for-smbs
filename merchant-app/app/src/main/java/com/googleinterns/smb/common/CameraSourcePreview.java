@@ -20,6 +20,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.images.Size;
@@ -31,7 +32,7 @@ import java.io.IOException;
  * Preview the camera image in the screen.
  */
 public class CameraSourcePreview extends ViewGroup {
-    private static final String TAG = CameraSource.class.getName();
+    private static final String TAG = CameraSourcePreview.class.getName();
 
     private final Context context;
     private final SurfaceView surfaceView;
@@ -160,13 +161,16 @@ public class CameraSourcePreview extends ViewGroup {
 
         // If height is too tall using fit width, does fit height instead.
         if (childHeight > layoutHeight) {
+            Log.d(TAG, "Using fit height");
             childHeight = layoutHeight;
             childWidth = (int) (((float) layoutHeight / (float) height) * width);
         }
 
         for (int i = 0; i < getChildCount(); ++i) {
-            getChildAt(i).layout(0, 0, childWidth, childHeight);
+            View view = getChildAt(i);
+            view.layout(0, 0, childWidth, childHeight);
             Log.d(TAG, "Assigned view: " + i);
+            Log.d(TAG, "Child params: " + view.getWidth() + " " + view.getHeight());
         }
 
         try {

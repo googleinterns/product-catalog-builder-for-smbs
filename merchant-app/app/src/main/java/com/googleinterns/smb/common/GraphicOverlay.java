@@ -16,6 +16,7 @@ package com.googleinterns.smb.common;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class GraphicOverlay extends View {
     private float heightScaleFactor = 1.0f;
     private int facing = CameraSource.CAMERA_FACING_BACK;
     private final List<Graphic> graphics = new ArrayList<>();
+    private final static String TAG = "GraphicOverlay";
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass
@@ -161,6 +163,10 @@ public class GraphicOverlay extends View {
         synchronized (lock) {
             this.previewWidth = previewWidth;
             this.previewHeight = previewHeight;
+            Log.d(TAG, "Preview width: " + previewWidth);
+            Log.d(TAG, "Preview height: " + previewHeight);
+            Log.d(TAG, "Layout width: " + getWidth());
+            Log.d(TAG, "Layout height: " + getHeight());
             this.facing = facing;
         }
         postInvalidate();
