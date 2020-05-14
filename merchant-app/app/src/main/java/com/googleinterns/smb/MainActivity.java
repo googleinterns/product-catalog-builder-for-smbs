@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PICK_IMAGE = 1;
 
     private static final int PICK_VIDEO = 2;
+    // video to barcode converter task
     private AsyncTask<?, ?, ?> task;
     private DialogFragment mDialogFragment;
 
@@ -42,8 +43,9 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Called by the add FAB, initiate adding a product. Show dialog for option selection.
-     * 1. Scan barcode
-     * 2. Image upload from gallery
+     * 1. Scan barcode - onScanSelect()
+     * 2. Image upload from gallery - onImageUploadSelect()
+     * 3. Video upload - onVideoUploadSelect()
      *
      * @param view FAB
      */
@@ -53,33 +55,35 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onScanSelect() {
+        Intent intent = new Intent(this, ScanActivity.class);
+        startActivity(intent);
+        mDialogFragment.dismiss();
+    }
+
+    @Override
     public void onImageUploadSelect() {
+        // start choose image from gallery intent
         Intent intent = new Intent()
                 .setType("image/*")
                 .setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), PICK_IMAGE);
-    }
-
-    @Override
-    public void onScanSelect() {
-        Intent intent = new Intent(this, ScanActivity.class);
-        startActivity(intent);
+        mDialogFragment.dismiss();
     }
 
     @Override
     public void onVideoUploadSelect() {
+        // start choose video intent
         Intent intent = new Intent()
                 .setType("video/*")
                 .setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_video)), PICK_VIDEO);
+        mDialogFragment.dismiss();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (mDialogFragment != null) {
-            mDialogFragment.dismiss();
-        }
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
             Bitmap imageBitmap;
@@ -120,6 +124,11 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * This status callback can be received directly from BarcodeScanningProcessor or from VideoToBarcode task on completion.
+     *
+     * @param barcodes array of EAN strings
+     */
     @Override
     public void onSuccess(List<String> barcodes) {
         if (barcodes.size() > 0) {
