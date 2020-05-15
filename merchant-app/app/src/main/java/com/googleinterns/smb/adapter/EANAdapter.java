@@ -1,25 +1,25 @@
 package com.googleinterns.smb.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.googleinterns.smb.R;
 
-import java.util.List;
+
+public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
 
 
-public class EANAdapter extends RecyclerView.Adapter<EANAdapter.EANViewHolder> {
-
-    private List<String> mBarcodes;
-
-    public EANAdapter(List<String> barcodes) {
-        mBarcodes = barcodes;
+    public EANAdapter(Query query) {
+        super(query);
     }
 
     @NonNull
@@ -31,38 +31,43 @@ public class EANAdapter extends RecyclerView.Adapter<EANAdapter.EANViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull EANViewHolder holder, int position) {
-        holder.bind(mBarcodes.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return mBarcodes.size();
-    }
-
-    private void onDelete(int position) {
-        mBarcodes.remove(position);
-        notifyItemRemoved(position);
+        holder.bind(getSnapshot(position));
     }
 
     static class EANViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView mtextEAN;
-        private EANAdapter mAdapter;
+        private TextView mProductName;
+        private TextView mMRP;
+        private TextView mDiscountedPrice;
+        private ImageView mProductImage;
 
-        private EANViewHolder(@NonNull View itemView, EANAdapter adapter) {
+        EANAdapter mAdapter;
+
+        EANViewHolder(@NonNull View itemView, EANAdapter adapter) {
             super(itemView);
-            mtextEAN = itemView.findViewById(R.id.ean_field);
+            mProductName = itemView.findViewById(R.id.product_name);
+            mMRP = itemView.findViewById(R.id.mrp);
+            mDiscountedPrice = itemView.findViewById(R.id.discounted_price);
+            mProductImage = itemView.findViewById(R.id.product_image);
             mAdapter = adapter;
-            itemView.findViewById(R.id.delete_btn).setOnClickListener(this);
         }
 
-        void bind(String barcode) {
-            mtextEAN.setText(barcode);
+        void bind(final DocumentSnapshot documentSnapshot) {
+            String productName = documentSnapshot.getString("product_name");
+            mProductName.setText(productName);
+            String mrp = documentSnapshot.getDouble("MRP").toString();
+            mMRP.setText(mrp);
+            mDiscountedPrice.setText(mrp);
+            String imageURL = documentSnapshot.getString("image_url");
+            Glide.with(mProductImage.getContext())
+                    .load(imageURL)
+                    .fitCenter()
+                    .into(mProductImage);
         }
 
         @Override
         public void onClick(View v) {
-            mAdapter.onDelete(getAdapterPosition());
+            mAdapter.onDocumentRemoved(getAdapterPosition());
         }
 
     }
