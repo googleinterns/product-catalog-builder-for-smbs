@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void addProduct(View view) {
         mDialogFragment = new AddProductDialogFragment();
-        mDialogFragment.show(getSupportFragmentManager(), TAG);
+        mDialogFragment.show(getSupportFragmentManager(), "Add dialog");
     }
 
     @Override
@@ -202,4 +202,5 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "Error: ", e);
         showToast(getString(R.string.error_processing_image));
     }
+
 }
