@@ -5,20 +5,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.googleinterns.smb.adapter.ProductAdapter;
+import com.googleinterns.smb.adapter.ProductBottomSheetAdapter;
 import com.googleinterns.smb.common.ProductBottomSheet;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Product;
 import com.googleinterns.smb.textrecognition.TextRecognitionProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanTextActivity extends ScanActivity implements ProductAdapter.ProductStatusListener, TextRecognitionProcessor.OnProductFoundListener {
+public class ScanTextActivity extends ScanActivity implements ProductBottomSheetAdapter.ProductStatusListener, TextRecognitionProcessor.OnProductFoundListener {
 
     private TextRecognitionProcessor mDetector;
     private ProductBottomSheet productBottomSheet;
@@ -35,9 +35,9 @@ public class ScanTextActivity extends ScanActivity implements ProductAdapter.Pro
     private void initRecyclerView() {
         List<Product> products = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.product_recycler_view);
-        ProductAdapter productAdapter = new ProductAdapter(products, this);
-        productBottomSheet = new ProductBottomSheet(productAdapter);
-        recyclerView.setAdapter(productAdapter);
+        ProductBottomSheetAdapter productBottomSheetAdapter = new ProductBottomSheetAdapter(products, this);
+        productBottomSheet = new ProductBottomSheet(productBottomSheetAdapter);
+        recyclerView.setAdapter(productBottomSheetAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
@@ -73,13 +73,13 @@ public class ScanTextActivity extends ScanActivity implements ProductAdapter.Pro
 
     @Override
     public void onProductDiscard(Product product) {
-        showToast("Product discarded");
+        UIUtils.showToast(this, "Product discarded");
         productBottomSheet.onProductDiscard(product);
     }
 
     @Override
     public void onProductAdd(Product product) {
-        showToast("Product added");
+        UIUtils.showToast(this, "Product added");
         productBottomSheet.onProductAdd(product);
     }
 
@@ -88,7 +88,4 @@ public class ScanTextActivity extends ScanActivity implements ProductAdapter.Pro
         productBottomSheet.addProducts(products);
     }
 
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-    }
 }

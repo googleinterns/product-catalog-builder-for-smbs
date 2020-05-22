@@ -1,6 +1,7 @@
 package com.googleinterns.smb.common;
 
-import com.googleinterns.smb.adapter.ProductAdapter;
+
+import com.googleinterns.smb.adapter.ProductBottomSheetAdapter;
 import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.Set;
 /**
  * This class acts as a view model for product display in ScanTextActivity bottom sheet
  */
-public class ProductBottomSheet implements ProductAdapter.ProductStatusListener {
+public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStatusListener {
 
     // set of products already confirmed by user to add
     private Set<Product> mAdded = new HashSet<>();
@@ -22,10 +23,10 @@ public class ProductBottomSheet implements ProductAdapter.ProductStatusListener 
     // set of products now present in recycler view
     private Set<Product> mPresent = new HashSet<>();
 
-    private ProductAdapter productAdapter;
+    private ProductBottomSheetAdapter productBottomSheetAdapter;
 
-    public ProductBottomSheet(ProductAdapter productAdapter) {
-        this.productAdapter = productAdapter;
+    public ProductBottomSheet(ProductBottomSheetAdapter productBottomSheetAdapter) {
+        this.productBottomSheetAdapter = productBottomSheetAdapter;
     }
 
     /**
@@ -40,7 +41,7 @@ public class ProductBottomSheet implements ProductAdapter.ProductStatusListener 
                 continue;
             }
             // add product to bottom sheet recycler view
-            productAdapter.addProduct(product);
+            productBottomSheetAdapter.addProduct(product);
             mPresent.add(product);
         }
     }
@@ -64,6 +65,6 @@ public class ProductBottomSheet implements ProductAdapter.ProductStatusListener 
      */
     public void clear() {
         mPresent.clear();
-        productAdapter.clear();
+        productBottomSheetAdapter.clear();
     }
 }

@@ -17,7 +17,7 @@ import com.googleinterns.smb.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+public class ProductBottomSheetAdapter extends RecyclerView.Adapter<ProductBottomSheetAdapter.ViewHolder> {
 
     public interface ProductStatusListener {
         void onProductDiscard(Product product);
@@ -28,7 +28,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private List<Product> products;
     private ProductStatusListener listener;
 
-    public ProductAdapter(List<Product> products, ProductStatusListener listener) {
+    public ProductBottomSheetAdapter(List<Product> products, ProductStatusListener listener) {
         this.products = products;
         this.listener = listener;
     }
@@ -87,11 +87,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         private TextView mProductName;
         private TextView mMRP;
         private ImageView mProductImage;
-        private ProductAdapter productAdapter;
+        private ProductBottomSheetAdapter productBottomSheetAdapter;
 
-        ViewHolder(@NonNull View itemView, final ProductAdapter productAdapter) {
+        ViewHolder(@NonNull View itemView, final ProductBottomSheetAdapter productBottomSheetAdapter) {
             super(itemView);
-            this.productAdapter = productAdapter;
+            this.productBottomSheetAdapter = productBottomSheetAdapter;
             mProductName = itemView.findViewById(R.id.product_name);
             mMRP = itemView.findViewById(R.id.mrp);
             mProductImage = itemView.findViewById(R.id.product_image);
@@ -100,13 +100,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             mAddButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    productAdapter.onProductAdded(getAdapterPosition());
+                    productBottomSheetAdapter.onProductAdded(getAdapterPosition());
                 }
             });
             mDiscardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    productAdapter.onProductDiscarded(getAdapterPosition());
+                    productBottomSheetAdapter.onProductDiscarded(getAdapterPosition());
                 }
             });
         }

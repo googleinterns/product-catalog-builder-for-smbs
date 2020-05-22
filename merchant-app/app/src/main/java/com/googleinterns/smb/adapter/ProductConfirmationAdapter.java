@@ -21,7 +21,6 @@ import java.util.List;
 
 public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConfirmationAdapter.ViewHolder> {
 
-
     private static final String TAG = ProductConfirmationAdapter.class.getName();
     private FragmentManager mFragmentManager;
     private List<Product> products;
@@ -75,7 +74,7 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
         notifyItemChanged(position);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditPriceDialogFragment.OptionSelectListener {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditPriceDialogFragment.EditPriceDialogInterface {
 
         private TextView mProductName;
         private TextView mMRP;
@@ -97,7 +96,7 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
             mEditProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(ViewHolder.this, product.getMRP());
+                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(ViewHolder.this);
                     editPriceDialogFragment.show(fragmentManager, "Edit dialog");
                 }
             });
@@ -115,6 +114,11 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
         @Override
         public void onConfirm(Double discountPrice) {
             mAdapter.onConfirm(discountPrice, getAdapterPosition());
+        }
+
+        @Override
+        public Double getMRP() {
+            return product.getMRP();
         }
     }
 }

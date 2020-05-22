@@ -78,7 +78,7 @@ public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
         notifyItemChanged(position);
     }
 
-    static class EANViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditPriceDialogFragment.OptionSelectListener {
+    static class EANViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditPriceDialogFragment.EditPriceDialogInterface {
 
         private TextView mProductName;
         private TextView mMRP;
@@ -100,7 +100,7 @@ public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
             mEditProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(EANViewHolder.this, product.getMRP());
+                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(EANViewHolder.this);
                     editPriceDialogFragment.show(fragmentManager, "Edit dialog");
                 }
             });
@@ -118,6 +118,11 @@ public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
         @Override
         public void onConfirm(Double discountPrice) {
             mAdapter.onConfirm(discountPrice, getAdapterPosition());
+        }
+
+        @Override
+        public Double getMRP() {
+            return product.getMRP();
         }
     }
 }
