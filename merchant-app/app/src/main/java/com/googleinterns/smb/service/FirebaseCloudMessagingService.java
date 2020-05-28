@@ -4,9 +4,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.googleinterns.smb.model.Merchant;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.googleinterns.smb.model.Merchant;
 
 
 public class FirebaseCloudMessagingService extends FirebaseMessagingService {
@@ -16,6 +16,7 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         Merchant merchant = Merchant.getInstance();
+        // update database with new token
         merchant.updateToken(token);
         Log.d(TAG, "Service token: " + token);
     }

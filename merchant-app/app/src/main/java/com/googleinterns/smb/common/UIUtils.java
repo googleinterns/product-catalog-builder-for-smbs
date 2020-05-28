@@ -2,9 +2,16 @@ package com.googleinterns.smb.common;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.googleinterns.smb.R;
+
+/**
+ * Utility class for common UI operations
+ */
 public class UIUtils {
 
     private static final String TAG = "UIUtils";
@@ -36,5 +43,10 @@ public class UIUtils {
         } catch (Exception e) {
             Log.e(TAG, "Error: closeKeyboard", e);
         }
+    }
+
+    public static void showNoConnectionMessage(Context context, View view) {
+        Snackbar.make(view, R.string.no_internet_connection, Snackbar.LENGTH_SHORT)
+                .show();
     }
 }

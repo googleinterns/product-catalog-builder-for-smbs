@@ -24,9 +24,12 @@ import com.googleinterns.smb.model.Product;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Billing activity to display scanned bill items.
+ */
 public class BillingActivity extends AppCompatActivity implements
         FirebaseUtils.OnProductReceivedListener,
-        AddDiscountDialogFragment.OptionSelectListener,
+        AddDiscountDialogFragment.DiscountDialogInterface,
         BillAdapter.QtyChangeListener,
         Merchant.OnProductFetchedListener,
         Merchant.OnDataUpdatedListener {
@@ -36,8 +39,8 @@ public class BillingActivity extends AppCompatActivity implements
     private TextView mTextViewTotalPrice;
     private TextView mTextViewDiscountPrice;
     private TextView mTextViewFinalPrice;
-    private Double mTotalPrice = 0.0;
-    private int mDiscountPercent = 0;
+    private double mTotalPrice = 0.0;
+    private double mDiscount = 0.0;
     private Merchant merchant;
 
     @Override
@@ -45,11 +48,16 @@ public class BillingActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billing);
         setTitle("Bill");
-        merchant = new Merchant();
+        // get current merchant instance
+        merchant = Merchant.getInstance();
+
+        // initialise views
         mTextViewTotalPrice = findViewById(R.id.total_price);
         mTextViewDiscountPrice = findViewById(R.id.discount);
         mTextViewFinalPrice = findViewById(R.id.final_price);
         Button mAddDiscount = findViewById(R.id.add_discount);
+
+        // set onclick listener for discount update
         mAddDiscount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,11 +65,21 @@ public class BillingActivity extends AppCompatActivity implements
                 addDiscountDialogFragment.show(getSupportFragmentManager(), "Add discount dialog");
             }
         });
+        mTextViewDiscountPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddDiscountDialogFragment addDiscountDialogFragment = new AddDiscountDialogFragment();
+                addDiscountDialogFragment.show(getSupportFragmentManager(), "Add discount dialog");
+            }
+        });
+
+        // retrieve products from scanned barcode EANs
         FirebaseUtils.queryProducts(this, CommonUtils.getBarcodes(getIntent()));
     }
 
 
     private void initRecyclerView(List<Product> products) {
+        // initialise recycler view to display bill items
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         BillAdapter billAdapter = new BillAdapter(this, products, getSupportFragmentManager());
         recyclerView.setAdapter(billAdapter);
@@ -73,47 +91,69 @@ public class BillingActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * Callback from FirebaseUtils.queryProducts()
+     *
+     * @param products products corresponding to EANs
+     */
     @Override
     public void onProductReceived(List<Product> products) {
         initRecyclerView(products);
         View view = findViewById(R.id.progressBar);
         view.setVisibility(View.GONE);
 
-        // check for new products
+        // check for new products scanned by merchant (which are not present in his inventory)
         merchant.getNewProducts(this, products);
     }
 
+    /**
+     * Callback from discount dialog
+     *
+     * @param discount discount set by user
+     */
     @Override
-    public void onDiscountSelect(int percent) {
+    public void onDiscountSelect(double discount) {
         // replace add discount button with discount price layout
         View view = findViewById(R.id.add_discount_layout);
         view.setVisibility(View.GONE);
         view = findViewById(R.id.discount_layout);
         view.setVisibility(View.VISIBLE);
-        mDiscountPercent = percent;
+        mDiscount = discount;
         updatePriceTextViews();
     }
 
     @SuppressLint("DefaultLocale")
     private void updatePriceTextViews() {
-        Double mDiscountPrice = mTotalPrice * mDiscountPercent / 100;
-        Double mFinalPrice = mTotalPrice - mDiscountPrice;
+        Double mFinalPrice = mTotalPrice - mDiscount;
         mTextViewTotalPrice.setText(String.format("%.2f", mTotalPrice));
-        mTextViewDiscountPrice.setText(String.format("- %.2f", mDiscountPrice));
+        mTextViewDiscountPrice.setText(String.format("- %.2f", mDiscount));
         mTextViewFinalPrice.setText(String.format("%.2f", mFinalPrice));
     }
 
+    /**
+     * Callback from bill adapter (on change in quantity and hence change in total price)
+     *
+     * @param newPrice new total price of all items
+     */
     @Override
-    public void onQtyChange(Double newPrice) {
+    public void onQtyChange(double newPrice) {
         mTotalPrice = newPrice;
         updatePriceTextViews();
     }
 
+    /**
+     * Create intent for starting billing activity
+     */
     public static Intent makeIntentFromBarcodes(Context context, List<String> barcodes) {
         return new Intent(context, BillingActivity.class)
                 .putExtra(CommonUtils.DETECTED_BARCODES, (Serializable) barcodes);
     }
 
+    /**
+     * Callback from merchant.getNewProducts()
+     *
+     * @param products new products which are not present in merchant's inventory
+     */
     @Override
     public void onProductFetched(final List<Product> products) {
         if (products.isEmpty())
@@ -128,13 +168,25 @@ public class BillingActivity extends AppCompatActivity implements
                 .show();
     }
 
+
+    /**
+     * Callback from merchant.addProducts(), on successful addition of products
+     */
     @Override
     public void onDataUpdateSuccess() {
-        UIUtils.showToast(this, "Product(s) added to inventory");
+        UIUtils.showToast(this, getString(R.string.products_added_to_inventory));
+    }
+
+    /**
+     * Callback from merchant.addProducts(), on database update failure
+     */
+    @Override
+    public void onDataUpdateFailure() {
+        UIUtils.showToast(this, getString(R.string.data_update_failed));
     }
 
     @Override
-    public void onDataUpdateFailure() {
-        UIUtils.showToast(this, "Error: data update failed");
+    public double getTotalPrice() {
+        return mTotalPrice;
     }
 }

@@ -50,11 +50,17 @@ public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStat
         return new ArrayList<>(mAdded);
     }
 
+    /**
+     * Callback on product removed
+     */
     @Override
     public void onProductDiscard(Product product) {
         mDiscarded.add(product);
     }
 
+    /**
+     * Callback on product added. move to confirmed products list.
+     */
     @Override
     public void onProductAdd(Product product) {
         mAdded.add(product);

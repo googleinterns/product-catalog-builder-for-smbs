@@ -51,7 +51,6 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
     private ProductDatabase productDatabase;
     private OnProductFoundListener mListener;
 
-    // TODO implemnt async task and subscribe listener
     public TextRecognitionProcessor(OnProductFoundListener listener) {
         detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
         productDatabase = new ProductDatabase(FirebaseFirestore.getInstance().collection("products"));

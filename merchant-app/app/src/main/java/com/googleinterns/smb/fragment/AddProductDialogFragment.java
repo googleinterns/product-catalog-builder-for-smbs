@@ -12,6 +12,9 @@ import androidx.fragment.app.DialogFragment;
 
 import com.googleinterns.smb.R;
 
+/**
+ * Dialog for showing different ways to add new product to inventory
+ */
 public class AddProductDialogFragment extends DialogFragment {
 
     public interface OptionSelectListener {
@@ -22,6 +25,7 @@ public class AddProductDialogFragment extends DialogFragment {
         void onScanSelect();
 
         void onScanTextSelect();
+
         void onBillSelect();
     }
 
