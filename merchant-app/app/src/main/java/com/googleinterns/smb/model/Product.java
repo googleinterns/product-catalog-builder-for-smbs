@@ -12,7 +12,7 @@ public class Product implements Serializable {
     private Double MRP;
     private Double discountedPrice;
     private String imageURL;
-    public static final String RUPEE = "\u20b9";
+    protected static final String RUPEE = "\u20b9";
 
     public String getProductName() {
         return productName;
