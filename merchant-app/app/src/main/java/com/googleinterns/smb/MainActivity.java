@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
 import com.googleinterns.smb.barcodescanning.BarcodeStatusListener;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.common.VideoToBarcode;
 import com.googleinterns.smb.fragment.AddProductDialogFragment;
 
@@ -121,6 +121,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onBillSelect() {
+        Intent intent = new Intent(this, ScanBarcodeActivity.class);
+        // start barcode scanner for creating bill
+        intent.putExtra(ScanBarcodeActivity.CREATE_BILL, true);
+        startActivity(intent);
+        mDialogFragment.dismiss();
+    }
+
+    @Override
     public void onImageUploadSelect() {
         // start choose image from gallery intent
         Intent intent = new Intent()
@@ -152,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements
                 imageProcessor.getFromBitmap(imageBitmap, this);
             } catch (IOException e) {
                 Log.d(TAG, "Error retrieving image: ", e);
-                showToast(getString(R.string.error_retrieve_image));
+                UIUtils.showToast(this, getString(R.string.error_retrieve_image));
             }
         } else if (requestCode == PICK_VIDEO && resultCode == RESULT_OK) {
             Uri videoUri = data.getData();
@@ -165,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements
                 mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.show();
             } catch (Exception e) {
-                showToast(getString(R.string.error_processing_video));
+                UIUtils.showToast(this, getString(R.string.error_processing_video));
                 Log.d(TAG, "Error while loading file: ", e);
             }
         } else if (requestCode == START_SIGN_IN) {
@@ -173,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
             if (resultCode != RESULT_OK && isSignInRequired()) {
                 startSignIn();
             } else if (resultCode == RESULT_OK) {
-                showToast("Sign In successful!");
+                UIUtils.showToast(this, "Sign In successful!");
             }
         }
     }
@@ -184,10 +193,6 @@ public class MainActivity extends AppCompatActivity implements
         if (task != null) {
             task.cancel(true);
         }
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -201,14 +206,14 @@ public class MainActivity extends AppCompatActivity implements
             // pass the detected barcodes to confirmation activity (to remove if any unwanted detected)
             startActivity(ConfirmationActivity.makeIntentFromBarcodes(this, barcodes));
         } else {
-            showToast(getString(R.string.no_barcode_found));
+            UIUtils.showToast(this, getString(R.string.no_barcode_found));
         }
     }
 
     @Override
     public void onFailure(Exception e) {
         Log.d(TAG, "Error: ", e);
-        showToast(getString(R.string.error_processing_image));
+        UIUtils.showToast(this, getString(R.string.error_processing_image));
     }
 
 }
