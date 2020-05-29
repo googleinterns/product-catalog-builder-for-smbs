@@ -96,5 +96,7 @@ public class AddDiscountDialogFragment extends DialogFragment {
         mDialogView = inflater.inflate(R.layout.add_discount_dialog, null);
         mDiscountPercent = mDialogView.findViewById(R.id.text_field_discount_percent);
         mDiscountPercentTextLayout = mDialogView.findViewById(R.id.text_layout_discount_percent);
+        mDiscountPercent.requestFocus();
+        UIUtils.showKeyboard(requireContext());
     }
 }

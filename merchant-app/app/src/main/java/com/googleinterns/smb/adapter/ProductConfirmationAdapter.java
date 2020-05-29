@@ -74,6 +74,10 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
         notifyItemChanged(position);
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditPriceDialogFragment.EditPriceDialogInterface {
 
         private TextView mProductName;
