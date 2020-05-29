@@ -48,6 +48,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
     // Barcode detection model
     implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.1'
+    // Firestore
+    implementation 'com.google.firebase:firebase-firestore:21.4.0'
+    // FirebaseUI (for authentication)
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
