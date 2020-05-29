@@ -28,6 +28,7 @@ public class ConfirmationActivity extends AppCompatActivity {
 
         // get barcodes from launcher activity
         List<String> barcodes = getBarcodes();
+
         // initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.list_item);
         EANAdapter adapter = new EANAdapter(barcodes);
