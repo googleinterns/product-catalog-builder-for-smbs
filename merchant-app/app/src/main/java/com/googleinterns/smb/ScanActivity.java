@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
 import com.googleinterns.smb.common.CameraSource;
 import com.googleinterns.smb.common.CameraSourcePreview;
 import com.googleinterns.smb.common.GraphicOverlay;
@@ -26,23 +25,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanActivity extends AppCompatActivity
+
+/**
+ * Abstract class for implementing basic scan functionality. Extend this class to implement specific scan type.
+ */
+public abstract class ScanActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final String TAG = ScanActivity.class.getName();
-    private static final int PERMISSION_REQUESTS = 1;
-
-    private CameraSource cameraSource = null;
-    private GraphicOverlay fireFaceOverlay;
-    private CameraSourcePreview firePreview;
-    private BarcodeScanningProcessor mDetector = null;
+    protected static final int PERMISSION_REQUESTS = 1;
+    protected static final String TAG = ScanActivity.class.getName();
+    protected CameraSource cameraSource = null;
+    protected GraphicOverlay fireFaceOverlay;
+    protected CameraSourcePreview firePreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        setContentView(R.layout.activity_scan);
-        setTitle("Scan");
+        // set content view and init child views
+        initViews();
         fireFaceOverlay = findViewById(R.id.fireFaceOverlay);
         firePreview = findViewById(R.id.firePreview);
         if (allPermissionsGranted()) {
@@ -52,6 +53,8 @@ public class ScanActivity extends AppCompatActivity
         }
     }
 
+    abstract protected void initViews();
+
     private void createCameraSource() {
         // If there's no existing cameraSource, create one.
         if (cameraSource == null) {
@@ -59,9 +62,7 @@ public class ScanActivity extends AppCompatActivity
         }
         Log.i(TAG, "Using Image Label Detector Processor");
         try {
-            // attach barcode detector to camera source for live preview
-            mDetector = new BarcodeScanningProcessor();
-            cameraSource.setMachineLearningFrameProcessor(mDetector);
+            setDetector();
         } catch (Exception e) {
             Log.e(TAG, "Can not create image processor", e);
             Toast.makeText(
@@ -71,6 +72,8 @@ public class ScanActivity extends AppCompatActivity
                     .show();
         }
     }
+
+    abstract protected void setDetector();
 
     /**
      * Add settings option in the menu bar
@@ -95,8 +98,10 @@ public class ScanActivity extends AppCompatActivity
             intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, SettingsActivity.LaunchSource.LIVE_PREVIEW);
             startActivity(intent);
             return true;
+        } else if (item.getItemId() == R.id.help) {
+            View view = findViewById(R.id.help_layout);
+            view.setVisibility(View.VISIBLE);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -155,8 +160,14 @@ public class ScanActivity extends AppCompatActivity
         if (cameraSource != null) {
             cameraSource.release();
         }
-        startActivity(ConfirmationActivity.makeIntent(this, mDetector.getDetectedBarCodes()));
+        // retrieve data and transition to next activity
+        createIntent();
     }
+
+    /**
+     * Create intent for next activity after scanning is finished
+     */
+    abstract protected void createIntent();
 
     private String[] getRequiredPermissions() {
         try {
@@ -215,5 +226,9 @@ public class ScanActivity extends AppCompatActivity
         }
         Log.i(TAG, "Permission NOT granted: " + permission);
         return false;
+    }
+
+    public void onHelpDismiss(View view) {
+        view.setVisibility(View.GONE);
     }
 }

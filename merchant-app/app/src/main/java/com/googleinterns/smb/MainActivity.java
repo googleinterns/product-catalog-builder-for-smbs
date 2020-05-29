@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements
      * 1. Scan barcode - onScanSelect()
      * 2. Image upload from gallery - onImageUploadSelect()
      * 3. Video upload - onVideoUploadSelect()
+     * 4. Scan text - onScanTextSelect()
      *
      * @param view FAB
      */
@@ -107,7 +108,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onScanSelect() {
-        Intent intent = new Intent(this, ScanActivity.class);
+        Intent intent = new Intent(this, ScanBarcodeActivity.class);
+        startActivity(intent);
+        mDialogFragment.dismiss();
+    }
+
+    @Override
+    public void onScanTextSelect() {
+        Intent intent = new Intent(this, ScanTextActivity.class);
         startActivity(intent);
         mDialogFragment.dismiss();
     }

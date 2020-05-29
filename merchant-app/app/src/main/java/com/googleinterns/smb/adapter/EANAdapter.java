@@ -3,7 +3,7 @@ package com.googleinterns.smb.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,6 +54,7 @@ public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
                 .load(product.getImageURL())
                 .fitCenter()
                 .into(holder.mProductImage);
+        holder.bind(product);
     }
 
     @Override
@@ -83,9 +84,8 @@ public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
         private TextView mMRP;
         private TextView mDiscountedPrice;
         private ImageView mProductImage;
-        private ImageButton mEditProduct;
-        private ImageButton mDeleteProduct;
         private EANAdapter mAdapter;
+        private Product product;
 
         EANViewHolder(@NonNull View itemView, EANAdapter adapter, final FragmentManager fragmentManager) {
             super(itemView);
@@ -94,16 +94,20 @@ public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
             mMRP = itemView.findViewById(R.id.mrp);
             mDiscountedPrice = itemView.findViewById(R.id.discounted_price);
             mProductImage = itemView.findViewById(R.id.product_image);
-            mEditProduct = itemView.findViewById(R.id.price_edit);
-            mDeleteProduct = itemView.findViewById(R.id.delete_product);
+            Button mEditProduct = itemView.findViewById(R.id.price_edit);
+            Button mDeleteProduct = itemView.findViewById(R.id.delete_product);
             mDeleteProduct.setOnClickListener(this);
             mEditProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(EANViewHolder.this);
+                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(EANViewHolder.this, product.getMRP());
                     editPriceDialogFragment.show(fragmentManager, "Edit dialog");
                 }
             });
+        }
+
+        void bind(Product product) {
+            this.product = product;
         }
 
         @Override

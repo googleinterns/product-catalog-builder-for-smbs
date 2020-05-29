@@ -27,11 +27,10 @@ import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.googleinterns.smb.VisionProcessorBase;
 import com.googleinterns.smb.common.CameraImageGraphic;
 import com.googleinterns.smb.common.FrameMetadata;
 import com.googleinterns.smb.common.GraphicOverlay;
-
+import com.googleinterns.smb.common.VisionProcessorBase;
 
 import java.io.IOException;
 import java.util.ArrayList;
