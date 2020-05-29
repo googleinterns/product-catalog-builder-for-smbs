@@ -19,8 +19,9 @@ import com.google.firebase.ml.common.FirebaseMLException;
 
 import java.nio.ByteBuffer;
 
+
 /**
- * An inferface to process the images with different ML Kit detectors and custom image models.
+ * An inferface to process the images with different detectors and custom image models.
  */
 public interface VisionImageProcessor {
 

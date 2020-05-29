@@ -17,8 +17,14 @@ import com.googleinterns.smb.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Recycler view adapter for displaying products in scan text bottom sheet
+ */
 public class ProductBottomSheetAdapter extends RecyclerView.Adapter<ProductBottomSheetAdapter.ViewHolder> {
 
+    /**
+     * Callback interface for updating product status to host listener
+     */
     public interface ProductStatusListener {
         void onProductDiscard(Product product);
 
@@ -56,18 +62,27 @@ public class ProductBottomSheetAdapter extends RecyclerView.Adapter<ProductBotto
         return products.size();
     }
 
+    /**
+     * Callback on product added. move to confirmed products and remove from current list display
+     */
     private void onProductAdded(int position) {
         listener.onProductAdd(products.get(position));
         products.remove(position);
         notifyItemRemoved(position);
     }
 
+    /**
+     * Callback on product removed
+     */
     private void onProductDiscarded(int position) {
         listener.onProductDiscard(products.get(position));
         products.remove(position);
         notifyItemRemoved(position);
     }
 
+    /**
+     * Add new product to list
+     */
     public void addProduct(Product product) {
         int pos = products.size();
         products.add(product);
@@ -87,11 +102,9 @@ public class ProductBottomSheetAdapter extends RecyclerView.Adapter<ProductBotto
         private TextView mProductName;
         private TextView mMRP;
         private ImageView mProductImage;
-        private ProductBottomSheetAdapter productBottomSheetAdapter;
 
         ViewHolder(@NonNull View itemView, final ProductBottomSheetAdapter productBottomSheetAdapter) {
             super(itemView);
-            this.productBottomSheetAdapter = productBottomSheetAdapter;
             mProductName = itemView.findViewById(R.id.product_name);
             mMRP = itemView.findViewById(R.id.mrp);
             mProductImage = itemView.findViewById(R.id.product_image);

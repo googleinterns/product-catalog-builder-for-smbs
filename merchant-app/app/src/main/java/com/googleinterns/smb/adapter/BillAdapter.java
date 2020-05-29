@@ -20,12 +20,16 @@ import com.googleinterns.smb.model.Product;
 
 import java.util.List;
 
+/**
+ * Recycler view adapter for displaying bill items in billing activity
+ */
 public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
 
     public interface QtyChangeListener {
-        void onQtyChange(Double newPrice);
+        void onQtyChange(double newPrice);
     }
 
+    // fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<BillItem> billItems;
     private QtyChangeListener mListener;
@@ -38,6 +42,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         mListener.onQtyChange(getTotalPrice());
     }
 
+    /**
+     * Compute total price by summing price for each item
+     */
     private Double getTotalPrice() {
         Double totalPrice = 0.0;
         for (BillItem billItem : billItems) {
@@ -56,6 +63,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
     @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // initialise bill item view
         BillItem billItem = billItems.get(position);
         holder.mProductName.setText(billItem.getProductName());
         holder.mPrice.setText(billItem.getDiscountedPriceString());
@@ -72,6 +80,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         return billItems.size();
     }
 
+    /**
+     * Callback on change in item quantity
+     */
     private void onConfirm(int qty, int position) {
         billItems.get(position).setQty(qty);
         // update listener with new total price
@@ -79,6 +90,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         notifyItemChanged(position);
     }
 
+    /**
+     * Callback on item removed
+     */
     private void onRemove(int position) {
         billItems.remove(position);
         mListener.onQtyChange(getTotalPrice());
@@ -105,6 +119,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             ImageButton mEditQty = itemView.findViewById(R.id.edit_qty);
             ImageButton mRemoveItem = itemView.findViewById(R.id.remove_button);
             mRemoveItem.setOnClickListener(this);
+            // setup edit dialog
             mEditQty.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -114,6 +129,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             });
         }
 
+        /**
+         * Callback from edit dialog
+         */
         @Override
         public void onConfirm(int qty) {
             mAdapter.onConfirm(qty, getAdapterPosition());

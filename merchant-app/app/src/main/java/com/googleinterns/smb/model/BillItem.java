@@ -2,11 +2,12 @@ package com.googleinterns.smb.model;
 
 import android.annotation.SuppressLint;
 
-import com.google.firebase.firestore.DocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bill item model
+ */
 public class BillItem extends Product {
 
     private int qty = 1;
@@ -16,14 +17,13 @@ public class BillItem extends Product {
 
     }
 
-    public BillItem(DocumentSnapshot documentSnapshot) {
-        super(documentSnapshot);
-    }
-
     public BillItem(Product product) {
         super(product);
     }
 
+    /**
+     * Utility to get bill item list from products
+     */
     public static List<BillItem> getBillItems(List<Product> products) {
         List<BillItem> billItems = new ArrayList<>();
         for (Product product : products) {

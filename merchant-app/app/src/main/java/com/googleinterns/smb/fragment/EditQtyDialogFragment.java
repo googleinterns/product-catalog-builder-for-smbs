@@ -12,13 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.googleinterns.smb.R;
-import com.googleinterns.smb.common.UIUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.googleinterns.smb.R;
+import com.googleinterns.smb.common.UIUtils;
 
 import java.util.Objects;
 
+/**
+ * Dialog to edit item quantity in billing activity
+ */
 public class EditQtyDialogFragment extends DialogFragment {
 
     public interface OptionSelectListener {
@@ -29,7 +32,6 @@ public class EditQtyDialogFragment extends DialogFragment {
     private OptionSelectListener listener;
     private View mDialogView;
     private TextInputEditText mEditTextQty;
-    // TODO: set upper bound on qty of items
     private TextInputLayout mEditTextLayout;
 
     public EditQtyDialogFragment(OptionSelectListener listener) {
@@ -56,8 +58,7 @@ public class EditQtyDialogFragment extends DialogFragment {
                         updateQty(getQty());
                     }
                 }); // listener overridden later
-        final Dialog dialog = builder.create();
-        return dialog;
+        return builder.create();
     }
 
     private int getQty() {
