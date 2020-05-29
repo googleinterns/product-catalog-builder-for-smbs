@@ -98,8 +98,6 @@ public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder>
     protected void onError(FirebaseFirestoreException e) {
     }
 
-    ;
-
     protected void onDataChanged() {
     }
 
@@ -114,43 +112,39 @@ public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder>
             DocumentSnapshot snapshot = documentChange.getDocument();
             switch (documentChange.getType()) {
                 case ADDED:
-                    onDocumentAdded(documentChange);
+                    onDocumentAdded(documentChange, documentChange.getNewIndex());
                     break;
                 case MODIFIED:
-                    onDocumentModified(documentChange);
+                    onDocumentModified(documentChange, documentChange.getOldIndex(), documentChange.getNewIndex());
                     break;
                 case REMOVED:
-                    onDocumentRemoved(documentChange);
+                    onDocumentRemoved(documentChange.getOldIndex());
                     break;
             }
         }
         onDataChanged();
     }
 
-    protected void onDocumentAdded(@NotNull DocumentChange change) {
-        mSnapshots.add(change.getNewIndex(), change.getDocument());
-        notifyItemInserted(change.getNewIndex());
+    protected void onDocumentAdded(@NotNull DocumentChange change, int newIdx) {
+        mSnapshots.add(newIdx, change.getDocument());
+        notifyItemInserted(newIdx);
     }
 
-    protected void onDocumentModified(@NotNull DocumentChange change) {
-        if (change.getOldIndex() == change.getNewIndex()) {
+    protected void onDocumentModified(@NotNull DocumentChange change, int oldIdx, int newIdx) {
+        if (oldIdx == newIdx) {
             // Item changed but remained in same position
-            mSnapshots.set(change.getOldIndex(), change.getDocument());
-            notifyItemChanged(change.getOldIndex());
+            mSnapshots.set(oldIdx, change.getDocument());
+            notifyItemChanged(oldIdx);
         } else {
             // Item changed and changed position
-            mSnapshots.remove(change.getOldIndex());
-            mSnapshots.add(change.getNewIndex(), change.getDocument());
-            notifyItemMoved(change.getOldIndex(), change.getNewIndex());
+            mSnapshots.remove(oldIdx);
+            mSnapshots.add(newIdx, change.getDocument());
+            notifyItemMoved(oldIdx, newIdx);
         }
     }
 
-    protected void onDocumentRemoved(@NotNull DocumentChange change) {
-        onDocumentRemoved(change.getOldIndex());
-    }
-
-    protected void onDocumentRemoved(int position) {
-        mSnapshots.remove(position);
-        notifyItemRemoved(position);
+    protected void onDocumentRemoved(int oldIdx) {
+        mSnapshots.remove(oldIdx);
+        notifyItemRemoved(oldIdx);
     }
 }
