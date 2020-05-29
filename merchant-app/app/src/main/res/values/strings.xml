@@ -106,4 +106,12 @@
     <string name="pref_key_live_preview_automl_remote_model_choices" translatable="false">lparmc</string>
     <string name="ean">EAN:</string>
     <string name="choose_an_option">Choose an option</string>
+    <string name="upload_video">Upload video</string>
+    <string name="processing">Processing…</string>
+    <string name="error_retrieve_image">Error retrieving image</string>
+    <string name="error_processing_video">Error processing video</string>
+    <string name="no_barcode_found">No barcodes found!</string>
+    <string name="error_processing_image">Error processing image</string>
+    <string name="select_video">Select Video</string>
+    <string name="select_picture">Select Picture</string>
 </resources>
