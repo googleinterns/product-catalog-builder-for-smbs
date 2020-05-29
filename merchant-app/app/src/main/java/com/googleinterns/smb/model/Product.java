@@ -2,7 +2,9 @@ package com.googleinterns.smb.model;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
 
     private String productName;
     private Double MRP;
