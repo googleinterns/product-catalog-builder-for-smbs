@@ -6,6 +6,7 @@ import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
 
 public class ScanBarcodeActivity extends ScanActivity {
 
+    public static final String CREATE_BILL = "CREATE_BILL";
     private BarcodeScanningProcessor mDetector;
 
     @Override
@@ -25,6 +26,10 @@ public class ScanBarcodeActivity extends ScanActivity {
 
     @Override
     protected void createIntent() {
-        startActivity(ConfirmationActivity.makeIntentFromBarcodes(this, mDetector.getDetectedBarCodes()));
+        if (getIntent().hasExtra(CREATE_BILL)) {
+            startActivity(BillingActivity.makeIntentFromBarcodes(this, mDetector.getDetectedBarCodes()));
+        } else {
+            startActivity(ConfirmationActivity.makeIntentFromBarcodes(this, mDetector.getDetectedBarCodes()));
+        }
     }
 }
