@@ -37,6 +37,6 @@ public class DebugActivity extends AppCompatActivity {
         ClipData clip = ClipData.newPlainText("mid", mid);
         assert clipboard != null;
         clipboard.setPrimaryClip(clip);
-        UIUtils.showToast(this, "copied to clipboard");
+        UIUtils.showToast(this, "Copied to clipboard");
     }
 }
