@@ -79,7 +79,13 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         notifyItemChanged(position);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements EditQtyDialogFragment.OptionSelectListener {
+    private void onRemove(int position) {
+        billItems.remove(position);
+        mListener.onQtyChange(getTotalPrice());
+        notifyItemRemoved(position);
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder implements EditQtyDialogFragment.OptionSelectListener, View.OnClickListener {
 
         private BillAdapter mAdapter;
         private TextView mProductName;
@@ -97,6 +103,8 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             mQty = itemView.findViewById(R.id.qty_val);
             mTotalPrice = itemView.findViewById(R.id.total);
             ImageButton mEditQty = itemView.findViewById(R.id.edit_qty);
+            ImageButton mRemoveItem = itemView.findViewById(R.id.remove_button);
+            mRemoveItem.setOnClickListener(this);
             mEditQty.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -109,6 +117,14 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         @Override
         public void onConfirm(int qty) {
             mAdapter.onConfirm(qty, getAdapterPosition());
+        }
+
+        /**
+         * Remove button clicked
+         */
+        @Override
+        public void onClick(View view) {
+            mAdapter.onRemove(getAdapterPosition());
         }
     }
 }

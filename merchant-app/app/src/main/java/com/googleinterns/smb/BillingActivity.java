@@ -12,16 +12,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.googleinterns.smb.adapter.BillAdapter;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.FirebaseUtils;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.fragment.AddDiscountDialogFragment;
+import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Product;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class BillingActivity extends AppCompatActivity implements FirebaseUtils.OnProductReceivedListener, AddDiscountDialogFragment.OptionSelectListener, BillAdapter.QtyChangeListener {
+public class BillingActivity extends AppCompatActivity implements
+        FirebaseUtils.OnProductReceivedListener,
+        AddDiscountDialogFragment.OptionSelectListener,
+        BillAdapter.QtyChangeListener,
+        Merchant.OnProductFetchedListener,
+        Merchant.OnDataUpdatedListener {
 
     private static final String TAG = BillingActivity.class.getName();
 
@@ -30,11 +38,14 @@ public class BillingActivity extends AppCompatActivity implements FirebaseUtils.
     private TextView mTextViewFinalPrice;
     private Double mTotalPrice = 0.0;
     private int mDiscountPercent = 0;
+    private Merchant merchant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billing);
+        setTitle("Bill");
+        merchant = new Merchant();
         mTextViewTotalPrice = findViewById(R.id.total_price);
         mTextViewDiscountPrice = findViewById(R.id.discount);
         mTextViewFinalPrice = findViewById(R.id.final_price);
@@ -65,6 +76,11 @@ public class BillingActivity extends AppCompatActivity implements FirebaseUtils.
     @Override
     public void onProductReceived(List<Product> products) {
         initRecyclerView(products);
+        View view = findViewById(R.id.progressBar);
+        view.setVisibility(View.GONE);
+
+        // check for new products
+        merchant.getNewProducts(this, products);
     }
 
     @Override
@@ -96,5 +112,29 @@ public class BillingActivity extends AppCompatActivity implements FirebaseUtils.
     public static Intent makeIntentFromBarcodes(Context context, List<String> barcodes) {
         return new Intent(context, BillingActivity.class)
                 .putExtra(CommonUtils.DETECTED_BARCODES, (Serializable) barcodes);
+    }
+
+    @Override
+    public void onProductFetched(final List<Product> products) {
+        if (products.isEmpty())
+            return;
+        Snackbar.make(findViewById(R.id.billing_layout), R.string.quick_add_message, Snackbar.LENGTH_LONG)
+                .setAction(R.string.add, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        merchant.addProducts(BillingActivity.this, products);
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onDataUpdateSuccess() {
+        UIUtils.showToast(this, "Product(s) added to inventory");
+    }
+
+    @Override
+    public void onDataUpdateFailure() {
+        UIUtils.showToast(this, "Error: data update failed");
     }
 }
