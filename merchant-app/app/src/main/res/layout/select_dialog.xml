@@ -35,7 +35,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/uploadLayout"
+        android:id="@+id/imageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
@@ -59,6 +59,34 @@
             android:layout_marginStart="8dp"
             android:clickable="false"
             android:text="@string/upload"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/videoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/upload_video_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:clickable="false"
+            android:contentDescription="@string/upload_video"
+            app:srcCompat="@drawable/ic_action_add_video" />
+
+        <TextView
+            android:id="@+id/upload_video_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:clickable="false"
+            android:text="@string/upload_video"
             android:textSize="20sp" />
     </LinearLayout>
 

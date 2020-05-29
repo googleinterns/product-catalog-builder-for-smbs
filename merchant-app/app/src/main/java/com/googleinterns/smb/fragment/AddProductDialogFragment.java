@@ -15,7 +15,9 @@ import com.googleinterns.smb.R;
 public class AddProductDialogFragment extends DialogFragment {
 
     public interface OptionSelectListener {
-        void onUploadSelect();
+        void onImageUploadSelect();
+
+        void onVideoUploadSelect();
 
         void onScanSelect();
     }
@@ -47,17 +49,24 @@ public class AddProductDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.select_dialog, null);
         View scanLayout = mDialogView.findViewById(R.id.scanLayout);
-        View uploadLayout = mDialogView.findViewById(R.id.uploadLayout);
+        View imageLayout = mDialogView.findViewById(R.id.imageLayout);
+        View videoLayout = mDialogView.findViewById(R.id.videoLayout);
         scanLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onScanSelect();
             }
         });
-        uploadLayout.setOnClickListener(new View.OnClickListener() {
+        imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onUploadSelect();
+                listener.onImageUploadSelect();
+            }
+        });
+        videoLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onVideoUploadSelect();
             }
         });
     }
