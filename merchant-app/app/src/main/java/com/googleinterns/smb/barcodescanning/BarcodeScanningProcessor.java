@@ -47,6 +47,11 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
     private final FirebaseVisionBarcodeDetector detector;
     private Set<String> mDetectedBarcodes = new HashSet<>();
+    // number of iterations to check to confirm reliability of barcode detected
+    private static final int DEBOUNCE = 3;
+    private int frameNumber = 0;
+    // set of barcodes detected in previous frames
+    private Set<String>[] last = new HashSet[DEBOUNCE];
 
     public BarcodeScanningProcessor() {
         // using EAN_13 barcode format
@@ -83,14 +88,31 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
             CameraImageGraphic imageGraphic = new CameraImageGraphic(graphicOverlay, originalCameraImage);
             graphicOverlay.add(imageGraphic);
         }
+        Set<String> currentFrameBarcodes = new HashSet<>();
+        int currentFrameIdx = frameNumber % DEBOUNCE;
         for (int i = 0; i < barcodes.size(); ++i) {
             FirebaseVisionBarcode barcode = barcodes.get(i);
-            Log.d(TAG, "Detected barcode: " + barcode.getRawValue());
-            // add barcode to hash set
-            mDetectedBarcodes.add(barcode.getRawValue());
-            BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
-            graphicOverlay.add(barcodeGraphic);
+            currentFrameBarcodes.add(barcode.getRawValue());
+            boolean exists = true;
+            // check if barcode present in previous frames
+            for (int j = 0; j < DEBOUNCE; j++) {
+                // present in current frame so ignore
+                if (j == currentFrameIdx)
+                    continue;
+                if (!last[j].contains(barcode.getRawValue()))
+                    exists = false;
+            }
+            // if present in all DEBOUNCE frames, then add to final set. This improves accuracy
+            if (exists) {
+                mDetectedBarcodes.add(barcode.getRawValue());
+                BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
+                graphicOverlay.add(barcodeGraphic);
+            }
         }
+        // update current idx barcodes
+        last[currentFrameIdx] = currentFrameBarcodes;
+        // update frame number
+        frameNumber++;
         graphicOverlay.postInvalidate();
     }
 
