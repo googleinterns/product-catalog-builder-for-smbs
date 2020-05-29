@@ -137,4 +137,5 @@
     <string name="create_a_bill">Create a bill</string>
     <string name="percent">%</string>
     <string name="set_quantity">Set quantity</string>
+    <string name="quick_add_message">Some products are not in your inventory. Would you like to add?</string>
 </resources>

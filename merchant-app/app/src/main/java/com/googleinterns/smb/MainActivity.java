@@ -1,6 +1,7 @@
 package com.googleinterns.smb;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -216,4 +217,8 @@ public class MainActivity extends AppCompatActivity implements
         UIUtils.showToast(this, getString(R.string.error_processing_image));
     }
 
+    public static Intent makeIntent(Context context) {
+        return new Intent(context, MainActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    }
 }
