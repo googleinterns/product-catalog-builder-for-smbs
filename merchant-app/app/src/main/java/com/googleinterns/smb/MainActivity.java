@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements
                 task.execute();
                 mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.show();
-
             } catch (Exception e) {
                 showToast(getString(R.string.error_processing_video));
                 Log.d(TAG, "Error while loading file: ", e);
