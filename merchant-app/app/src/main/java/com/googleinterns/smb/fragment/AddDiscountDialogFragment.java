@@ -13,23 +13,30 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.googleinterns.smb.R;
-import com.googleinterns.smb.common.UIUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.googleinterns.smb.R;
+import com.googleinterns.smb.common.UIUtils;
 
+import java.util.Objects;
+
+/**
+ * Dialog for adding discount in billing activity
+ */
 public class AddDiscountDialogFragment extends DialogFragment {
 
-    public interface OptionSelectListener {
-        void onDiscountSelect(int percent);
+    public interface DiscountDialogInterface {
+        void onDiscountSelect(double discount);
+
+        double getTotalPrice();
     }
 
     private static final String TAG = "AddDiscountDialog";
 
-    private OptionSelectListener listener;
+    private DiscountDialogInterface listener;
     private View mDialogView;
-    private TextInputEditText mDiscountPercent;
-    private TextInputLayout mDiscountPercentTextLayout;
+    private TextInputEditText mDiscount;
+    private TextInputLayout mDiscountTextLayout;
 
     @NonNull
     @Override
@@ -54,13 +61,13 @@ public class AddDiscountDialogFragment extends DialogFragment {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int percent = getPercent();
-                        // check for valid percent
-                        if (percent > 100 || percent < 0) {
-                            mDiscountPercentTextLayout.setError("Error: discount percent must be between 0 and 100");
+                        double discount = getDiscount();
+                        double total = listener.getTotalPrice();
+                        if (total < discount) {
+                            mDiscountTextLayout.setError("Error: discount greater than total");
                         } else {
                             UIUtils.closeKeyboard(requireContext());
-                            listener.onDiscountSelect(percent);
+                            listener.onDiscountSelect(discount);
                             dismiss();
                         }
                     }
@@ -70,14 +77,14 @@ public class AddDiscountDialogFragment extends DialogFragment {
         return dialog;
     }
 
-    private int getPercent() {
-        int percent = 0;
+    private double getDiscount() {
+        double discount = 0;
         try {
-            percent = Integer.parseInt(mDiscountPercent.getText().toString());
+            discount = Double.parseDouble((Objects.requireNonNull(mDiscount.getText()).toString()));
         } catch (Exception e) {
             Log.e(TAG, "Error: unable to parse discount percent", e);
         }
-        return percent;
+        return discount;
     }
 
     @Override
@@ -85,8 +92,8 @@ public class AddDiscountDialogFragment extends DialogFragment {
         super.onAttach(context);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = (OptionSelectListener) context;
+            // Instantiate the DiscountDialogInterface so we can send events to the host
+            listener = (DiscountDialogInterface) context;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(getActivity().toString()
@@ -94,9 +101,9 @@ public class AddDiscountDialogFragment extends DialogFragment {
         }
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.add_discount_dialog, null);
-        mDiscountPercent = mDialogView.findViewById(R.id.text_field_discount_percent);
-        mDiscountPercentTextLayout = mDialogView.findViewById(R.id.text_layout_discount_percent);
-        mDiscountPercent.requestFocus();
+        mDiscount = mDialogView.findViewById(R.id.text_field_discount_amount);
+        mDiscountTextLayout = mDialogView.findViewById(R.id.text_layout_discount_amount);
+        mDiscount.requestFocus();
         UIUtils.showKeyboard(requireContext());
     }
 }

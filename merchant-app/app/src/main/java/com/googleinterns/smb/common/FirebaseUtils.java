@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.googleinterns.smb.model.Product;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
@@ -12,10 +11,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class for performing common firestore queries
+ */
 public class FirebaseUtils {
 
     public interface OnProductReceivedListener {
@@ -27,6 +30,9 @@ public class FirebaseUtils {
 
     }
 
+    /**
+     * Get products from barcodes
+     */
     public static void queryProducts(final Context context, List<String> barcodes) {
         final OnProductReceivedListener listener;
         try {
@@ -46,7 +52,7 @@ public class FirebaseUtils {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<Product> products = new ArrayList<>();
-                        for (DocumentChange documentChange: queryDocumentSnapshots.getDocumentChanges()) {
+                        for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                             DocumentSnapshot documentSnapshot = documentChange.getDocument();
                             Product product = new Product(documentSnapshot);
                             products.add(product);

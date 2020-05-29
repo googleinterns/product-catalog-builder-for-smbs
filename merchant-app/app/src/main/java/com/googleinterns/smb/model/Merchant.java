@@ -14,52 +14,99 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+/**
+ * Merchant class using singleton pattern which represents the current merchant.
+ */
 public class Merchant {
 
+    /**
+     * Listener interface for database update status
+     */
     public interface OnDataUpdatedListener {
         void onDataUpdateSuccess();
 
         void onDataUpdateFailure();
     }
 
+    /**
+     * Listener interface to receive retrieved products from database
+     */
     public interface OnProductFetchedListener {
         void onProductFetched(List<Product> products);
     }
 
     private final static String TAG = "Merchant";
 
-    private FirebaseFirestore firestore;
+    // unique merchant UID given by firebase auth
     private String mid;
+    // merchant name
+    private String name;
+    // merchant email
+    private String email;
+    // merchant device token, used to send notifications by FCM
+    private String token;
 
-    public Merchant() {
+    // merchant singleton instance
+    private static Merchant mInstance;
+
+    /**
+     * Initialise merchant and update in database, reinitialise information if already present
+     */
+    protected Merchant() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         // user must sign in before use
         assert user != null;
         String uid = user.getUid();
         mid = uid;
-        String name = user.getDisplayName();
-        String email = user.getEmail();
+        name = user.getDisplayName();
+        email = user.getEmail();
         final Map<String, String> data = new HashMap<>();
         data.put("mid", uid);
         data.put("name", name);
         data.put("email", email);
-        firestore = FirebaseFirestore.getInstance();
-        firestore.collection("merchants")
+        FirebaseFirestore.getInstance().collection("merchants")
                 .document(uid)
                 .set(data);
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        updateToken(Objects.requireNonNull(task.getResult()).getToken());
+                    }
+                });
+    }
+
+    /**
+     * Get singleton merchant instance
+     *
+     * @return merchant instance
+     */
+    public static synchronized Merchant getInstance() {
+        if (mInstance != null) {
+            return mInstance;
+        }
+        mInstance = new Merchant();
+        return mInstance;
     }
 
     public void addProducts(final OnDataUpdatedListener listener, List<Product> products) {
-        WriteBatch batch = firestore.batch();
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
         for (Product product : products) {
             String collectionPath = "merchants/" + mid + "/products";
-            DocumentReference documentReference = firestore.collection(collectionPath).document(product.getEAN());
+            DocumentReference documentReference = FirebaseFirestore.getInstance().collection(collectionPath).document(product.getEAN());
             batch.set(documentReference, product.createFirebaseDocument());
         }
         batch.commit()
@@ -83,11 +130,12 @@ public class Merchant {
             return;
         List<String> barcodes = new ArrayList<>();
         final Map<String, Product> eanToProduct = new HashMap<>();
+        // map all detected products
         for (Product product : products) {
             barcodes.add(product.getEAN());
             eanToProduct.put(product.getEAN(), product);
         }
-        Query query = firestore.collection("merchants/" + mid + "/products").whereIn("EAN", barcodes);
+        Query query = FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products").whereIn("EAN", barcodes);
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -101,10 +149,37 @@ public class Merchant {
                             }
                             listener.onProductFetched(new ArrayList<>(eanToProduct.values()));
                         } else {
+                            // TODO handle failure
                             Log.e(TAG, "Error retrieving documents ", task.getException());
                         }
                     }
                 });
 
+    }
+
+    /**
+     * Update merchant device token
+     */
+    public void updateToken(String token) {
+        this.token = token;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mid)
+                .update("token", token);
+    }
+
+    public String getMid() {
+        return mid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
