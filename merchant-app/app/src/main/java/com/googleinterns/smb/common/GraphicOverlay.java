@@ -49,7 +49,7 @@ public class GraphicOverlay extends View {
     private float heightScaleFactor = 1.0f;
     private int facing = CameraSource.CAMERA_FACING_BACK;
     private final List<Graphic> graphics = new ArrayList<>();
-    private final static String TAG = "GraphicOverlay";
+    private final static String TAG = GraphicOverlay.class.getName();
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass

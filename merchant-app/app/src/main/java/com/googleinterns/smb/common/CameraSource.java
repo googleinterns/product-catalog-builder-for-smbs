@@ -400,7 +400,6 @@ public class CameraSource {
                 minDiff = diff;
             }
         }
-        Log.d(TAG, "selected size: " + selectedPair.preview.getWidth() + " " + selectedPair.preview.getHeight());
         return selectedPair;
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class EANAdapter extends RecyclerView.Adapter<EANAdapter.EANViewHolder> {
 
-    List<String> mBarcodes;
+    private List<String> mBarcodes;
 
     public EANAdapter(List<String> barcodes) {
         mBarcodes = barcodes;
@@ -40,7 +40,6 @@ public class EANAdapter extends RecyclerView.Adapter<EANAdapter.EANViewHolder> {
     }
 
     private void onDelete(int position) {
-        Log.d("EANAdapter", position + "");
         mBarcodes.remove(position);
         notifyItemRemoved(position);
     }
@@ -48,9 +47,9 @@ public class EANAdapter extends RecyclerView.Adapter<EANAdapter.EANViewHolder> {
     static class EANViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mtextEAN;
-        EANAdapter mAdapter;
+        private EANAdapter mAdapter;
 
-        EANViewHolder(@NonNull View itemView, EANAdapter adapter) {
+        private EANViewHolder(@NonNull View itemView, EANAdapter adapter) {
             super(itemView);
             mtextEAN = itemView.findViewById(R.id.ean_field);
             mAdapter = adapter;
