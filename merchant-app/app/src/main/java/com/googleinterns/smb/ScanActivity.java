@@ -31,7 +31,6 @@ public class ScanActivity extends AppCompatActivity
 
     private static final String TAG = ScanActivity.class.getName();
     private static final int PERMISSION_REQUESTS = 1;
-    public static final String DETECTED_BARCODES = "DETECTED_BARCODES";
 
     private CameraSource cameraSource = null;
     private GraphicOverlay fireFaceOverlay;
@@ -60,6 +59,7 @@ public class ScanActivity extends AppCompatActivity
         }
         Log.i(TAG, "Using Image Label Detector Processor");
         try {
+            // attach barcode detector to camera source for live preview
             mDetector = new BarcodeScanningProcessor();
             cameraSource.setMachineLearningFrameProcessor(mDetector);
         } catch (Exception e) {

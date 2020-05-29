@@ -28,6 +28,7 @@ public class ConfirmationActivity extends AppCompatActivity {
 
         // get barcodes from launcher activity
         List<String> barcodes = getBarcodes();
+        // initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.list_item);
         EANAdapter adapter = new EANAdapter(barcodes);
         recyclerView.setAdapter(adapter);
@@ -39,6 +40,9 @@ public class ConfirmationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * utility to get barcodes from serialised data in intent.
+     */
     private List<String> getBarcodes() {
         List<String> barcodes = (List<String>) getIntent().getSerializableExtra(DETECTED_BARCODES);
         if (barcodes == null) {
