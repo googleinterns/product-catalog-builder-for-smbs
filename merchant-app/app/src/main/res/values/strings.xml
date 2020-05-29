@@ -115,4 +115,11 @@
     <string name="error_processing_image">Error processing image</string>
     <string name="select_video">Select Video</string>
     <string name="select_picture">Select Picture</string>
+    <string name="set_discount_price">Set discount price</string>
+    <string name="rupee">₹</string>
+    <string name="product_image">product image</string>
+    <string name="mrp">MRP:</string>
+    <string name="discounted_price">Discounted price:</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
 </resources>
