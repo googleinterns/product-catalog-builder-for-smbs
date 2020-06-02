@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 public class FirebaseCloudMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = "FirebaseService";
+    private static final String TAG = FirebaseCloudMessagingService.class.getName();
     private static final String PLACE_ORDER = "PLACE_ORDER";
 
     // Notification channel IDs
