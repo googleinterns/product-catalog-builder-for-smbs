@@ -102,6 +102,13 @@ public class Merchant {
         return mInstance;
     }
 
+    /**
+     * Remove merchant instance
+     */
+    public static synchronized void removeInstance() {
+        mInstance = null;
+    }
+
     public void addProducts(final OnDataUpdatedListener listener, List<Product> products) {
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
         for (Product product : products) {
