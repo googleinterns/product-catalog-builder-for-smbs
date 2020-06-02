@@ -30,6 +30,7 @@ public class OrderDisplayActivity extends AppCompatActivity implements OrderAdap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_display);
+        setTitle("Order");
         mTotalPrice = findViewById(R.id.total_price);
         mTextViewCustomerName = findViewById(R.id.text_customer_name);
         String jsonDataString = getIntent().getStringExtra("data");
