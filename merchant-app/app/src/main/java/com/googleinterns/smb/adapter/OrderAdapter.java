@@ -20,6 +20,7 @@ import com.googleinterns.smb.fragment.EditPriceDialogFragment;
 import com.googleinterns.smb.model.BillItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,10 +41,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     public OrderAdapter(PriceChangeListener listener, List<BillItem> billItems, FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
         this.billItems = billItems;
-        availableItems = new ArrayList<>();
-        for (int i = 0; i < billItems.size(); i++) {
-            availableItems.add(true);
-        }
+        availableItems = new ArrayList<>(Collections.nCopies(billItems.size(), true));
         mListener = listener;
         // notify listener with initial total price
         mListener.onPriceChange(getTotalPrice());
