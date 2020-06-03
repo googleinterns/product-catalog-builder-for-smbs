@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Recycler view adapter for displaying bill items in billing activity
+ * Recycler view adapter for displaying order items in order display activity
  */
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
 
