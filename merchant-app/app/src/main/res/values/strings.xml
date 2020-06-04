@@ -147,4 +147,6 @@
     <string name="decline">Decline</string>
     <string name="not_available">Not Available</string>
     <string name="customer_name_placeholder">Raghu\'s order</string>
+    <string name="new_orders">New orders</string>
+    <string name="profile_icon">Profile icon</string>
 </resources>

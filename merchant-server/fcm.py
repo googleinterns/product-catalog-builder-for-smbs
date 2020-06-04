@@ -1,6 +1,6 @@
 from pyfcm import FCMNotification
 from keys import FCM_API_KEY
-from constants import PLACE_ORDER
+from constants import NEW_ORDER
 
 push_service = FCMNotification(api_key=FCM_API_KEY)
 
@@ -11,7 +11,10 @@ def notify(token):
     return result
 
 def notify_place_order(token, data):
-    data['type'] = PLACE_ORDER
+    '''
+    Notify merchant with the new order
+    '''
+    data["status"] = NEW_ORDER
     result = push_service.notify_single_device(
         registration_id=token,
         data_message=data
