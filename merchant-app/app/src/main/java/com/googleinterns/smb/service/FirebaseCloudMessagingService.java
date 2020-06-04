@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 public class FirebaseCloudMessagingService extends FirebaseMessagingService {
@@ -78,7 +79,8 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .setAutoCancel(true)
                             .build();
-                    notificationManager.notify(1, notification);
+                    int uniqueID = (int) ((new Date().getTime() / 1000L)) % Integer.MAX_VALUE;
+                    notificationManager.notify(uniqueID, notification);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "JSON parse exception", e);
