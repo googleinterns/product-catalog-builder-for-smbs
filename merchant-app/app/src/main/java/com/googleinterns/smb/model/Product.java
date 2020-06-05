@@ -3,6 +3,7 @@ package com.googleinterns.smb.model;
 import android.annotation.SuppressLint;
 
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.googleinterns.smb.common.UIUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,8 +13,6 @@ import java.util.Map;
  * Model to implement product information
  */
 public class Product implements Serializable {
-
-    protected static final String RUPEE = "\u20b9";
 
     private String productName;
     private Double MRP;
@@ -35,7 +34,7 @@ public class Product implements Serializable {
 
     @SuppressLint("DefaultLocale")
     public String getMRPString() {
-        return String.format(RUPEE + " %.2f", getMRP());
+        return String.format(UIUtils.RUPEE + " %.2f", getMRP());
     }
 
     public void setMRP(Double MRP) {
@@ -48,7 +47,7 @@ public class Product implements Serializable {
 
     @SuppressLint("DefaultLocale")
     public String getDiscountedPriceString() {
-        return String.format(RUPEE + " %.2f", getDiscountedPrice());
+        return String.format(UIUtils.RUPEE + " %.2f", getDiscountedPrice());
     }
 
     public void setDiscountedPrice(Double discountedPrice) {
