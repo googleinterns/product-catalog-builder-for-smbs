@@ -27,6 +27,8 @@ public class AddProductDialogFragment extends DialogFragment {
         void onScanTextSelect();
 
         void onBillSelect();
+
+        void onNewOrderSelect();
     }
 
     private OptionSelectListener listener;
@@ -55,13 +57,15 @@ public class AddProductDialogFragment extends DialogFragment {
         }
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.select_dialog, null);
-        // initialise views
+        // Initialise views
         View scanLayout = mDialogView.findViewById(R.id.scanLayout);
         View imageLayout = mDialogView.findViewById(R.id.imageLayout);
         View videoLayout = mDialogView.findViewById(R.id.videoLayout);
         View ocrLayout = mDialogView.findViewById(R.id.ocrLayout);
         View billLayout = mDialogView.findViewById(R.id.billLayout);
-        // attach listener
+        View newOrderLayout = mDialogView.findViewById(R.id.newOrdersLayout);
+
+        // Attach listener
         scanLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +94,12 @@ public class AddProductDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 listener.onBillSelect();
+            }
+        });
+        newOrderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onNewOrderSelect();
             }
         });
     }

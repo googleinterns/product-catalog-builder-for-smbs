@@ -2,6 +2,7 @@ from flask import Flask, request
 import utils
 import fcm
 import traceback
+import time
 
 app = Flask(__name__)
 
@@ -19,14 +20,21 @@ def notify_merchant(mid):
 
 @app.route('/order/merchant/<mid>', methods=['POST'])
 def start_order(mid):
+    '''
+    Create a new order and notify merchant "mid"
+    '''
     merchant = utils.get_merchant(mid)
     if merchant == None:
         return "Invalid merchant ID", 400
     data = request.get_json()
+    # Add timestamp if doesn't exists
+    millis = int(round(time.time() * 1000))
+    data["timestamp"] = data.get("timestamp", millis)
     products = utils.get_products_for_merchant(mid, data["items"])
     data["items"] = products
     try:
         fcm.notify_place_order(merchant["token"], data)
+        utils.save_order(mid, data)
     except Exception as e:
         print(traceback.format_exc())
         return "Internal server error", 500

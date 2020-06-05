@@ -16,6 +16,9 @@ public class UIUtils {
 
     private static final String TAG = "UIUtils";
 
+    // Constants
+    public static final String RUPEE = "\u20b9";
+
     // Utility class should not be instantiated
     private UIUtils() {
 
