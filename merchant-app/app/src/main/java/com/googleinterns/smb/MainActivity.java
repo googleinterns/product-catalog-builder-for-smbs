@@ -9,15 +9,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
@@ -33,7 +40,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
-        AddProductDialogFragment.OptionSelectListener, BarcodeStatusListener {
+        AddProductDialogFragment.OptionSelectListener,
+        BarcodeStatusListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getName();
     private static final int PICK_IMAGE = 1;
@@ -45,12 +54,17 @@ public class MainActivity extends AppCompatActivity implements
     // Dialog to display navigation options
     private DialogFragment mDialogFragment;
     private boolean isSigningIn = false;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initNavigationDrawer();
+
         // Enable Firestore logging
         FirebaseFirestore.setLoggingEnabled(true);
         if (isSignInRequired()) {
@@ -60,30 +74,47 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Set menu options
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
+    private void initNavigationDrawer() {
+        // Set custom toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_drawer);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     /**
-     * handle menu item click actions
+     * Setup navigation drawer options
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_sign_out) {
-            Merchant.removeInstance();
-            AuthUI.getInstance().signOut(this);
-            startSignIn();
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_inventory:
+                break;
+            case R.id.menu_new_orders:
+                onNewOrderSelect();
+                break;
+            case R.id.menu_ongoing_orders:
+                break;
+            case R.id.menu_create_bill:
+                onBillSelect();
+                break;
+            case R.id.menu_debug_tools:
+                Intent intent = new Intent(this, DebugActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_sign_out:
+                Merchant.removeInstance();
+                AuthUI.getInstance().signOut(this);
+                startSignIn();
         }
-        if (item.getItemId() == R.id.menu_debug_tools) {
-            Intent intent = new Intent(this, DebugActivity.class);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private boolean isSignInRequired() {
@@ -109,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements
      * 2. Image upload from gallery - onImageUploadSelect()
      * 3. Video upload - onVideoUploadSelect()
      * 4. Scan text - onScanTextSelect()
-     * 5. Create bill - onBillSelect()
      *
      * @param view FAB
      */
@@ -132,20 +162,16 @@ public class MainActivity extends AppCompatActivity implements
         mDialogFragment.dismiss();
     }
 
-    @Override
     public void onBillSelect() {
         Intent intent = new Intent(this, ScanBarcodeActivity.class);
         // Start barcode scanner for creating bill
         intent.putExtra(ScanBarcodeActivity.CREATE_BILL, true);
         startActivity(intent);
-        mDialogFragment.dismiss();
     }
 
-    @Override
     public void onNewOrderSelect() {
         Intent intent = new Intent(this, NewOrdersActivity.class);
         startActivity(intent);
-        mDialogFragment.dismiss();
     }
 
     @Override
@@ -223,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSuccess(List<String> barcodes) {
         if (barcodes.size() > 0) {
-            // pass the detected barcodes to confirmation activity (to remove if any unwanted detected)
+            // Pass the detected barcodes to confirmation activity (to remove if any unwanted detected)
             startActivity(ConfirmationActivity.makeIntentFromBarcodes(this, barcodes));
         } else {
             UIUtils.showToast(this, getString(R.string.no_barcode_found));
@@ -245,9 +271,31 @@ public class MainActivity extends AppCompatActivity implements
         // Check internet connection
         if (CommonUtils.isConnectedToInternet(this)) {
             // Initialize merchant
-            Merchant.getInstance();
+            Merchant merchant = Merchant.getInstance();
+            View headerLayout = navigationView.getHeaderView(0);
+            TextView username = headerLayout.findViewById(R.id.username);
+            TextView email = headerLayout.findViewById(R.id.email);
+            ImageView profileImage = headerLayout.findViewById(R.id.profile_image);
+            username.setText(merchant.getName());
+            email.setText(merchant.getEmail());
+            Glide.with(profileImage.getContext())
+                    .load(merchant.getPhotoUri())
+                    .circleCrop()
+                    .into(profileImage);
         } else {
             UIUtils.showNoConnectionMessage(this, findViewById(R.id.main_layout));
+        }
+    }
+
+    /**
+     * Close drawer on back press if open
+     */
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 }
