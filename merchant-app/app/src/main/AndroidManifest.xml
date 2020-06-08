@@ -16,12 +16,31 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".OngoingOrderDisplayActivity"></activity>
-        <activity android:name=".OngoingOrdersActivity" />
+        <activity
+            android:name=".InventoryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OngoingOrderDisplayActivity"
+            android:parentActivityName=".OngoingOrdersActivity" />
+        <activity
+            android:name=".OngoingOrdersActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".SignInActivity" />
-        <activity android:name=".NewOrdersActivity" />
-        <activity android:name=".OrderDisplayActivity" />
-        <activity android:name=".DebugActivity" />
+        <activity
+            android:name=".NewOrdersActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OrderDisplayActivity"
+            android:parentActivityName=".NewOrdersActivity" />
+        <activity
+            android:name=".DebugActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".BillingActivity" />
         <activity android:name=".ConfirmationActivity" />
 
@@ -42,13 +61,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <service
             android:name=".service.FirebaseCloudMessagingService"

@@ -146,4 +146,36 @@ public class FirebaseUtils {
                     }
                 });
     }
+
+    public static void getInventory(final Context context) {
+        final OnProductReceivedListener listener;
+        try {
+            listener = (OnProductReceivedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context + " must implement OnProductReceivedListener");
+        }
+        Merchant merchant = Merchant.getInstance();
+        String mid = merchant.getMid();
+        Query query = FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products");
+        query.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<Product> products = new ArrayList<>();
+                        for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                            DocumentSnapshot documentSnapshot = documentChange.getDocument();
+                            Product product = new Product(documentSnapshot);
+                            products.add(product);
+                        }
+                        listener.onProductReceived(products);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Firebase Error: ", e);
+                        UIUtils.showToast(context, "Could'nt fetch products from database");
+                    }
+                });
+    }
 }

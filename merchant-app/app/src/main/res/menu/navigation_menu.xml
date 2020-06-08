@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/menu_inventory"
-        android:icon="@drawable/ic_inventory"
-        android:title="@string/inventory" />
-    <item
-        android:id="@+id/menu_ongoing_orders"
-        android:icon="@drawable/ic_ongoing_orders"
-        android:title="@string/ongoing_orders" />
-    <item
-        android:id="@+id/menu_new_orders"
-        android:icon="@drawable/ic_new_order"
-        android:title="@string/new_orders" />
-    <item
-        android:id="@+id/menu_create_bill"
-        android:icon="@drawable/ic_action_bill"
-        android:title="@string/create_a_bill" />
-    <item
-        android:id="@+id/menu_settings"
-        android:icon="@drawable/ic_action_settings"
-        android:title="@string/settings" />
-    <item
-        android:id="@+id/menu_debug_tools"
-        android:icon="@drawable/ic_action_debug_tools"
-        android:title="@string/debug_tools" />
-    <item
-        android:id="@+id/menu_sign_out"
-        android:icon="@drawable/ic_action_signout"
-        android:title="@string/sign_out" />
+    <group
+        android:id="@+id/menu_toggle"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_inventory"
+            android:icon="@drawable/ic_inventory"
+            android:title="@string/inventory" />
+        <item
+            android:id="@+id/menu_ongoing_orders"
+            android:icon="@drawable/ic_ongoing_orders"
+            android:title="@string/ongoing_orders" />
+        <item
+            android:id="@+id/menu_new_orders"
+            android:icon="@drawable/ic_new_order"
+            android:title="@string/new_orders" />
+        <item
+            android:id="@+id/menu_debug_tools"
+            android:icon="@drawable/ic_action_debug_tools"
+            android:title="@string/debug_tools" />
+    </group>
+    <group android:id="@+id/menu_action">
+        <item
+            android:id="@+id/menu_create_bill"
+            android:icon="@drawable/ic_action_bill"
+            android:title="@string/create_a_bill" />
+        <item
+            android:icon="@drawable/ic_action_settings"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/menu_sign_out"
+            android:icon="@drawable/ic_action_signout"
+            android:title="@string/sign_out" />
+    </group>
 </menu>
