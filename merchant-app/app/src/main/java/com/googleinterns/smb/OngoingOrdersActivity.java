@@ -13,31 +13,20 @@ import com.googleinterns.smb.adapter.OrderAdapter;
 import com.googleinterns.smb.common.FirebaseUtils;
 import com.googleinterns.smb.model.Order;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class NewOrdersActivity extends AppCompatActivity implements
+public class OngoingOrdersActivity extends AppCompatActivity implements
         FirebaseUtils.OnOrderReceivedListener,
         OrderAdapter.OrderSelectListener {
 
-    private static final String TAG = NewOrdersActivity.class.getName();
+    private static final String TAG = OngoingOrdersActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_orders);
-        setTitle("Orders");
-        FirebaseUtils.getNewOrders(this);
-    }
-
-    /**
-     * Callback from FirebaseUtils.getNewOrders() after fetching available orders
-     */
-    @Override
-    public void onOrderReceived(List<Order> orders) {
-        View progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.GONE);
-        initRecyclerView(orders);
+        setTitle("Ongoing orders");
+        FirebaseUtils.getOngoingOrders(this);
     }
 
     private void initRecyclerView(List<Order> orders) {
@@ -53,9 +42,16 @@ public class NewOrdersActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onOrderReceived(List<Order> orders) {
+        View progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.GONE);
+        initRecyclerView(orders);
+    }
+
+    @Override
     public void onOrderSelect(Order order) {
-        Intent intent = new Intent(this, OrderDisplayActivity.class);
-        intent.putExtra("order", (Serializable) order);
+        Intent intent = new Intent(this, OngoingOrderDisplayActivity.class);
+        intent.putExtra("order", order);
         startActivity(intent);
     }
 }

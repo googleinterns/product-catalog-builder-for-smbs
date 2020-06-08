@@ -11,11 +11,14 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".OngoingOrderDisplayActivity"></activity>
+        <activity android:name=".OngoingOrdersActivity" />
+        <activity android:name=".SignInActivity" />
         <activity android:name=".NewOrdersActivity" />
         <activity android:name=".OrderDisplayActivity" />
         <activity android:name=".DebugActivity" />

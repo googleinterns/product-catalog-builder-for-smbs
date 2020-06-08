@@ -8,6 +8,8 @@ import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -102,5 +104,23 @@ public class Order implements Serializable {
             return String.format("%d %s ago", diffInHour, hours);
         }
         return "1 day ago";
+    }
+
+    @SuppressLint("DefaultLocale")
+    public String getTimeOfOrder() {
+        Date date = new Date(timestamp);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        String period = "am";
+        if (hours >= 12) {
+            period = "pm";
+        }
+        if (hours == 0)
+            hours = 12;
+        if (hours > 12)
+            hours -= 12;
+        int minutes = calendar.get(Calendar.MINUTE);
+        return String.format("%d:%02d %s", hours, minutes, period);
     }
 }
