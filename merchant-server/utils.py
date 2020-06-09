@@ -1,6 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, messaging, firestore
 import datetime
+from constants import ONGOING
 
 cred = credentials.Certificate("key.json")
 app = firebase_admin.initialize_app(cred)
@@ -52,3 +53,18 @@ def save_order(mid, order):
     '''
     oid = order["oid"]
     db.collection(f"merchants/{mid}/orders").document(oid).set(order)
+
+def confirm_order(mid, oid):
+    '''
+    Confirm order 'oid' to merchant 'mid'
+    '''
+    print(oid)
+    order_ref = db.collection(f"merchants/{mid}/orders").document(oid)
+    order = order_ref.get()
+    if order.exists:
+        data = order.to_dict()
+        data["status"] = ONGOING
+        order_ref.set(data)
+        return data
+    else:
+        return None

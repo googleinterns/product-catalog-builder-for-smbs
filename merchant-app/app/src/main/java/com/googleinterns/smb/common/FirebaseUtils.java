@@ -117,4 +117,33 @@ public class FirebaseUtils {
                 });
 
     }
+
+    public static void getOngoingOrders(final Context context) {
+        final OnOrderReceivedListener listener;
+        try {
+            listener = (OnOrderReceivedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context + " must implement OnOrderReceivedListener");
+        }
+        Merchant merchant = Merchant.getInstance();
+        Query query = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders");
+        query = query.whereEqualTo("status", Order.ONGOING);
+        query.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Order> orders = new ArrayList<>();
+                            for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
+                                Order order = new Order(documentSnapshot.getData());
+                                orders.add(order);
+                            }
+                            listener.onOrderReceived(orders);
+                        } else {
+                            Log.e(TAG, "Firebase Error: ", task.getException());
+                            UIUtils.showToast(context, "Could'nt fetch orders from database");
+                        }
+                    }
+                });
+    }
 }
