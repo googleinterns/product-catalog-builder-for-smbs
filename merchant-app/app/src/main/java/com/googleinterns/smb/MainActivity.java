@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,12 +57,14 @@ public class MainActivity extends AppCompatActivity implements
     private DrawerLayout drawer;
     private NavigationView navigationView;
 
+    protected FrameLayout container;
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        container = findViewById(R.id.container);
         initNavigationDrawer();
 
         // Enable Firestore logging
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_inventory:
+                onInventorySelect();
                 break;
             case R.id.menu_new_orders:
                 onNewOrderSelect();
@@ -188,11 +192,19 @@ public class MainActivity extends AppCompatActivity implements
     public void onNewOrderSelect() {
         Intent intent = new Intent(this, NewOrdersActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void onOngoingOrderSelect() {
         Intent intent = new Intent(this, OngoingOrdersActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    public void onInventorySelect() {
+        Intent intent = new Intent(this, InventoryActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -284,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements
                     .circleCrop()
                     .into(profileImage);
         } else {
-            UIUtils.showNoConnectionMessage(this, findViewById(R.id.main_layout));
+            UIUtils.showNoConnectionMessage(this, findViewById(R.id.container));
         }
     }
 
