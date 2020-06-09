@@ -70,7 +70,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
             startActivity(InventoryActivity.makeIntent(this));
             return;
         }
-        // add products to database
+        // Add products to database
         merchant.addProducts(this, products);
     }
 
@@ -79,7 +79,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
      */
     private void initRecyclerView(List<Product> products) {
         mProductAdapter = new ProductAdapter(products, getSupportFragmentManager());
-        // initialize recycler view
+        // Initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(mProductAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
@@ -88,7 +88,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
                 return true;
             }
         });
-        // hide progress bar
+        // Hide progress bar
         View view = findViewById(R.id.progressBar);
         view.setVisibility(View.GONE);
     }

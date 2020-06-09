@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CommonUtils {
 
-    // utility class shouldn't be instantiated
+    // Utility class shouldn't be instantiated
     private CommonUtils() {
 
     }
@@ -23,7 +23,7 @@ public class CommonUtils {
     private static final String TAG = "CommonUtils";
 
     /**
-     * utility to get barcodes from serialised data in intent.
+     * Utility to get barcodes from serialised data in intent.
      */
     public static List<String> getBarcodes(Intent intent) {
         if ((!intent.hasExtra(DETECTED_BARCODES))) throw new AssertionError();
@@ -41,7 +41,7 @@ public class CommonUtils {
     }
 
     /**
-     * utility to get products from serialised data in intent.
+     * Utility to get products from serialised data in intent.
      */
     public static List<Product> getProducts(Intent intent) {
         if ((!intent.hasExtra(DETECTED_PRODUCTS))) throw new AssertionError();

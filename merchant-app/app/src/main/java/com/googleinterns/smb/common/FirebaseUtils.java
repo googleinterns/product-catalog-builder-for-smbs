@@ -60,7 +60,7 @@ public class FirebaseUtils {
             return;
         }
         Query query = FirebaseFirestore.getInstance().collection("products");
-        // filter products containing these barcodes
+        // Filter products containing these barcodes
         query = query.whereIn("EAN", barcodes);
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

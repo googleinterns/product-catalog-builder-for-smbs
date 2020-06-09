@@ -102,7 +102,7 @@ public class BillingActivity extends AppCompatActivity implements
         View view = findViewById(R.id.progressBar);
         view.setVisibility(View.GONE);
 
-        // check for new products scanned by merchant (which are not present in his inventory)
+        // Check for new products scanned by merchant (which are not present in his inventory)
         merchant.getNewProducts(this, products);
     }
 

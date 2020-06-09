@@ -49,7 +49,7 @@ public class InventoryActivity extends MainActivity implements FirebaseUtils.OnP
      * Fetch data and initialise recycler view
      */
     private void initRecyclerView(List<Product> products) {
-        // hide progress bar
+        // Hide progress bar
         View view = findViewById(R.id.progressBar);
         view.setVisibility(View.GONE);
         if (products.isEmpty()) {
@@ -58,7 +58,7 @@ public class InventoryActivity extends MainActivity implements FirebaseUtils.OnP
             return;
         }
         mProductAdapter = new ProductAdapter(products, getSupportFragmentManager());
-        // initialize recycler view
+        // Initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(mProductAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {

@@ -51,7 +51,7 @@ public class ProductDatabase {
      * @return products with confidence no less than CONFIDENCE_THRESHOLD
      */
     public List<Product> fuzzySearch(List<String> searchStrings) {
-        // matched products
+        // Matched products
         Set<Product> matchedProducts = new HashSet<>();
         for (String searchString : searchStrings) {
             List<BoundExtractedResult<Product>> extractedResults = FuzzySearch.extractSorted(searchString, products, new ToStringFunction<Product>() {

@@ -24,7 +24,8 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private static final String TAG = ProductAdapter.class.getName();
-    // fragment manager required for displaying dialogs
+
+    // Fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<Product> products;
 
