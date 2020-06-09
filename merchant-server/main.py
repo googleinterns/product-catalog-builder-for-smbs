@@ -40,5 +40,23 @@ def start_order(mid):
         return "Internal server error", 500
     return 'OK'
 
+@app.route('/order/confirm/merchant/<mid>', methods=['POST'])
+def confirm_order(mid):
+    '''
+    Notify merchant of order confirmation from customer
+    '''
+    merchant = utils.get_merchant(mid)
+    if merchant == None:
+        return "Invalid merchant ID", 400
+    data = request.get_json()
+    if data.get("oid") == None:
+        return "Order ID not provided", 400
+    oid = data["oid"]
+    order = utils.confirm_order(mid, oid)
+    if order == None:
+        return "Invalid order ID", 400
+    fcm.notify_confirm_order(merchant["token"], order)
+    return "OK"
+
 if __name__=="__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)
