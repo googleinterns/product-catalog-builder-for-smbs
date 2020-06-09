@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.googleinterns.smb.adapter.ProductConfirmationAdapter;
+import com.googleinterns.smb.adapter.ProductAdapter;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.FirebaseUtils;
 import com.googleinterns.smb.common.UIUtils;
@@ -29,7 +29,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
 
     private static final String TAG = ConfirmationActivity.class.getName();
     // recycler view adapter for displaying products
-    private ProductConfirmationAdapter mProductConfirmationAdapter;
+    private ProductAdapter mProductAdapter;
     private Merchant merchant;
 
     @Override
@@ -65,10 +65,10 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
      * Add all confirmed products to merchant's inventory
      */
     private void addProducts() {
-        List<Product> products = mProductConfirmationAdapter.getProducts();
+        List<Product> products = mProductAdapter.getProducts();
         if (products.isEmpty()) {
             UIUtils.showToast(this, "No products to add");
-            startActivity(MainActivity.makeIntent(this));
+            startActivity(InventoryActivity.makeIntent(this));
             return;
         }
         // add products to database
@@ -79,10 +79,10 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
      * Fetch data and initialise recycler view
      */
     private void initRecyclerView(List<Product> products) {
-        mProductConfirmationAdapter = new ProductConfirmationAdapter(products, getSupportFragmentManager());
+        mProductAdapter = new ProductAdapter(products, getSupportFragmentManager());
         // initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(mProductConfirmationAdapter);
+        recyclerView.setAdapter(mProductAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
@@ -121,7 +121,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
     @Override
     public void onDataUpdateSuccess() {
         UIUtils.showToast(this, "Products added to inventory");
-        startActivity(MainActivity.makeIntent(this));
+        startActivity(InventoryActivity.makeIntent(this));
     }
 
     /**

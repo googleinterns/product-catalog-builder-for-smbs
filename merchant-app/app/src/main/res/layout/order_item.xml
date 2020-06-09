@@ -122,7 +122,6 @@
                     android:padding="4dp">
 
                     <TextView
-                        android:id="@+id/qty"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"

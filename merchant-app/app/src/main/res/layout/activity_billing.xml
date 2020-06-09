@@ -42,7 +42,6 @@
             app:layout_constraintTop_toBottomOf="@id/recycler_view">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/total_price_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -114,7 +113,6 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/text_view_discount"
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -126,7 +124,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/text_view_rupee_2"
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -154,19 +151,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
-                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/final_price_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
 
                 <TextView
-                    android:id="@+id/text_view_final_price"
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -178,7 +172,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/text_view_rupee_3"
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -206,7 +199,6 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

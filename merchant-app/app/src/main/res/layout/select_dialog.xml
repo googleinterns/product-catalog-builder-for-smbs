@@ -17,7 +17,6 @@
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/scan_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:clickable="false"
@@ -25,7 +24,6 @@
             app:srcCompat="@drawable/ic_action_scan" />
 
         <TextView
-            android:id="@+id/scan_barcode_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -75,7 +73,6 @@
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/upload_from_gallery_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:clickable="false"
@@ -83,7 +80,6 @@
             app:srcCompat="@drawable/ic_action_add_image" />
 
         <TextView
-            android:id="@+id/upload_from_gallery_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -104,7 +100,6 @@
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/upload_video_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:clickable="false"
@@ -112,7 +107,6 @@
             app:srcCompat="@drawable/ic_action_add_video" />
 
         <TextView
-            android:id="@+id/upload_video_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

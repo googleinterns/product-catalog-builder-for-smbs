@@ -19,6 +19,7 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Order");
         setContentView(R.layout.activity_confirmed_order_display);
         Order order = (Order) getIntent().getSerializableExtra("order");
         if (order != null) {
