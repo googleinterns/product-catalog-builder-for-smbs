@@ -19,7 +19,7 @@ public class ScanBarcodeActivity extends ScanActivity {
 
     @Override
     protected void setDetector() {
-        // attach barcode detector to camera source for live preview
+        // Attach barcode detector to camera source for live preview
         mDetector = new BarcodeScanningProcessor();
         cameraSource.setMachineLearningFrameProcessor(mDetector);
     }

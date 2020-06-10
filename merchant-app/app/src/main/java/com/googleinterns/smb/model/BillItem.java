@@ -45,16 +45,16 @@ public class BillItem extends Product {
     public BillItem(Map<String, Object> data) {
         setEAN((String) data.get("EAN"));
         Double mrp;
-        Double discounted_price;
+        Double discountedPrice;
         if (data.get("MRP") instanceof Long) {
             mrp = ((Long) data.get("MRP")).doubleValue();
-            discounted_price = ((Long) data.get("discounted_price")).doubleValue();
+            discountedPrice = ((Long) data.get("discounted_price")).doubleValue();
         } else {
             mrp = (Double) data.get("MRP");
-            discounted_price = (Double) data.get("discounted_price");
+            discountedPrice = (Double) data.get("discounted_price");
         }
         setMRP(mrp);
-        setDiscountedPrice(discounted_price);
+        setDiscountedPrice(discountedPrice);
         Long qty = (Long) data.get("quantity");
         setQty(qty.intValue());
         setProductName((String) data.get("product_name"));

@@ -28,7 +28,7 @@ import java.util.List;
 public class ConfirmationActivity extends AppCompatActivity implements Merchant.OnDataUpdatedListener, FirebaseUtils.OnProductReceivedListener {
 
     private static final String TAG = ConfirmationActivity.class.getName();
-    // recycler view adapter for displaying products
+    // Recycler view adapter for displaying products
     private ProductAdapter mProductAdapter;
     private Merchant merchant;
 
@@ -37,21 +37,20 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
         setTitle("Products");
-        // get current merchant
+        // Get current merchant
         merchant = Merchant.getInstance();
 
-        // check the type of data in intent
+        // Check the type of data in intent
         if (getIntent().hasExtra(CommonUtils.DETECTED_BARCODES)) {
-            // query for products from barcodes
+            // Query for products from barcodes
             FirebaseUtils.queryProducts(this, CommonUtils.getBarcodes(getIntent()));
         } else if (getIntent().hasExtra(CommonUtils.DETECTED_PRODUCTS)) {
             initRecyclerView(CommonUtils.getProducts(getIntent()));
         } else {
-            // this cannot happen
             throw new AssertionError("Invalid data received in confirmation activity");
         }
 
-        // fab for adding all products in list to inventory
+        // FAB for adding all products in list to inventory
         FloatingActionButton mFABDone = findViewById(R.id.done);
         mFABDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +70,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
             startActivity(InventoryActivity.makeIntent(this));
             return;
         }
-        // add products to database
+        // Add products to database
         merchant.addProducts(this, products);
     }
 
@@ -80,7 +79,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
      */
     private void initRecyclerView(List<Product> products) {
         mProductAdapter = new ProductAdapter(products, getSupportFragmentManager());
-        // initialize recycler view
+        // Initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(mProductAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
@@ -89,7 +88,7 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
                 return true;
             }
         });
-        // hide progress bar
+        // Hide progress bar
         View view = findViewById(R.id.progressBar);
         view.setVisibility(View.GONE);
     }

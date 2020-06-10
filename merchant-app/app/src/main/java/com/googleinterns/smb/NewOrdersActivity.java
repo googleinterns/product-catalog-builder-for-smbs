@@ -65,7 +65,7 @@ public class NewOrdersActivity extends MainActivity implements
 
     @Override
     public void onOrderSelect(Order order) {
-        Intent intent = new Intent(this, OrderDisplayActivity.class);
+        Intent intent = new Intent(this, NewOrderDisplayActivity.class);
         intent.putExtra("order", (Serializable) order);
         startActivity(intent);
     }
