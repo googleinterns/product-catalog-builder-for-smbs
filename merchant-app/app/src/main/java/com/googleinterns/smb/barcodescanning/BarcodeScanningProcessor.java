@@ -48,20 +48,20 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
     private final FirebaseVisionBarcodeDetector detector;
     private Set<String> mDetectedBarcodes = new HashSet<>();
-    // number of iterations to check to confirm reliability of barcode detected
+    // Number of iterations to check to confirm reliability of barcode detected
     private static final int DEBOUNCE = 3;
     private int frameNumber = 0;
-    // set of barcodes detected in previous frames
+    // Set of barcodes detected in previous frames
     private Set<String>[] last = new HashSet[DEBOUNCE];
     private List<Product> products = new ArrayList<>();
 
     public BarcodeScanningProcessor() {
-        // using EAN_13 barcode format
+        // Using EAN_13 barcode format
         FirebaseVisionBarcodeDetectorOptions options =
                 new FirebaseVisionBarcodeDetectorOptions.Builder()
                         .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_EAN_13)
                         .build();
-        // remove 'options' parameter to detect all types of barcode formats. However, this leads to slower processing
+        // Remove 'options' parameter to detect all types of barcode formats. However, this leads to slower processing
         detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options);
     }
 
@@ -96,15 +96,15 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
             FirebaseVisionBarcode barcode = barcodes.get(i);
             currentFrameBarcodes.add(barcode.getRawValue());
             boolean exists = true;
-            // check if barcode present in previous frames
+            // Check if barcode present in previous frames
             for (int j = 0; j < DEBOUNCE; j++) {
-                // present in current frame so ignore
+                // Present in current frame so ignore
                 if (j == currentFrameIdx)
                     continue;
                 if (!last[j].contains(barcode.getRawValue()))
                     exists = false;
             }
-            // if present in all DEBOUNCE frames, then add to final set. This improves accuracy
+            // If present in all DEBOUNCE frames, then add to final set. This improves accuracy
             if (exists) {
                 String ean = barcode.getRawValue();
                 mDetectedBarcodes.add(ean);
@@ -112,9 +112,9 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
                 graphicOverlay.add(barcodeGraphic);
             }
         }
-        // update current idx barcodes
+        // Update current idx barcodes
         last[currentFrameIdx] = currentFrameBarcodes;
-        // update frame number
+        // Update frame number
         frameNumber++;
         graphicOverlay.postInvalidate();
     }

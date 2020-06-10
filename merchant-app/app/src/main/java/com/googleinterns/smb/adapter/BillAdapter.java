@@ -29,7 +29,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         void onQtyChange(double newPrice);
     }
 
-    // fragment manager required for displaying dialogs
+    // Fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<BillItem> billItems;
     private QtyChangeListener mListener;
@@ -38,7 +38,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         mFragmentManager = fragmentManager;
         this.billItems = BillItem.getBillItems(products);
         mListener = listener;
-        // notify listener with initial total price
+        // Notify listener with initial total price
         mListener.onQtyChange(getTotalPrice());
     }
 
@@ -63,7 +63,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
     @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // initialise bill item view
+        // Initialise bill item view
         BillItem billItem = billItems.get(position);
         holder.mProductName.setText(billItem.getProductName());
         holder.mPrice.setText(billItem.getDiscountedPriceString());
@@ -85,7 +85,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
      */
     private void onConfirm(int qty, int position) {
         billItems.get(position).setQty(qty);
-        // update listener with new total price
+        // Update listener with new total price
         mListener.onQtyChange(getTotalPrice());
         notifyItemChanged(position);
     }
@@ -119,7 +119,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             ImageButton mEditQty = itemView.findViewById(R.id.edit_qty);
             ImageButton mRemoveItem = itemView.findViewById(R.id.remove_button);
             mRemoveItem.setOnClickListener(this);
-            // setup edit dialog
+            // Setup edit dialog
             mEditQty.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

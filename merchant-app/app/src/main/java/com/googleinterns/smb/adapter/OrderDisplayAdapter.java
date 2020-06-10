@@ -43,7 +43,7 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
         this.billItems = billItems;
         availableItems = new ArrayList<>(Collections.nCopies(billItems.size(), true));
         mListener = listener;
-        // notify listener with initial total price
+        // Notify listener with initial total price
         mListener.onPriceChange(getTotalPrice());
     }
 

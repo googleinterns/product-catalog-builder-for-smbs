@@ -42,14 +42,14 @@ public abstract class ScanActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        // set content view and init child views
+        // Set content view and init child views
         initViews();
 
-        // initialise camera preview views
+        // Initialise camera preview views
         fireFaceOverlay = findViewById(R.id.fireFaceOverlay);
         firePreview = findViewById(R.id.firePreview);
 
-        // get camera and read/write permissions
+        // Get camera and read/write permissions
         if (allPermissionsGranted()) {
             createCameraSource();
         } else {

@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".OrderDisplayActivity">
+        tools:context=".NewOrderDisplayActivity">
 
         <TextView
             android:id="@+id/customer_name"
@@ -20,6 +20,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/customer_name_placeholder"
             android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -158,13 +159,14 @@
                     android:layout_marginTop="8dp"
                     android:text="98 Jamalpur St Road, Jamalpur, Ahmedabad 380018" />
 
-                <Button
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/action_call"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/call"
-                    app:icon="@drawable/ic_action_call" />
+                    android:layout_marginTop="4dp"
+                    android:text="Call"
+                    app:chipIcon="@drawable/ic_action_call" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -185,9 +187,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_products" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="Deliver with Dunzo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

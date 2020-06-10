@@ -33,15 +33,15 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     }
 
     /**
-     * init recycler view in bottom sheet
+     * Initialise recycler view in bottom sheet
      */
     private void initRecyclerView() {
         List<Product> products = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.product_recycler_view);
-        // recycler view adapter
+        // Recycler view adapter
         ProductBottomSheetAdapter productBottomSheetAdapter = new ProductBottomSheetAdapter(products, this);
 
-        // bottom sheet handler object
+        // Bottom sheet handler object
         productBottomSheet = new ProductBottomSheet(productBottomSheetAdapter);
         recyclerView.setAdapter(productBottomSheetAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
@@ -51,7 +51,6 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
             }
         });
 
-        // clear all button
         Button clearButton = findViewById(R.id.clear);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +62,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
 
     @Override
     protected void setDetector() {
-        // attach text detector to camera source for live preview
+        // Attach text detector to camera source for live preview
         mDetector = new TextRecognitionProcessor(this);
         cameraSource.setMachineLearningFrameProcessor(mDetector);
     }
