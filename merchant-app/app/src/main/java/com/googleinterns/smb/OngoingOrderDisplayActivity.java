@@ -1,8 +1,11 @@
 package com.googleinterns.smb;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.googleinterns.smb.adapter.ConfirmedOrderAdapter;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Order;
 
 public class OngoingOrderDisplayActivity extends AppCompatActivity {
@@ -41,6 +45,15 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
         timeOfOrder.setText(order.getTimeOfOrder());
         TextView address = findViewById(R.id.address);
         address.setText(order.getCustomerAddress());
+        Button deliver = findViewById(R.id.deliver);
+        deliver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIUtils.showToast(OngoingOrderDisplayActivity.this, "Delivery has started via partner");
+                Intent intent = OngoingOrdersActivity.makeIntent(OngoingOrderDisplayActivity.this);
+                startActivity(intent);
+            }
+        });
         ConfirmedOrderAdapter adapter = new ConfirmedOrderAdapter(order.getBillItems());
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
@@ -48,6 +61,11 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
             @Override
             public boolean supportsPredictiveItemAnimations() {
                 return true;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
             }
         });
     }

@@ -60,7 +60,7 @@ public class SignInActivity extends AppCompatActivity {
         if (requestCode == START_SIGN_IN) {
             progressBar.setVisibility(View.INVISIBLE);
             if (resultCode == RESULT_OK) {
-                Intent intent = new Intent(this, OngoingOrdersActivity.class);
+                Intent intent = new Intent(this, InventoryActivity.class);
                 startActivity(intent);
                 finish();
             }
