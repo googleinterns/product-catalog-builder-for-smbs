@@ -5,7 +5,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="500dp"
+    android:layout_gravity="bottom"
     android:background="@drawable/top_rounded_corners">
+
+    <androidx.cardview.widget.CardView
+        android:visibility="invisible"
+        android:id="@+id/num_products_badge"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#DF1809"
+        app:cardCornerRadius="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/bottom_sheet_product_count"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:text="3"
+            android:textAlignment="center"
+            android:textColor="@color/white" />
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/image_down_arrow"
