@@ -1,9 +1,11 @@
 package com.googleinterns.smb.model;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,6 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.googleinterns.smb.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +51,7 @@ public class Merchant {
     }
 
     private final static String TAG = "Merchant";
+    private final static String NUM_PRODUCTS = "NUM_PRODUCTS";
 
     // Unique merchant UID given by firebase auth
     private String mid;
@@ -77,7 +81,7 @@ public class Merchant {
         name = user.getDisplayName();
         email = user.getEmail();
         photoUri = user.getPhotoUrl();
-        numProducts = 0;
+        numProducts = getStoredNumProducts();
         final Map<String, Object> data = new HashMap<>();
         data.put("mid", mid);
         data.put("name", name);
@@ -99,6 +103,7 @@ public class Merchant {
                             } else {
                                 oldToken = document.getString("token");
                                 numProducts = document.getLong("num_products").intValue();
+                                storeNumProducts();
                             }
                             final String finalOldToken = oldToken;
                             FirebaseInstanceId.getInstance().getInstanceId()
@@ -133,11 +138,27 @@ public class Merchant {
         return mInstance;
     }
 
+    private int getStoredNumProducts() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.getContext());
+        return preferences.getInt(NUM_PRODUCTS, 0);
+    }
+
+    private void storeNumProducts() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(NUM_PRODUCTS, numProducts);
+        editor.apply();
+    }
+
     /**
      * Remove merchant instance
      */
     public static synchronized void removeInstance() {
         if (mInstance != null) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.getContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove(NUM_PRODUCTS);
+            editor.apply();
             FirebaseFirestore.getInstance().collection("merchants")
                     .document(mInstance.getMid())
                     .update("token", FieldValue.delete());
@@ -157,6 +178,7 @@ public class Merchant {
             batch.set(documentReference, data);
         }
         numProducts += products.size();
+        storeNumProducts();
         DocumentReference merchant = FirebaseFirestore.getInstance().collection("merchants").document(mid);
         batch.update(merchant, "num_products", numProducts);
         batch.commit()
@@ -235,5 +257,9 @@ public class Merchant {
 
     public Uri getPhotoUri() {
         return photoUri;
+    }
+
+    public int getNumProducts() {
+        return numProducts;
     }
 }

@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PICK_VIDEO = 2;
     private static final int START_SIGN_IN = 3;
 
+    private static Context applicationContext;
+
     // Video to barcode converter task
     private AsyncTask<?, ?, ?> task;
     // Dialog to display navigation options
@@ -60,9 +62,9 @@ public class MainActivity extends AppCompatActivity implements
     protected FrameLayout container;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        applicationContext = getApplicationContext();
         setContentView(R.layout.activity_main);
         container = findViewById(R.id.container);
         initNavigationDrawer();
@@ -310,5 +312,9 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+    }
+
+    public static Context getContext() {
+        return applicationContext;
     }
 }
