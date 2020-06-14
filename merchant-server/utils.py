@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, messaging, firestore
 import datetime
 from constants import ONGOING, PRODUCTS_PER_PAGE
+from exceptions import InvalidRequest, UnprocessableRequest
 
 cred = credentials.Certificate("key.json")
 app = firebase_admin.initialize_app(cred)
@@ -17,7 +18,13 @@ def get_merchant(mid):
     if doc.exists:
         return doc.to_dict()
     else:
-        return None
+        raise InvalidRequest("Invalid merchant ID")
+
+
+def get_token(merchant):
+    if merchant.get("token") == None:
+        raise InvalidRequest("Merchant not available")
+    return merchant["token"]
 
 
 def get_products_for_merchant(mid, items):
@@ -27,8 +34,9 @@ def get_products_for_merchant(mid, items):
     order_products = {}
     for item in items:
         order_products[item["EAN"]] = item
-    query = db.collection(
-        f"merchants/{mid}/products").where("EAN", "in", list(order_products.keys())).stream()
+    query = db.collection(f"merchants/{mid}/products") \
+        .where("EAN", "in", list(order_products.keys())) \
+        .stream()
     products = []
     for doc in query:
         product = doc.to_dict()
@@ -72,7 +80,7 @@ def confirm_order(mid, oid):
         order_ref.set(data)
         return data
     else:
-        return None
+        raise InvalidRequest("Invalid order ID")
 
 
 def get_products_in_page(mid, page_num):
@@ -81,25 +89,24 @@ def get_products_in_page(mid, page_num):
     for the corresponding page number of paginated view
     '''
     merchant = get_merchant(mid)
-    if merchant == None:
-        raise Exception("Invalid mid")
     num_products = merchant["num_products"]
     # When page query page number is more than total number of pages
     if (page_num - 1) * PRODUCTS_PER_PAGE >= num_products:
         return []
     prev_page_last_sno = (page_num - 1) * PRODUCTS_PER_PAGE
     query = db.collection(f"merchants/{mid}/products") \
-                .order_by("sno") \
-                .start_after({
-                    "sno": prev_page_last_sno
-                }) \
-                .limit(PRODUCTS_PER_PAGE) \
-                .stream()
+        .order_by("sno") \
+        .start_after({
+            "sno": prev_page_last_sno
+        }) \
+        .limit(PRODUCTS_PER_PAGE) \
+        .stream()
     products = []
     for doc in query:
         product = doc.to_dict()
         products.append(product)
     return products
+
 
 def get_inventory(mid):
     '''
