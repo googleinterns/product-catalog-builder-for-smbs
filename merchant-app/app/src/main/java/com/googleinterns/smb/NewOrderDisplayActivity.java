@@ -18,6 +18,7 @@ import com.googleinterns.smb.model.BillItem;
 import com.googleinterns.smb.model.Order;
 
 import java.util.List;
+import java.util.Locale;
 
 public class NewOrderDisplayActivity extends AppCompatActivity implements OrderDisplayAdapter.PriceChangeListener {
 
@@ -35,7 +36,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         Order order = (Order) getIntent().getSerializableExtra("order");
         if (order != null) {
             // Initialise views with order information
-            mTextViewCustomerName.setText(String.format("%s's order", order.getCustomerName()));
+            mTextViewCustomerName.setText(String.format(Locale.getDefault(), "%s's order", order.getCustomerName()));
             TextView timeElapsed = findViewById(R.id.time_elapsed);
             timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
             TextView timeOfOrder = findViewById(R.id.time_of_order);
@@ -71,10 +72,9 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
             }
         });
     }
-
-    @SuppressLint("DefaultLocale")
+    
     @Override
     public void onPriceChange(double newTotalPrice) {
-        mTotalPrice.setText(String.format("%.2f", newTotalPrice));
+        mTotalPrice.setText(String.format(Locale.getDefault(), "%.2f", newTotalPrice));
     }
 }

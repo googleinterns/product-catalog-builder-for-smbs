@@ -1,6 +1,5 @@
 package com.googleinterns.smb;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import com.googleinterns.smb.model.Product;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Billing activity to display scanned bill items.
@@ -129,12 +129,11 @@ public class BillingActivity extends AppCompatActivity implements
         updatePriceTextViews();
     }
 
-    @SuppressLint("DefaultLocale")
     private void updatePriceTextViews() {
         Double mFinalPrice = mTotalPrice - mDiscount;
-        mTextViewTotalPrice.setText(String.format("%.2f", mTotalPrice));
-        mTextViewDiscountPrice.setText(String.format("- %.2f", mDiscount));
-        mTextViewFinalPrice.setText(String.format("%.2f", mFinalPrice));
+        mTextViewTotalPrice.setText(String.format(Locale.getDefault(), "%.2f", mTotalPrice));
+        mTextViewDiscountPrice.setText(String.format(Locale.getDefault(), "- %.2f", mDiscount));
+        mTextViewFinalPrice.setText(String.format(Locale.getDefault(), "%.2f", mFinalPrice));
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.googleinterns.smb;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.googleinterns.smb.adapter.ConfirmedOrderAdapter;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Order;
+
+import java.util.Locale;
 
 public class OngoingOrderDisplayActivity extends AppCompatActivity {
 
@@ -33,14 +34,13 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("DefaultLocale")
     public void initView(Order order) {
         TextView timeElapsed = findViewById(R.id.time_elapsed);
         timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
         TextView customerName = findViewById(R.id.customer_name);
-        customerName.setText(String.format("%s's order", order.getCustomerName()));
+        customerName.setText(String.format(Locale.getDefault(), "%s's order", order.getCustomerName()));
         TextView orderTotal = findViewById(R.id.total_price);
-        orderTotal.setText(String.format("%.2f", order.getOrderTotal()));
+        orderTotal.setText(String.format(Locale.getDefault(), "%.2f", order.getOrderTotal()));
         TextView timeOfOrder = findViewById(R.id.time_of_order);
         timeOfOrder.setText(order.getTimeOfOrder());
         TextView address = findViewById(R.id.address);
