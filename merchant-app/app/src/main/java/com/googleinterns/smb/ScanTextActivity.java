@@ -1,5 +1,6 @@
 package com.googleinterns.smb;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,8 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
 
     private TextRecognitionProcessor mDetector;
     private ProductBottomSheet productBottomSheet;
+    private TextView numSuggestedProducts;
+    private View numProductsBadge;
 
     @Override
     protected void initViews() {
@@ -29,6 +32,10 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
         setContentView(R.layout.activity_scan_text);
         TextView helpText = findViewById(R.id.help_text);
         helpText.setText(R.string.point_at_product_text_to_scan);
+
+        // Current number of suggested products in bottom sheet
+        numSuggestedProducts = findViewById(R.id.bottom_sheet_product_count);
+        numProductsBadge = findViewById(R.id.num_products_badge);
         initRecyclerView();
     }
 
@@ -56,6 +63,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
             @Override
             public void onClick(View v) {
                 productBottomSheet.clear();
+                updateBadgeCount(productBottomSheet.getNumberofProducts());
             }
         });
     }
@@ -85,6 +93,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     public void onProductDiscard(Product product) {
         UIUtils.showToast(this, "Product discarded");
         productBottomSheet.onProductDiscard(product);
+        updateBadgeCount(productBottomSheet.getNumberofProducts());
     }
 
     /**
@@ -94,6 +103,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     public void onProductAdd(Product product) {
         UIUtils.showToast(this, "Product added");
         productBottomSheet.onProductAdd(product);
+        updateBadgeCount(productBottomSheet.getNumberofProducts());
     }
 
     /**
@@ -104,6 +114,17 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     @Override
     public void onProductFound(List<Product> products) {
         productBottomSheet.addProducts(products);
+        updateBadgeCount(productBottomSheet.getNumberofProducts());
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void updateBadgeCount(int newCount) {
+        if (newCount == 0) {
+            numProductsBadge.setVisibility(View.INVISIBLE);
+        } else {
+            numProductsBadge.setVisibility(View.VISIBLE);
+            numSuggestedProducts.setText(String.format("%d", newCount));
+        }
     }
 
 }
