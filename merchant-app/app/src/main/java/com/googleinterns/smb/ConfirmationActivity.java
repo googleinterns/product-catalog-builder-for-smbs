@@ -25,9 +25,11 @@ import java.util.List;
  * Confirmation Activity to display all scanned products.
  * Merchant can set his own price for products, remove products and add all to inventory.
  */
-public class ConfirmationActivity extends AppCompatActivity implements Merchant.OnDataUpdatedListener, FirebaseUtils.OnProductReceivedListener {
+public class ConfirmationActivity extends AppCompatActivity implements
+        Merchant.OnDataUpdatedListener,
+        FirebaseUtils.BarcodeProductQueryListener,
+        ProductAdapter.ProductUpdateListener {
 
-    private static final String TAG = ConfirmationActivity.class.getName();
     // Recycler view adapter for displaying products
     private ProductAdapter mProductAdapter;
     private Merchant merchant;
@@ -78,7 +80,14 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
      * Fetch data and initialise recycler view
      */
     private void initRecyclerView(List<Product> products) {
-        mProductAdapter = new ProductAdapter(products, getSupportFragmentManager());
+        // Hide progress bar
+        View view = findViewById(R.id.progressBar);
+        view.setVisibility(View.GONE);
+        if (products.isEmpty()) {
+            displayMessageOnEmpty();
+            return;
+        }
+        mProductAdapter = new ProductAdapter(products, this, getSupportFragmentManager());
         // Initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(mProductAdapter);
@@ -88,9 +97,11 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
                 return true;
             }
         });
-        // Hide progress bar
-        View view = findViewById(R.id.progressBar);
-        view.setVisibility(View.GONE);
+    }
+
+    private void displayMessageOnEmpty() {
+        View emptyInventory = findViewById(R.id.empty_scan);
+        emptyInventory.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -137,8 +148,19 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
      * @param products corresponding to scanned barcode EANs
      */
     @Override
-    public void onProductReceived(List<Product> products) {
+    public void onQueryComplete(List<Product> products) {
         initRecyclerView(products);
+    }
+
+    @Override
+    public void onProductDeleted(Product product) {
+        if (mProductAdapter.getItemCount() == 0) {
+            displayMessageOnEmpty();
+        }
+    }
+
+    @Override
+    public void onPriceChanged(Product updatedProduct) {
     }
 }
 

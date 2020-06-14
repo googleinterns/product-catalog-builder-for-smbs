@@ -22,10 +22,10 @@ import java.util.Locale;
 
 public class ScanTextActivity extends ScanActivity implements ProductBottomSheetAdapter.ProductStatusListener, TextRecognitionProcessor.OnProductFoundListener {
 
-    private TextRecognitionProcessor mDetector;
     private ProductBottomSheet productBottomSheet;
     private TextView numSuggestedProducts;
     private View numProductsBadge;
+    private ProductBottomSheetAdapter productBottomSheetAdapter;
 
     @Override
     protected void initViews() {
@@ -47,7 +47,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
         List<Product> products = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.product_recycler_view);
         // Recycler view adapter
-        ProductBottomSheetAdapter productBottomSheetAdapter = new ProductBottomSheetAdapter(products, this);
+        productBottomSheetAdapter = new ProductBottomSheetAdapter(products, this);
 
         // Bottom sheet handler object
         productBottomSheet = new ProductBottomSheet(productBottomSheetAdapter);
@@ -64,7 +64,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
             @Override
             public void onClick(View v) {
                 productBottomSheet.clear();
-                updateBadgeCount(productBottomSheet.getNumberofProducts());
+                updateBadgeCount(productBottomSheetAdapter.getItemCount());
             }
         });
     }
@@ -72,7 +72,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     @Override
     protected void setDetector() {
         // Attach text detector to camera source for live preview
-        mDetector = new TextRecognitionProcessor(this);
+        TextRecognitionProcessor mDetector = new TextRecognitionProcessor(this);
         cameraSource.setMachineLearningFrameProcessor(mDetector);
     }
 
@@ -94,7 +94,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     public void onProductDiscard(Product product) {
         UIUtils.showToast(this, "Product discarded");
         productBottomSheet.onProductDiscard(product);
-        updateBadgeCount(productBottomSheet.getNumberofProducts());
+        updateBadgeCount(productBottomSheetAdapter.getItemCount());
     }
 
     /**
@@ -104,7 +104,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     public void onProductAdd(Product product) {
         UIUtils.showToast(this, "Product added");
         productBottomSheet.onProductAdd(product);
-        updateBadgeCount(productBottomSheet.getNumberofProducts());
+        updateBadgeCount(productBottomSheetAdapter.getItemCount());
     }
 
     /**
@@ -115,7 +115,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     @Override
     public void onProductFound(List<Product> products) {
         productBottomSheet.addProducts(products);
-        updateBadgeCount(productBottomSheet.getNumberofProducts());
+        updateBadgeCount(productBottomSheetAdapter.getItemCount());
     }
 
     @SuppressLint("DefaultLocale")

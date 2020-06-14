@@ -55,22 +55,18 @@ def get_page():
     '''
     Params to be defined as query string:
     mid: merchat ID of the merchant to fetch products from
-    page_num: page number to fetch
-    Returns products from merchant's ('mid') inventory for page 'page_num' 
+    last_ean: EAN of last product in previous page (omit paramter incase of first page query)
+    Returns PRODUCT_PER_PAGE number of products from merchant's ('mid') inventory having EAN after 'last_ean' 
     '''
     mid = request.args.get("mid")
     if mid == None:
         raise KeyError("mid")
-    if request.args.get("page_num") == None:
-        raise KeyError("page_num")
-    try:
-        page_num = int(request.args.get("page_num"))
-        if page_num < 1:
-            raise Exception("Page number must be positive")
-    except Exception as e:
-        raise InvalidRequest("Invalid page number")
-    products = utils.get_products_in_page(mid, page_num)
-    return {"products": products}
+    last_ean = request.args.get("last_ean")
+    # If last_ean is not provided then request defaults to first page
+    if last_ean == None:
+        last_ean = "0"
+    products = utils.get_products_in_page(mid, last_ean)
+    return {"products": products, "message": "OK"}
 
 
 @app.route('/inventory', methods=['GET'])
@@ -86,7 +82,8 @@ def get():
     products = utils.get_inventory(mid)
     return {
         "merchant_name": merchant["name"],
-        "products": products
+        "products": products,
+        "message": "OK"
     }
 
 
