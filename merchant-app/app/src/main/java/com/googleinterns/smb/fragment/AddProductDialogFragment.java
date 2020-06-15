@@ -48,11 +48,9 @@ public class AddProductDialogFragment extends DialogFragment {
         }
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.select_dialog, null);
-        // initialise views
         View scanLayout = mDialogView.findViewById(R.id.scanLayout);
         View imageLayout = mDialogView.findViewById(R.id.imageLayout);
         View videoLayout = mDialogView.findViewById(R.id.videoLayout);
-        // attach listener
         scanLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

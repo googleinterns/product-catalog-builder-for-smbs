@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.ConditionVariable;
 
 import androidx.annotation.Nullable;
 
@@ -18,11 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This class acts as a cumulative barcode converter task. Reads the video frame by frame and detects from barcode in each frame.
- * For extracting barcode from a bitmap (image frame) it makes use of the BarcodeScanningProcessor.
- * The frames chosen for processing is determined by the FRAMES_PER_SECOND attribute.
- * It determines the number of frames which are processed per second. It implements BarcodeStatusListener as it makes
- * asynchronous requests to BarcodeScanningProcessor.
+ * This class acts as a cumulative barcode converter. Reads the video frame by frame and detects from barcode in each frame.
+ * For extracting barcode from a bitmap it makes use of the BarcodeScanningProcessor.
  */
 public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implements BarcodeStatusListener {
 
@@ -33,13 +31,13 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
     // number of frames to be scanned in one second interval
     private static final int FRAMES_PER_SECOND = 4;
     private Set<String> mBarcodes;
+    private ConditionVariable lock;
     private ProgressDialog mProgressDialog;
 
     public VideoToBarcode(Context context, BarcodeStatusListener listener, Uri videoUri, @Nullable ProgressDialog progressDialog) {
         super();
         mListener = listener;
         mImageProcessor = new BarcodeScanningProcessor();
-        // initialization for retrieving frames from video
         mRetriever = new MediaMetadataRetriever();
         mRetriever.setDataSource(context, videoUri);
         mBarcodes = new HashSet<>();
@@ -58,10 +56,11 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
         for (int i = 0; i < numFrames; i++) {
             Bitmap bitmap = mRetriever.getFrameAtTime(intervalInMicroSeconds * i, MediaMetadataRetriever.OPTION_CLOSEST);
             if (bitmap != null) {
-                // async call to image processor. receives callback onSuccess() / onFailure()
+                lock = new ConditionVariable();
                 mImageProcessor.getFromBitmap(bitmap, this);
+                // wait for the task to complete
+                lock.block();
             }
-            // update progress dialog if available
             if (mProgressDialog != null) {
                 mProgressDialog.setProgress(i + 1);
             }
@@ -81,6 +80,8 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
     public void onSuccess(List<String> barcodes) {
         // add barcodes from the current frame
         mBarcodes.addAll(barcodes);
+        // notify task completion
+        lock.open();
     }
 
     @Override
