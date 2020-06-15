@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">Google Kirana</string>
+
+    <!-- Settings related strings. -->
+    <string name="pref_screen_title_live_preview">Live preview settings</string>
+    <string name="menu_item_settings">Settings</string>
+
+    <!-- Strings for camera settings. -->
+    <string name="pref_category_key_camera" translatable="false">pckc</string>
+    <string name="pref_category_title_camera">Camera</string>
+    <string name="pref_key_rear_camera_preview_size" translatable="false">rcpvs</string>
+    <string name="pref_key_rear_camera_picture_size" translatable="false">rcpts</string>
+    <string name="pref_key_front_camera_preview_size" translatable="false">fcpvs</string>
+    <string name="pref_key_front_camera_picture_size" translatable="false">fcpts</string>
+    <string name="pref_key_camera_live_viewport" translatable="false">clv</string>
+    <string name="pref_title_rear_camera_preview_size">Rear camera preview size</string>
+    <string name="pref_title_camera_live_viewport">Enable live viewport</string>
+    <string name="pref_summary_camera_live_viewport">Do not block camera preview drawing on detection</string>
+
+    <!--    Layout strings-->
+    <string name="choose_an_option">Choose an option</string>
+    <string name="upload_video">Upload video</string>
+    <string name="processing">Processing…</string>
+    <string name="error_retrieve_image">Error retrieving image</string>
+    <string name="error_processing_video">Error processing video</string>
+    <string name="no_barcode_found">No barcodes found!</string>
+    <string name="error_processing_image">Error processing image</string>
+    <string name="select_video">Select Video</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="set_discount_price">Set your price</string>
+    <string name="rupee">₹</string>
+    <string name="product_image">product image</string>
+    <string name="mrp">MRP:</string>
+    <string name="discounted_price">Your price:</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="point_at_a_barcode_to_scan">Point at a barcode to scan</string>
+    <string name="barcode_scanner_frame">barcode scanner frame</string>
+    <string name="tap_to_dimiss">Tap to dimiss</string>
+    <string name="help">Help</string>
+    <string name="scan_text_ocr">Scan Text OCR</string>
+    <string name="add">Add</string>
+    <string name="discard">Discard</string>
+    <string name="suggested_products">Suggested products</string>
+    <string name="clear_all">Clear all</string>
+    <string name="point_at_product_text_to_scan">Point at product text to scan</string>
+    <string name="create_a_bill">Create a bill</string>
+    <string name="set_quantity">Set quantity</string>
+    <string name="quick_add_message">Newly detected products have been added to your inventory</string>
+    <string name="products_added_to_inventory">Product(s) added to inventory</string>
+    <string name="data_update_failed">Error: data update failed</string>
+    <string name="set_discount">Set discount</string>
+    <string name="debug_tools">Debug tools</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="customer_name_placeholder">Raghu\'s order</string>
+    <string name="new_orders">New orders</string>
+    <string name="profile_icon">Profile icon</string>
+    <string name="inventory">Inventory</string>
+    <string name="ongoing_orders">Ongoing orders</string>
+    <string name="settings">Settings</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="google_logo">google logo</string>
+    <string name="app_title_msg">Digital Bharat ka Kirana app</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="call">Call</string>
+    <string name="empty_inventory_msg">No products in your inventory</string>
+    <string name="empty_new_orders_msg">New orders will appear here</string>
+    <string name="empty_ongoing_orders_msg">Ongoing orders will appear here</string>
+    <string name="scan">Scan Barcode</string>
+    <string name="upload">Upload from gallery</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="delivered">Delivered</string>
+</resources>
