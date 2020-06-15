@@ -22,8 +22,6 @@ import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.googleinterns.smb.common.GraphicOverlay;
 import com.googleinterns.smb.common.GraphicOverlay.Graphic;
 
-import java.util.Objects;
-
 /**
  * Graphic instance for rendering Barcode position and content information in an overlay view.
  */
@@ -70,6 +68,6 @@ public class BarcodeGraphic extends Graphic {
         canvas.drawRect(rect, rectPaint);
 
         // Renders the barcode at the bottom of the box.
-        canvas.drawText(Objects.requireNonNull(barcode.getRawValue()), rect.left, rect.bottom, barcodePaint);
+        canvas.drawText(barcode.getRawValue(), rect.left, rect.bottom, barcodePaint);
     }
 }

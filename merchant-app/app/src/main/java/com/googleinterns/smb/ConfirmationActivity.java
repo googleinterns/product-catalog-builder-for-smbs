@@ -38,9 +38,7 @@ public class ConfirmationActivity extends AppCompatActivity {
     private void initRecyclerView() {
         // get barcodes from launcher activity
         List<String> barcodes = getBarcodes();
-        if (barcodes.size() == 0) {
-            return;
-        }
+
         Query query = FirebaseFirestore.getInstance().collection("products");
         // filter products containing these barcodes
         query = query.whereIn("EAN", barcodes);
@@ -48,7 +46,7 @@ public class ConfirmationActivity extends AppCompatActivity {
 
         // initialize recycler view
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        mAdapter = new EANAdapter(query, getSupportFragmentManager());
+        mAdapter = new EANAdapter(query);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
