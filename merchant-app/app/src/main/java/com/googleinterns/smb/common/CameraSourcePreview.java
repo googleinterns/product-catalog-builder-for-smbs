@@ -155,10 +155,22 @@ public class CameraSourcePreview extends ViewGroup {
         final int layoutWidth = right - left;
         final int layoutHeight = bottom - top;
 
+        // Computes height and width for potentially doing fit width.
+        int childWidth = layoutWidth;
+        int childHeight = (int) (((float) layoutWidth / (float) width) * height);
+
+        // If height is too tall using fit width, does fit height instead.
+        if (childHeight > layoutHeight) {
+            Log.d(TAG, "Using fit height");
+            childHeight = layoutHeight;
+            childWidth = (int) (((float) layoutHeight / (float) height) * width);
+        }
+
         for (int i = 0; i < getChildCount(); ++i) {
             View view = getChildAt(i);
-            // Stretching image to fit layout size
-            view.layout(0, 0, layoutWidth, layoutHeight);
+            view.layout(0, 0, childWidth, childHeight);
+            Log.d(TAG, "Assigned view: " + i);
+            Log.d(TAG, "Child params: " + view.getWidth() + " " + view.getHeight());
         }
 
         try {
@@ -176,6 +188,8 @@ public class CameraSourcePreview extends ViewGroup {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             return true;
         }
+
+        Log.d(TAG, "isPortraitMode returning false by default");
         return false;
     }
 }
