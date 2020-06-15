@@ -34,6 +34,7 @@
             app:layout_constraintTop_toTopOf="@+id/customer_name" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/status_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -45,6 +46,7 @@
             app:layout_constraintTop_toBottomOf="@+id/customer_name">
 
             <TextView
+                android:id="@+id/status"
                 style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -144,6 +146,7 @@
                 android:padding="24dp">
 
                 <TextView
+                    android:id="@+id/label_address"
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -159,6 +162,7 @@
                     android:text="98 Jamalpur St Road, Jamalpur, Ahmedabad 380018" />
 
                 <Button
+                    android:id="@+id/call"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

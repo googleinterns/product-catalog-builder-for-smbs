@@ -21,14 +21,14 @@ import java.util.List;
 /**
  * Recycler view adapter for displaying products in confirmation activity
  */
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConfirmationAdapter.ViewHolder> {
 
-    private static final String TAG = ProductAdapter.class.getName();
+    private static final String TAG = ProductConfirmationAdapter.class.getName();
     // fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<Product> products;
 
-    public ProductAdapter(List<Product> products, FragmentManager fragmentManager) {
+    public ProductConfirmationAdapter(List<Product> products, FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
         this.products = products;
     }
@@ -92,10 +92,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         private TextView mMRP;
         private TextView mDiscountedPrice;
         private ImageView mProductImage;
-        private ProductAdapter mAdapter;
+        private ProductConfirmationAdapter mAdapter;
         private Product product;
 
-        ViewHolder(@NonNull View itemView, ProductAdapter adapter, final FragmentManager fragmentManager) {
+        ViewHolder(@NonNull View itemView, ProductConfirmationAdapter adapter, final FragmentManager fragmentManager) {
             super(itemView);
             mAdapter = adapter;
             mProductName = itemView.findViewById(R.id.product_name);
