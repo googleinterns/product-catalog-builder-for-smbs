@@ -10,7 +10,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -58,8 +57,6 @@ public class Merchant {
     private String token;
     // Merchant photo URI
     private Uri photoUri;
-    // Number of products in inventory
-    private int numProducts;
 
     // Merchant singleton instance
     private static Merchant mInstance;
@@ -71,50 +68,27 @@ public class Merchant {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         // User must sign in before use
         assert user != null;
-        // Unique ID given by FirebaseAuth
-        mid = user.getUid();
+        String uid = user.getUid();
+        mid = uid;
         name = user.getDisplayName();
         email = user.getEmail();
         photoUri = user.getPhotoUrl();
-        numProducts = 0;
-        final Map<String, Object> data = new HashMap<>();
-        data.put("mid", mid);
+        final Map<String, String> data = new HashMap<>();
+        data.put("mid", uid);
         data.put("name", name);
         data.put("email", email);
-        data.put("num_products", 0);
         FirebaseFirestore.getInstance().collection("merchants")
-                .document(mid)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .document(uid)
+                .set(data);
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        String oldToken = null;
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (!document.exists()) {
-                                FirebaseFirestore.getInstance().collection("merchants")
-                                        .document(mid)
-                                        .set(data);
-                            } else {
-                                oldToken = document.getString("token");
-                                numProducts = document.getLong("num_products").intValue();
-                            }
-                            final String finalOldToken = oldToken;
-                            FirebaseInstanceId.getInstance().getInstanceId()
-                                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                            if (!task.isSuccessful()) {
-                                                Log.w(TAG, "getInstanceId failed", task.getException());
-                                                return;
-                                            }
-                                            String newToken = task.getResult().getToken();
-                                            if (!newToken.equals(finalOldToken)) {
-                                                updateToken(Objects.requireNonNull(task.getResult()).getToken());
-                                            }
-                                        }
-                                    });
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
                         }
+                        updateToken(Objects.requireNonNull(task.getResult()).getToken());
                     }
                 });
     }
@@ -141,18 +115,11 @@ public class Merchant {
 
     public void addProducts(final OnDataUpdatedListener listener, List<Product> products) {
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        int startSno = numProducts + 1;
         for (Product product : products) {
             String collectionPath = "merchants/" + mid + "/products";
             DocumentReference documentReference = FirebaseFirestore.getInstance().collection(collectionPath).document(product.getEAN());
-            Map<String, Object> data = product.createFirebaseDocument();
-            data.put("sno", startSno);
-            startSno++;
-            batch.set(documentReference, data);
+            batch.set(documentReference, product.createFirebaseDocument());
         }
-        numProducts += products.size();
-        DocumentReference merchant = FirebaseFirestore.getInstance().collection("merchants").document(mid);
-        batch.update(merchant, "num_products", numProducts);
         batch.commit()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

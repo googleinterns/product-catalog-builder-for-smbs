@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.googleinterns.smb.adapter.OngoingOrderAdapter;
 import com.googleinterns.smb.adapter.OrderAdapter;
 import com.googleinterns.smb.common.FirebaseUtils;
 import com.googleinterns.smb.model.Order;
@@ -45,7 +44,7 @@ public class OngoingOrdersActivity extends MainActivity implements
         }
         RecyclerView recyclerView = contentView.findViewById(R.id.recycler_view);
         Log.d(TAG, orders.toString());
-        recyclerView.setAdapter(new OngoingOrderAdapter(this, orders));
+        recyclerView.setAdapter(new OrderAdapter(this, orders));
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean supportsPredictiveItemAnimations() {

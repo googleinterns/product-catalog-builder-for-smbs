@@ -55,11 +55,10 @@ public class BillingActivity extends AppCompatActivity implements
         mTextViewTotalPrice = findViewById(R.id.total_price);
         mTextViewDiscountPrice = findViewById(R.id.discount);
         mTextViewFinalPrice = findViewById(R.id.final_price);
-        Button addDiscount = findViewById(R.id.add_discount);
-        Button finish = findViewById(R.id.finish);
+        Button mAddDiscount = findViewById(R.id.add_discount);
 
         // Set onclick listener for discount update
-        addDiscount.setOnClickListener(new View.OnClickListener() {
+        mAddDiscount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddDiscountDialogFragment addDiscountDialogFragment = new AddDiscountDialogFragment();
@@ -71,12 +70,6 @@ public class BillingActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 AddDiscountDialogFragment addDiscountDialogFragment = new AddDiscountDialogFragment();
                 addDiscountDialogFragment.show(getSupportFragmentManager(), "Add discount dialog");
-            }
-        });
-        finish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(OngoingOrdersActivity.makeIntent(BillingActivity.this));
             }
         });
 

@@ -23,6 +23,12 @@
 
         <activity
             android:name=".InventoryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OngoingOrderDisplayActivity"
+            android:parentActivityName=".OngoingOrdersActivity" />
+        <activity
+            android:name=".OngoingOrdersActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,12 +36,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".OngoingOrderDisplayActivity"
-            android:parentActivityName=".OngoingOrdersActivity" />
-        <activity
-            android:name=".OngoingOrdersActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SignInActivity" />
         <activity
             android:name=".NewOrdersActivity"

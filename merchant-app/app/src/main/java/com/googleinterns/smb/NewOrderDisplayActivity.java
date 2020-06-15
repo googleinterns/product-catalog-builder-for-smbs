@@ -1,11 +1,8 @@
 package com.googleinterns.smb;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.googleinterns.smb.adapter.OrderDisplayAdapter;
-import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.BillItem;
 import com.googleinterns.smb.model.Order;
 
@@ -40,15 +36,6 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
             timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
             TextView timeOfOrder = findViewById(R.id.time_of_order);
             timeOfOrder.setText(order.getTimeOfOrder());
-            Button accept = findViewById(R.id.accept);
-            accept.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UIUtils.showToast(NewOrderDisplayActivity.this, "Accepted order. You will be notified once order is confirmed");
-                    Intent intent = OngoingOrdersActivity.makeIntent(NewOrderDisplayActivity.this);
-                    startActivity(intent);
-                }
-            });
             initRecyclerView(order.getBillItems());
         } else {
             Log.e(TAG, "Error: No data received");
@@ -63,11 +50,6 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
             @Override
             public boolean supportsPredictiveItemAnimations() {
                 return true;
-            }
-
-            @Override
-            public boolean canScrollVertically() {
-                return false;
             }
         });
     }

@@ -71,17 +71,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/customer_address" />
 
-            <TextView
-                android:id="@+id/item_count"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="(2 items)"
-                app:layout_constraintBottom_toBottomOf="@id/order_total"
-                app:layout_constraintStart_toEndOf="@+id/order_total"
-                app:layout_constraintTop_toTopOf="@+id/order_total" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

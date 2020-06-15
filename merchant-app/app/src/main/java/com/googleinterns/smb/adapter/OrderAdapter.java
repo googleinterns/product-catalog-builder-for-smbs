@@ -36,24 +36,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order, parent, false);
-        return createViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        // Initialise order view
+        // initialise order view
         Order order = orders.get(position);
         holder.customerName.setText(order.getCustomerName());
         holder.customerAddress.setText(order.getCustomerAddress());
         holder.orderTotal.setText(String.format("%s %.2f", UIUtils.RUPEE, order.getOrderTotal()));
         holder.timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
-        String items = "items";
-        int numItems = order.getItemCount();
-        if (numItems == 1) {
-            items = "item";
-        }
-        holder.itemCount.setText(String.format("(%d %s)", numItems, items));
         holder.orderCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,20 +62,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         return orders.size();
     }
 
-    /**
-     * Use of factory method for allowing inheritance and overriding of ViewHolder class
-     */
-    protected ViewHolder createViewHolder(View view) {
-        return new ViewHolder(view);
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView customerName;
         private TextView customerAddress;
         private TextView orderTotal;
         private TextView timeElapsed;
         private View orderCardLayout;
-        private TextView itemCount;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -90,7 +76,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             orderTotal = itemView.findViewById(R.id.order_total);
             orderCardLayout = itemView.findViewById(R.id.order_card_layout);
             timeElapsed = itemView.findViewById(R.id.time_elapsed);
-            itemCount = itemView.findViewById(R.id.item_count);
         }
     }
 }
