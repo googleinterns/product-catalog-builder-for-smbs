@@ -123,4 +123,12 @@ public class Order implements Serializable {
         int minutes = calendar.get(Calendar.MINUTE);
         return String.format("%d:%02d %s", hours, minutes, period);
     }
+
+    public int getItemCount() {
+        int numItems = 0;
+        for (BillItem billItem: billItems) {
+            numItems += billItem.getQty();
+        }
+        return numItems;
+    }
 }
