@@ -16,11 +16,6 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <meta-data
-            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="barcode,face,ocr,ica" />
-
         <activity
             android:name=".InventoryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -41,13 +36,18 @@
             android:name=".NewOrdersActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".NewOrderDisplayActivity"
+            android:name=".OrderDisplayActivity"
             android:parentActivityName=".NewOrdersActivity" />
         <activity
             android:name=".DebugActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".BillingActivity" />
         <activity android:name=".ConfirmationActivity" />
+
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="barcode,face,ocr,ica" />
+
         <activity
             android:name=".ScanBarcodeActivity"
             android:screenOrientation="portrait"
@@ -61,7 +61,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <service
             android:name=".service.FirebaseCloudMessagingService"

@@ -66,7 +66,7 @@ public class Merchant {
      */
     protected Merchant() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        // User must sign in before use
+        // user must sign in before use
         assert user != null;
         String uid = user.getUid();
         mid = uid;

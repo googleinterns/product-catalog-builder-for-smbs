@@ -15,9 +15,9 @@ import com.googleinterns.smb.model.Order;
 
 import java.util.List;
 
-public class NewOrderDisplayActivity extends AppCompatActivity implements OrderDisplayAdapter.PriceChangeListener {
+public class OrderDisplayActivity extends AppCompatActivity implements OrderDisplayAdapter.PriceChangeListener {
 
-    private static final String TAG = NewOrderDisplayActivity.class.getName();
+    private static final String TAG = OrderDisplayActivity.class.getName();
 
     private TextView mTotalPrice;
 
@@ -30,12 +30,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         TextView mTextViewCustomerName = findViewById(R.id.customer_name);
         Order order = (Order) getIntent().getSerializableExtra("order");
         if (order != null) {
-            // Initialise views with order information
-            mTextViewCustomerName.setText(String.format("%s's order", order.getCustomerName()));
-            TextView timeElapsed = findViewById(R.id.time_elapsed);
-            timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
-            TextView timeOfOrder = findViewById(R.id.time_of_order);
-            timeOfOrder.setText(order.getTimeOfOrder());
+            mTextViewCustomerName.setText(order.getCustomerName());
             initRecyclerView(order.getBillItems());
         } else {
             Log.e(TAG, "Error: No data received");

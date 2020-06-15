@@ -32,6 +32,7 @@ public class EditQtyDialogFragment extends DialogFragment {
     private OptionSelectListener listener;
     private View mDialogView;
     private TextInputEditText mEditTextQty;
+    private TextInputLayout mEditTextLayout;
 
     public EditQtyDialogFragment(OptionSelectListener listener) {
         this.listener = listener;
@@ -46,6 +47,7 @@ public class EditQtyDialogFragment extends DialogFragment {
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        // ignore
                         UIUtils.closeKeyboard(requireContext());
                     }
                 })
@@ -55,7 +57,7 @@ public class EditQtyDialogFragment extends DialogFragment {
                         UIUtils.closeKeyboard(requireContext());
                         updateQty(getQty());
                     }
-                });
+                }); // listener overridden later
         return builder.create();
     }
 
@@ -87,8 +89,8 @@ public class EditQtyDialogFragment extends DialogFragment {
         super.onAttach(context);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.set_qty, null);
-        // Initialise views
-        TextInputLayout mEditTextLayout = mDialogView.findViewById(R.id.text_layout_qty);
+        // initialise views
+        mEditTextLayout = mDialogView.findViewById(R.id.text_layout_qty);
         mEditTextQty = mDialogView.findViewById(R.id.text_field_qty);
         mEditTextQty.requestFocus();
         UIUtils.showKeyboard(requireContext());

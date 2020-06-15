@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.googleinterns.smb.OngoingOrderDisplayActivity;
-import com.googleinterns.smb.NewOrderDisplayActivity;
+import com.googleinterns.smb.OrderDisplayActivity;
 import com.googleinterns.smb.common.NotificationUtils;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
@@ -41,7 +41,7 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
                 if (Order.NEW_ORDER.equals(data.getString("status"))) {
                     Order order = new Order(remoteMessage.getData(), true);
                     NotificationUtils.createNotificationChannel(this, NotificationUtils.ORDER_CHANNEL);
-                    Intent intent = new Intent(this, NewOrderDisplayActivity.class);
+                    Intent intent = new Intent(this, OrderDisplayActivity.class);
                     intent.putExtra("order", order);
                     PendingIntent pendingIntent = PendingIntent.getActivity(this, START_ORDER_DISPLAY, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     NotificationUtils.createNotification(this, NotificationUtils.ORDER_CHANNEL, "New order received", "Tap to view", pendingIntent);

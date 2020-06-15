@@ -14,13 +14,13 @@ import java.util.Set;
  */
 public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStatusListener {
 
-    // Set of products already confirmed by user to add
+    // set of products already confirmed by user to add
     private Set<Product> mAdded = new HashSet<>();
 
-    // Set of products denied by user
+    // set of products denied by user
     private Set<Product> mDiscarded = new HashSet<>();
 
-    // Set of products now present in recycler view
+    // set of products now present in recycler view
     private Set<Product> mPresent = new HashSet<>();
 
     private ProductBottomSheetAdapter productBottomSheetAdapter;
@@ -36,11 +36,11 @@ public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStat
      */
     public void addProducts(List<Product> products) {
         for (Product product : products) {
-            // Ignore if already has been considered by user
+            // ignore if already has been considered by user
             if (mAdded.contains(product) || mDiscarded.contains(product) || mPresent.contains(product)) {
                 continue;
             }
-            // Add product to bottom sheet recycler view
+            // add product to bottom sheet recycler view
             productBottomSheetAdapter.addProduct(product);
             mPresent.add(product);
         }

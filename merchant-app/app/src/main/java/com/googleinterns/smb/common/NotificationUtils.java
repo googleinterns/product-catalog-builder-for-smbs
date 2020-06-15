@@ -71,7 +71,6 @@ public class NotificationUtils {
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true)
                 .build();
         int uniqueID = (int) ((new Date().getTime() / 1000L)) % Integer.MAX_VALUE;

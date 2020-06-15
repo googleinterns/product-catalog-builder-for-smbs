@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Google Kirana</string>
+    <string name="scan">Scan Barcode</string>
+    <string name="upload">Upload from gallery</string>
+    <string name="menu_item_settings">Settings</string>
+    <string name="sign_out">Sign Out</string>
 
     <!-- Settings related strings. -->
     <string name="pref_screen_title_live_preview">Live preview settings</string>
-    <string name="menu_item_settings">Settings</string>
 
     <!-- Strings for camera settings. -->
     <string name="pref_category_key_camera" translatable="false">pckc</string>
@@ -17,7 +20,29 @@
     <string name="pref_title_camera_live_viewport">Enable live viewport</string>
     <string name="pref_summary_camera_live_viewport">Do not block camera preview drawing on detection</string>
 
-    <!--    Layout strings-->
+    <!-- Strings for object detector enable multiple objects preference. -->
+
+    <!-- Strings for object detector enable classification preference. -->
+
+    <!-- Strings for face detector landmark mode preference. -->
+    <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#LandmarkMode -->
+
+    <!-- Strings for face detector contour mode preference. -->
+    <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#ContourMode -->
+
+    <!-- Strings for face detector classification mode preference. -->
+    <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#ClassificationMode -->
+
+    <!-- Strings for face detector performance mode preference. -->
+    <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#PerformanceMode -->
+
+    <!-- Strings for face detector face tracking preference. -->
+
+    <!-- Strings for face detector min face size preference. -->
+
+    <!-- Strings for automl remote model name preference. -->
+
+    <!-- Strings for automl model choices preference. -->
     <string name="choose_an_option">Choose an option</string>
     <string name="upload_video">Upload video</string>
     <string name="processing">Processing…</string>
@@ -48,7 +73,7 @@
     <string name="point_at_product_text_to_scan">Point at product text to scan</string>
     <string name="create_a_bill">Create a bill</string>
     <string name="set_quantity">Set quantity</string>
-    <string name="quick_add_message">Newly detected products have been added to your inventory</string>
+    <string name="quick_add_message">Some products are not in your inventory.</string>
     <string name="products_added_to_inventory">Product(s) added to inventory</string>
     <string name="data_update_failed">Error: data update failed</string>
     <string name="set_discount">Set discount</string>
@@ -71,7 +96,4 @@
     <string name="empty_inventory_msg">No products in your inventory</string>
     <string name="empty_new_orders_msg">New orders will appear here</string>
     <string name="empty_ongoing_orders_msg">Ongoing orders will appear here</string>
-    <string name="scan">Scan Barcode</string>
-    <string name="upload">Upload from gallery</string>
-    <string name="sign_out">Sign Out</string>
 </resources>

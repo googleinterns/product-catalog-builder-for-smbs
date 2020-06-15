@@ -25,6 +25,7 @@ import java.util.Objects;
  */
 public class EditPriceDialogFragment extends DialogFragment {
 
+
     public interface EditPriceDialogInterface {
         void onConfirm(Double discountPrice);
 

@@ -30,7 +30,7 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
     private MediaMetadataRetriever mRetriever;
     private BarcodeStatusListener mListener;
     private BarcodeScanningProcessor mImageProcessor;
-    // Number of frames to be scanned in one second interval
+    // number of frames to be scanned in one second interval
     private static final int FRAMES_PER_SECOND = 4;
     private Set<String> mBarcodes;
     private ProgressDialog mProgressDialog;
@@ -39,7 +39,7 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
         super();
         mListener = listener;
         mImageProcessor = new BarcodeScanningProcessor();
-        // Initialization for retrieving frames from video
+        // initialization for retrieving frames from video
         mRetriever = new MediaMetadataRetriever();
         mRetriever.setDataSource(context, videoUri);
         mBarcodes = new HashSet<>();
@@ -58,10 +58,10 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
         for (int i = 0; i < numFrames; i++) {
             Bitmap bitmap = mRetriever.getFrameAtTime(intervalInMicroSeconds * i, MediaMetadataRetriever.OPTION_CLOSEST);
             if (bitmap != null) {
-                // Async call to image processor. receives callback onSuccess() / onFailure()
+                // async call to image processor. receives callback onSuccess() / onFailure()
                 mImageProcessor.getFromBitmap(bitmap, this);
             }
-            // Update progress dialog if available
+            // update progress dialog if available
             if (mProgressDialog != null) {
                 mProgressDialog.setProgress(i + 1);
             }
@@ -79,12 +79,12 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
 
     @Override
     public void onSuccess(List<String> barcodes) {
-        // Add barcodes from the current frame
+        // add barcodes from the current frame
         mBarcodes.addAll(barcodes);
     }
 
     @Override
     public void onFailure(Exception e) {
-        // Ignore frame
+        // ignore frame
     }
 }

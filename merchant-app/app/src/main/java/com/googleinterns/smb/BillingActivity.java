@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.googleinterns.smb.adapter.BillAdapter;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.FirebaseUtils;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.fragment.AddDiscountDialogFragment;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Product;
@@ -48,16 +48,16 @@ public class BillingActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billing);
         setTitle("Bill");
-        // Get current merchant instance
+        // get current merchant instance
         merchant = Merchant.getInstance();
 
-        // Initialise views
+        // initialise views
         mTextViewTotalPrice = findViewById(R.id.total_price);
         mTextViewDiscountPrice = findViewById(R.id.discount);
         mTextViewFinalPrice = findViewById(R.id.final_price);
         Button mAddDiscount = findViewById(R.id.add_discount);
 
-        // Set onclick listener for discount update
+        // set onclick listener for discount update
         mAddDiscount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,13 +73,13 @@ public class BillingActivity extends AppCompatActivity implements
             }
         });
 
-        // Retrieve products from scanned barcode EANs
+        // retrieve products from scanned barcode EANs
         FirebaseUtils.queryProducts(this, CommonUtils.getBarcodes(getIntent()));
     }
 
 
     private void initRecyclerView(List<Product> products) {
-        // Initialise recycler view to display bill items
+        // initialise recycler view to display bill items
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         BillAdapter billAdapter = new BillAdapter(this, products, getSupportFragmentManager());
         recyclerView.setAdapter(billAdapter);
@@ -102,7 +102,7 @@ public class BillingActivity extends AppCompatActivity implements
         View view = findViewById(R.id.progressBar);
         view.setVisibility(View.GONE);
 
-        // Check for new products scanned by merchant (which are not present in his inventory)
+        // check for new products scanned by merchant (which are not present in his inventory)
         merchant.getNewProducts(this, products);
     }
 
@@ -113,7 +113,7 @@ public class BillingActivity extends AppCompatActivity implements
      */
     @Override
     public void onDiscountSelect(double discount) {
-        // Replace add discount button with discount price layout
+        // replace add discount button with discount price layout
         View view = findViewById(R.id.add_discount_layout);
         view.setVisibility(View.GONE);
         view = findViewById(R.id.discount_layout);
@@ -158,7 +158,14 @@ public class BillingActivity extends AppCompatActivity implements
     public void onProductFetched(final List<Product> products) {
         if (products.isEmpty())
             return;
-        merchant.addProducts(this, products);
+        Snackbar.make(findViewById(R.id.billing_layout), R.string.quick_add_message, Snackbar.LENGTH_LONG)
+                .setAction(R.string.add, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        merchant.addProducts(BillingActivity.this, products);
+                    }
+                })
+                .show();
     }
 
 
@@ -167,7 +174,7 @@ public class BillingActivity extends AppCompatActivity implements
      */
     @Override
     public void onDataUpdateSuccess() {
-        Snackbar.make(findViewById(R.id.billing_layout), R.string.quick_add_message, Snackbar.LENGTH_LONG).show();
+        UIUtils.showToast(this, getString(R.string.products_added_to_inventory));
     }
 
     /**
@@ -175,7 +182,7 @@ public class BillingActivity extends AppCompatActivity implements
      */
     @Override
     public void onDataUpdateFailure() {
-        Log.e(TAG, "Adding products failed");
+        UIUtils.showToast(this, getString(R.string.data_update_failed));
     }
 
     @Override
