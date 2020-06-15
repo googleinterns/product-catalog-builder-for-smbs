@@ -1,11 +1,12 @@
 import firebase_admin
 from firebase_admin import credentials, messaging, firestore
 import datetime
-from constants import ONGOING
+from constants import ONGOING, PRODUCTS_PER_PAGE
 
 cred = credentials.Certificate("key.json")
 app = firebase_admin.initialize_app(cred)
 db = firestore.client()
+
 
 def get_merchant(mid):
     '''
@@ -18,6 +19,7 @@ def get_merchant(mid):
     else:
         return None
 
+
 def get_products_for_merchant(mid, items):
     '''
     Get products from list of EANs for given merchant
@@ -25,7 +27,8 @@ def get_products_for_merchant(mid, items):
     order_products = {}
     for item in items:
         order_products[item["EAN"]] = item
-    query = db.collection(f"merchants/{mid}/products").where("EAN", "in", list(order_products.keys())).stream()
+    query = db.collection(
+        f"merchants/{mid}/products").where("EAN", "in", list(order_products.keys())).stream()
     products = []
     for doc in query:
         product = doc.to_dict()
@@ -38,7 +41,8 @@ def get_products_for_merchant(mid, items):
     remaining_products = list(order_products.keys())
     if len(remaining_products) > 0:
         # products that are not in merchant's inventory
-        query = db.collection("products").where("EAN", "in", remaining_products).stream()
+        query = db.collection("products").where(
+            "EAN", "in", remaining_products).stream()
         for doc in query:
             product = doc.to_dict()
             product["discounted_price"] = product["MRP"]
@@ -54,6 +58,7 @@ def save_order(mid, order):
     oid = order["oid"]
     db.collection(f"merchants/{mid}/orders").document(oid).set(order)
 
+
 def confirm_order(mid, oid):
     '''
     Confirm order 'oid' to merchant 'mid'
@@ -68,3 +73,41 @@ def confirm_order(mid, oid):
         return data
     else:
         return None
+
+
+def get_products_in_page(mid, page_num):
+    '''
+    Returns a list of products from the inventory of the given merchant
+    for the corresponding page number of paginated view
+    '''
+    merchant = get_merchant(mid)
+    if merchant == None:
+        raise Exception("Invalid mid")
+    num_products = merchant["num_products"]
+    # When page query page number is more than total number of pages
+    if (page_num - 1) * PRODUCTS_PER_PAGE >= num_products:
+        return []
+    prev_page_last_sno = (page_num - 1) * PRODUCTS_PER_PAGE
+    query = db.collection(f"merchants/{mid}/products") \
+                .order_by("sno") \
+                .start_after({
+                    "sno": prev_page_last_sno
+                }) \
+                .limit(PRODUCTS_PER_PAGE) \
+                .stream()
+    products = []
+    for doc in query:
+        product = doc.to_dict()
+        products.append(product)
+    return products
+
+def get_inventory(mid):
+    '''
+    Get all products in merchant's inventory
+    '''
+    products_ref = db.collection(f"merchants/{mid}/products").stream()
+    products = []
+    for doc in products_ref:
+        product = doc.to_dict()
+        products.append(product)
+    return products
