@@ -1,6 +1,5 @@
 package com.googleinterns.smb.model;
 
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -47,18 +46,16 @@ public class Merchant {
 
     private final static String TAG = "Merchant";
 
-    // Unique merchant UID given by firebase auth
+    // unique merchant UID given by firebase auth
     private String mid;
-    // Merchant name
+    // merchant name
     private String name;
-    // Merchant email
+    // merchant email
     private String email;
-    // Merchant device token, used to send notifications by FCM
+    // merchant device token, used to send notifications by FCM
     private String token;
-    // Merchant photo URI
-    private Uri photoUri;
 
-    // Merchant singleton instance
+    // merchant singleton instance
     private static Merchant mInstance;
 
     /**
@@ -72,7 +69,6 @@ public class Merchant {
         mid = uid;
         name = user.getDisplayName();
         email = user.getEmail();
-        photoUri = user.getPhotoUrl();
         final Map<String, String> data = new HashMap<>();
         data.put("mid", uid);
         data.put("name", name);
@@ -141,7 +137,7 @@ public class Merchant {
             return;
         List<String> barcodes = new ArrayList<>();
         final Map<String, Product> eanToProduct = new HashMap<>();
-        // Map all detected products
+        // map all detected products
         for (Product product : products) {
             barcodes.add(product.getEAN());
             eanToProduct.put(product.getEAN(), product);
@@ -192,9 +188,5 @@ public class Merchant {
 
     public String getToken() {
         return token;
-    }
-
-    public Uri getPhotoUri() {
-        return photoUri;
     }
 }

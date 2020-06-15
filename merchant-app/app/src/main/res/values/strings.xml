@@ -149,9 +149,4 @@
     <string name="customer_name_placeholder">Raghu\'s order</string>
     <string name="new_orders">New orders</string>
     <string name="profile_icon">Profile icon</string>
-    <string name="inventory">Inventory</string>
-    <string name="ongoing_orders">Ongoing orders</string>
-    <string name="settings">Settings</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
