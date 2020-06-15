@@ -41,7 +41,7 @@ import java.util.Set;
  */
 public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseVisionBarcode>> {
 
-    private static final String TAG = BarcodeScanningProcessor.class.getName();
+    private static final String TAG = "BarcodeScanProc";
 
     private final FirebaseVisionBarcodeDetector detector;
     private Set<String> mDetectedBarcodes = new HashSet<>();

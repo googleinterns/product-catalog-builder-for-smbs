@@ -103,5 +103,4 @@
     <string name="pref_entries_automl_models_remote">Remote</string>
     <string name="pref_entries_automl_models_local">Local</string>
     <string name="pref_key_live_preview_automl_remote_model_choices" translatable="false">lparmc</string>
-    <string name="ean">EAN:</string>
 </resources>

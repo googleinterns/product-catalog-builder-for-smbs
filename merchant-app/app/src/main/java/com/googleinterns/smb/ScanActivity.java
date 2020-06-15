@@ -44,7 +44,6 @@ public class ScanActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_scan);
-        setTitle("Scan");
         fireFaceOverlay = (GraphicOverlay) findViewById(R.id.fireFaceOverlay);
         firePreview = (CameraSourcePreview) findViewById(R.id.firePreview);
         if (allPermissionsGranted()) {
@@ -153,6 +152,8 @@ public class ScanActivity extends AppCompatActivity
 
     /**
      * Finish scanning process
+     *
+     * @return
      */
     public void finishScan(View view) {
         firePreview.stop();
