@@ -142,30 +142,5 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/newOrdersLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:clickable="false"
-            android:contentDescription="@string/new_orders"
-            app:srcCompat="@drawable/ic_new_order" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:clickable="false"
-            android:text="@string/new_orders"
-            android:textSize="20sp" />
-    </LinearLayout>
 
 </LinearLayout>

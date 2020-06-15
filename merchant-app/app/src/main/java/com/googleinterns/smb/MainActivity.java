@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PICK_VIDEO = 2;
     private static final int START_SIGN_IN = 3;
 
-    // Video to barcode converter task
+    // video to barcode converter task
     private AsyncTask<?, ?, ?> task;
-    // Dialog to display navigation options
+    // dialog to display navigation options
     private DialogFragment mDialogFragment;
     private boolean isSigningIn = false;
 
@@ -135,22 +135,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBillSelect() {
         Intent intent = new Intent(this, ScanBarcodeActivity.class);
-        // Start barcode scanner for creating bill
+        // start barcode scanner for creating bill
         intent.putExtra(ScanBarcodeActivity.CREATE_BILL, true);
         startActivity(intent);
         mDialogFragment.dismiss();
     }
 
     @Override
-    public void onNewOrderSelect() {
-        Intent intent = new Intent(this, NewOrdersActivity.class);
-        startActivity(intent);
-        mDialogFragment.dismiss();
-    }
-
-    @Override
     public void onImageUploadSelect() {
-        // Start choose image from gallery intent
+        // start choose image from gallery intent
         Intent intent = new Intent()
                 .setType("image/*")
                 .setAction(Intent.ACTION_GET_CONTENT);
@@ -160,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onVideoUploadSelect() {
-        // Start choose video intent
+        // start choose video intent
         Intent intent = new Intent()
                 .setType("video/*")
                 .setAction(Intent.ACTION_GET_CONTENT);
@@ -242,9 +235,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initMerchant() {
-        // Check internet connection
+        // check internet connection
         if (CommonUtils.isConnectedToInternet(this)) {
-            // Initialize merchant
+            // initialize merchant
             Merchant.getInstance();
         } else {
             UIUtils.showNoConnectionMessage(this, findViewById(R.id.main_layout));

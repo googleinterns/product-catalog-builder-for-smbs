@@ -3,14 +3,11 @@ package com.googleinterns.smb.model;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import com.googleinterns.smb.common.UIUtils;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Bill item model
@@ -20,7 +17,7 @@ public class BillItem extends Product {
     private static final String TAG = BillItem.class.getName();
     private int qty = 1;
 
-    // Empty constructor for firebase
+    // empty constructor for firebase
     public BillItem() {
 
     }
@@ -40,16 +37,6 @@ public class BillItem extends Product {
         } catch (JSONException e) {
             Log.e(TAG, "Invalid JSON", e);
         }
-    }
-
-    public BillItem(Map<String, Object> data) {
-        setEAN((String) data.get("EAN"));
-        setMRP((Double) data.get("MRP"));
-        setDiscountedPrice((Double) data.get("discounted_price"));
-        Long qty = (Long) data.get("quantity");
-        setQty(qty.intValue());
-        setProductName((String) data.get("product_name"));
-        setImageURL((String) data.get("image_url"));
     }
 
     /**
@@ -82,6 +69,6 @@ public class BillItem extends Product {
 
     @SuppressLint("DefaultLocale")
     public String getTotalPriceString() {
-        return String.format(UIUtils.RUPEE + " %.2f", getTotalPrice());
+        return String.format(RUPEE + " %.2f", getTotalPrice());
     }
 }

@@ -17,18 +17,15 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.googleinterns.smb.OrderDisplayActivity;
 import com.googleinterns.smb.R;
 import com.googleinterns.smb.model.Merchant;
-import com.googleinterns.smb.model.Order;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.Serializable;
-import java.util.Date;
 
 
 public class FirebaseCloudMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = FirebaseCloudMessagingService.class.getName();
+    private static final String PLACE_ORDER = "PLACE_ORDER";
 
     // Notification channel IDs
     // Channel for order notifications
@@ -49,11 +46,12 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
+
         if (remoteMessage.getData().size() > 0) {
             JSONObject data = new JSONObject(remoteMessage.getData());
             try {
-                if (Order.NEW_ORDER.equals(data.getString("status"))) {
-                    Order order = new Order(remoteMessage.getData(), true);
+                if (PLACE_ORDER.equals(data.getString("type"))) {
                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     if (notificationManager == null) {
                         Log.e(TAG, "Unable to get notification manager");
@@ -68,7 +66,8 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
                         notificationManager.createNotificationChannel(notificationChannel);
                     }
                     Intent intent = new Intent(this, OrderDisplayActivity.class);
-                    intent.putExtra("order", (Serializable) order);
+                    intent.putExtra("items", remoteMessage.getData().get("items"));
+                    intent.putExtra("data", data.toString());
                     PendingIntent pendingIntent = PendingIntent.getActivity(this, START_ORDER_DISPLAY, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     Notification notification = new NotificationCompat.Builder(this, ORDER_CHANNEL)
                             .setContentTitle("New order is available")
@@ -79,8 +78,7 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .setAutoCancel(true)
                             .build();
-                    int uniqueID = (int) ((new Date().getTime() / 1000L)) % Integer.MAX_VALUE;
-                    notificationManager.notify(uniqueID, notification);
+                    notificationManager.notify(1, notification);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "JSON parse exception", e);

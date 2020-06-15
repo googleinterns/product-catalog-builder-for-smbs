@@ -1,6 +1,6 @@
+
 import firebase_admin
 from firebase_admin import credentials, messaging, firestore
-import datetime
 
 cred = credentials.Certificate("key.json")
 app = firebase_admin.initialize_app(cred)
@@ -44,11 +44,3 @@ def get_products_for_merchant(mid, items):
             product["quantity"] = order_products[product["EAN"]]["quantity"]
             products.append(product)
     return products
-
-
-def save_order(mid, order):
-    '''
-    Save given order to database for the associated merchant
-    '''
-    oid = order["oid"]
-    db.collection(f"merchants/{mid}/orders").document(oid).set(order)
