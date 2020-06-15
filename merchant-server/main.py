@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import utils
 import fcm
 import traceback
@@ -6,7 +7,7 @@ import time
 from exceptions import BaseHttpException, InvalidRequest
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/')
 def home(methods=['GET']):
