@@ -36,6 +36,7 @@ import com.googleinterns.smb.fragment.AddProductDialogFragment;
 import com.googleinterns.smb.model.Merchant;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements
                 onNewOrderSelect();
                 break;
             case R.id.menu_ongoing_orders:
-                onOngoingOrderSelect();
                 break;
             case R.id.menu_create_bill:
                 onBillSelect();
@@ -125,9 +125,13 @@ public class MainActivity extends AppCompatActivity implements
      * Initiates google auth sign in with firebase UI
      */
     private void startSignIn() {
-        Intent intent = new Intent(this, SignInActivity.class);
-        startActivity(intent);
-        finish();
+        Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
+                .setAvailableProviders(Collections.singletonList(
+                        new AuthUI.IdpConfig.GoogleBuilder().build()))
+                .setIsSmartLockEnabled(false)
+                .build();
+        isSigningIn = true;
+        startActivityForResult(intent, START_SIGN_IN);
     }
 
     /**
@@ -158,6 +162,18 @@ public class MainActivity extends AppCompatActivity implements
         mDialogFragment.dismiss();
     }
 
+    public void onBillSelect() {
+        Intent intent = new Intent(this, ScanBarcodeActivity.class);
+        // Start barcode scanner for creating bill
+        intent.putExtra(ScanBarcodeActivity.CREATE_BILL, true);
+        startActivity(intent);
+    }
+
+    public void onNewOrderSelect() {
+        Intent intent = new Intent(this, NewOrdersActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onImageUploadSelect() {
         // Start choose image from gallery intent
@@ -176,23 +192,6 @@ public class MainActivity extends AppCompatActivity implements
                 .setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_video)), PICK_VIDEO);
         mDialogFragment.dismiss();
-    }
-
-    public void onBillSelect() {
-        Intent intent = new Intent(this, ScanBarcodeActivity.class);
-        // Start barcode scanner for creating bill
-        intent.putExtra(ScanBarcodeActivity.CREATE_BILL, true);
-        startActivity(intent);
-    }
-
-    public void onNewOrderSelect() {
-        Intent intent = new Intent(this, NewOrdersActivity.class);
-        startActivity(intent);
-    }
-
-    public void onOngoingOrderSelect() {
-        Intent intent = new Intent(this, OngoingOrdersActivity.class);
-        startActivity(intent);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.googleinterns.smb;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,8 +34,6 @@ public class NewOrdersActivity extends AppCompatActivity implements
      */
     @Override
     public void onOrderReceived(List<Order> orders) {
-        View progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.GONE);
         initRecyclerView(orders);
     }
 
