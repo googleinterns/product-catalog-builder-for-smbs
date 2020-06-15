@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Barcode Detector
+ * Barcode Detector Demo.
  */
 public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseVisionBarcode>> {
 
@@ -48,11 +48,19 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
     private final FirebaseVisionBarcodeDetector detector;
     private Set<String> mDetectedBarcodes = new HashSet<>();
 
+    public interface StatusListener {
+        void onSuccess(List<String> barcodes);
+
+        void onFailure(Exception e);
+    }
+
     public BarcodeScanningProcessor() {
         // using EAN_13 barcode format
         FirebaseVisionBarcodeDetectorOptions options =
                 new FirebaseVisionBarcodeDetectorOptions.Builder()
-                        .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_EAN_13)
+                        .setBarcodeFormats(
+                                FirebaseVisionBarcode.FORMAT_EAN_13
+                        )
                         .build();
         // remove 'options' parameter to detect all types of barcode formats. However, this leads to slower processing
         detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options);
@@ -103,7 +111,7 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
         return new ArrayList<>(mDetectedBarcodes);
     }
 
-    public void getFromBitmap(Bitmap bitmap, final BarcodeStatusListener listener) {
+    public void getFromBitmap(Bitmap bitmap, final StatusListener listener) {
         detectInImage(FirebaseVisionImage.fromBitmap(bitmap))
                 .addOnSuccessListener(
                         new OnSuccessListener<List<FirebaseVisionBarcode>>() {
