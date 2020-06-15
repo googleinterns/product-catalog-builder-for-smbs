@@ -22,7 +22,6 @@ public class AddProductDialogFragment extends DialogFragment {
         void onScanSelect();
 
         void onScanTextSelect();
-        void onBillSelect();
     }
 
     private OptionSelectListener listener;
@@ -56,7 +55,6 @@ public class AddProductDialogFragment extends DialogFragment {
         View imageLayout = mDialogView.findViewById(R.id.imageLayout);
         View videoLayout = mDialogView.findViewById(R.id.videoLayout);
         View ocrLayout = mDialogView.findViewById(R.id.ocrLayout);
-        View billLayout = mDialogView.findViewById(R.id.billLayout);
         // attach listener
         scanLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,11 +80,6 @@ public class AddProductDialogFragment extends DialogFragment {
                 listener.onScanTextSelect();
             }
         });
-        billLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onBillSelect();
-            }
-        });
+
     }
 }

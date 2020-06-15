@@ -62,7 +62,7 @@
                         android:layout_marginStart="16dp"
                         android:gravity="end"
                         android:text="\u20b9 20.00"
-                        android:textColor="@color/price"
+                        android:textColor="#B12704"
                         android:textStyle="bold" />
                 </LinearLayout>
 

@@ -1,7 +1,5 @@
 package com.googleinterns.smb.model;
 
-import android.annotation.SuppressLint;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.Serializable;
@@ -12,7 +10,7 @@ public class Product implements Serializable {
     private Double MRP;
     private Double discountedPrice;
     private String imageURL;
-    protected static final String RUPEE = "\u20b9";
+    private static final String RUPEE = "\u20b9";
 
     public String getProductName() {
         return productName;
@@ -26,9 +24,8 @@ public class Product implements Serializable {
         return MRP;
     }
 
-    @SuppressLint("DefaultLocale")
     public String getMRPString() {
-        return String.format(RUPEE + " %.2f", getMRP());
+        return RUPEE + " " + MRP.toString();
     }
 
     public void setMRP(Double MRP) {
@@ -39,9 +36,8 @@ public class Product implements Serializable {
         return discountedPrice;
     }
 
-    @SuppressLint("DefaultLocale")
     public String getDiscountedPriceString() {
-        return String.format(RUPEE + " %.2f", getDiscountedPrice());
+        return RUPEE + " " + discountedPrice.toString();
     }
 
     public void setDiscountedPrice(Double discountedPrice) {
@@ -75,16 +71,6 @@ public class Product implements Serializable {
         // Initialise discounted price to be same as MRP
         discountedPrice = MRP;
         imageURL = documentSnapshot.getString("image_url");
-    }
-
-    /**
-     * Copy constructor
-     */
-    public Product(Product product) {
-        setProductName(product.getProductName());
-        setDiscountedPrice(product.getDiscountedPrice());
-        setImageURL(product.getImageURL());
-        setMRP(product.getMRP());
     }
 
 }

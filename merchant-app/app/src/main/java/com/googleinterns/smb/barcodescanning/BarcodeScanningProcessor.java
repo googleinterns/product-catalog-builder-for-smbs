@@ -31,7 +31,6 @@ import com.googleinterns.smb.common.CameraImageGraphic;
 import com.googleinterns.smb.common.FrameMetadata;
 import com.googleinterns.smb.common.GraphicOverlay;
 import com.googleinterns.smb.common.VisionProcessorBase;
-import com.googleinterns.smb.model.Product;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
     private int frameNumber = 0;
     // set of barcodes detected in previous frames
     private Set<String>[] last = new HashSet[DEBOUNCE];
-    private List<Product> products = new ArrayList<>();
 
     public BarcodeScanningProcessor() {
         // using EAN_13 barcode format
@@ -106,8 +104,7 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
             }
             // if present in all DEBOUNCE frames, then add to final set. This improves accuracy
             if (exists) {
-                String ean = barcode.getRawValue();
-                mDetectedBarcodes.add(ean);
+                mDetectedBarcodes.add(barcode.getRawValue());
                 BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
                 graphicOverlay.add(barcodeGraphic);
             }

@@ -134,7 +134,4 @@
     <string name="suggested_products">Suggested products</string>
     <string name="clear_all">Clear all</string>
     <string name="point_at_product_text_to_scan">Point at product text to scan</string>
-    <string name="create_a_bill">Create a bill</string>
-    <string name="percent">%</string>
-    <string name="set_quantity">Set quantity</string>
 </resources>

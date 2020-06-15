@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -16,34 +17,31 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.googleinterns.smb.R;
-import com.googleinterns.smb.common.UIUtils;
 
 import java.util.Objects;
 
 public class EditPriceDialogFragment extends DialogFragment {
 
 
-    public interface EditPriceDialogInterface {
+    public interface OptionSelectListener {
         void onConfirm(Double discountPrice);
-
-        Double getMRP();
     }
 
     private static final String TAG = "EditPriceDialogFragment";
-    private EditPriceDialogInterface listener;
+    private OptionSelectListener listener;
     private View mDialogView;
     private TextInputEditText mEditTextDiscountPrice;
     private TextInputLayout mEditTextLayout;
     private Double mMRP;
 
-    public EditPriceDialogFragment(EditPriceDialogInterface listener) {
+    public EditPriceDialogFragment(OptionSelectListener listener, Double mrp) {
+        mMRP = mrp;
         this.listener = listener;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mMRP = listener.getMRP();
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(mDialogView)
                 .setTitle(R.string.set_discount_price)
@@ -51,7 +49,7 @@ public class EditPriceDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // ignore
-                        UIUtils.closeKeyboard(requireContext());
+                        closeKeyboard();
                     }
                 })
                 .setPositiveButton(R.string.done, null); // listener overridden later
@@ -70,7 +68,7 @@ public class EditPriceDialogFragment extends DialogFragment {
                         if (discountedPrice > mMRP) {
                             mEditTextLayout.setError("Error: price must be less than MRP");
                         } else {
-                            UIUtils.closeKeyboard(requireContext());
+                            closeKeyboard();
                             updateDiscountPrice(discountedPrice);
                             dismiss();
                         }
@@ -112,6 +110,26 @@ public class EditPriceDialogFragment extends DialogFragment {
         mEditTextLayout = mDialogView.findViewById(R.id.text_layout_discount_price);
         mEditTextDiscountPrice = mDialogView.findViewById(R.id.text_field_discount_price);
         mEditTextDiscountPrice.requestFocus();
-        UIUtils.showKeyboard(requireContext());
+        showKeyboard();
+    }
+
+    private void showKeyboard() {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert inputMethodManager != null;
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        } catch (Exception e) {
+            Log.e(TAG, "Error: showKeyboard", e);
+        }
+    }
+
+    private void closeKeyboard() {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert inputMethodManager != null;
+            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        } catch (Exception e) {
+            Log.e(TAG, "Error: closeKeyboard", e);
+        }
     }
 }
