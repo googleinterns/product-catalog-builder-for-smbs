@@ -12,39 +12,40 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.googleinterns.smb.R;
 import com.googleinterns.smb.fragment.EditPriceDialogFragment;
 import com.googleinterns.smb.model.Product;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConfirmationAdapter.ViewHolder> {
+public class EANAdapter extends FirestoreAdapter<EANAdapter.EANViewHolder> {
 
-    private static final String TAG = ProductConfirmationAdapter.class.getName();
+
+    private static final String TAG = "EAN Adapter";
     private FragmentManager mFragmentManager;
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
-    public ProductConfirmationAdapter(List<Product> products, FragmentManager fragmentManager) {
+    public EANAdapter(Query query, FragmentManager fragmentManager) {
+        super(query);
         mFragmentManager = fragmentManager;
-        this.products = products;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EANViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
-        return new ViewHolder(view, this, mFragmentManager);
+        return new EANViewHolder(view, this, mFragmentManager);
     }
 
     @Override
-    public int getItemCount() {
-        return products.size();
-    }
-
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull EANViewHolder holder, final int position) {
         Product product = products.get(position);
         holder.mProductName.setText(product.getProductName());
         holder.mMRP.setText(product.getMRPString());
@@ -56,9 +57,12 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
         holder.bind(product);
     }
 
-    private void onDocumentRemoved(int position) {
-        products.remove(position);
-        notifyItemRemoved(position);
+    @Override
+    protected void onDocumentAdded(@NotNull DocumentChange change, int newIdx) {
+        DocumentSnapshot documentSnapshot = change.getDocument();
+        Product product = new Product(documentSnapshot);
+        products.add(newIdx, product);
+        super.onDocumentAdded(change, newIdx);
     }
 
     /**
@@ -74,16 +78,16 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
         notifyItemChanged(position);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditPriceDialogFragment.EditPriceDialogInterface {
+    static class EANViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditPriceDialogFragment.EditPriceDialogInterface {
 
         private TextView mProductName;
         private TextView mMRP;
         private TextView mDiscountedPrice;
         private ImageView mProductImage;
-        private ProductConfirmationAdapter mAdapter;
+        private EANAdapter mAdapter;
         private Product product;
 
-        ViewHolder(@NonNull View itemView, ProductConfirmationAdapter adapter, final FragmentManager fragmentManager) {
+        EANViewHolder(@NonNull View itemView, EANAdapter adapter, final FragmentManager fragmentManager) {
             super(itemView);
             mAdapter = adapter;
             mProductName = itemView.findViewById(R.id.product_name);
@@ -96,7 +100,7 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
             mEditProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(ViewHolder.this);
+                    EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(EANViewHolder.this);
                     editPriceDialogFragment.show(fragmentManager, "Edit dialog");
                 }
             });

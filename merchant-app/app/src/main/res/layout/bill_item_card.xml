@@ -30,37 +30,14 @@
                 android:orientation="vertical"
                 android:padding="4dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <TextView
+                    android:id="@+id/product_name"
+                    style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/product_name"
-                        style="@style/TextAppearance.AppCompat.Medium"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="4dp"
-                        android:gravity="center_vertical"
-                        android:padding="4dp"
-                        android:text="Surf excel 400gm"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@+id/remove_button"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/remove_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:contentDescription="@string/delete"
-                        android:src="@drawable/ic_action_delete_black"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:padding="4dp"
+                    android:text="Surf excel 400gm" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
