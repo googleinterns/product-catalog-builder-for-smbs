@@ -19,10 +19,10 @@
 
             <ImageView
                 android:id="@+id/product_image"
-                android:layout_width="110dp"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/product_image"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="@string/product_image" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,37 +91,30 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp">
+                    android:layout_height="match_parent"
+                    android:gravity="end"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
 
-                    <Button
+                    <ImageButton
                         android:id="@+id/price_edit"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/edit"
-                        android:textSize="12sp"
-                        app:icon="@drawable/ic_action_edit"
-                        app:layout_constraintEnd_toStartOf="@+id/delete_product"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_marginEnd="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/edit"
+                        android:src="@drawable/ic_action_edit" />
 
-
-                    <Button
+                    <ImageButton
                         android:id="@+id/delete_product"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/delete"
-                        android:textSize="12sp"
-                        app:icon="@drawable/ic_action_delete_black"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/price_edit"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/delete"
+                        android:src="@drawable/ic_action_delete_black" />
+                </LinearLayout>
 
             </LinearLayout>
 

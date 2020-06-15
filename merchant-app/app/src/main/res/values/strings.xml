@@ -115,23 +115,11 @@
     <string name="error_processing_image">Error processing image</string>
     <string name="select_video">Select Video</string>
     <string name="select_picture">Select Picture</string>
-    <string name="set_discount_price">Set your price</string>
+    <string name="set_discount_price">Set discount price</string>
     <string name="rupee">₹</string>
     <string name="product_image">product image</string>
     <string name="mrp">MRP:</string>
-    <string name="discounted_price">Your price:</string>
+    <string name="discounted_price">Discounted price:</string>
     <string name="edit">edit</string>
     <string name="delete">delete</string>
-    <string name="cancel">Cancel</string>
-    <string name="done">Done</string>
-    <string name="point_at_a_barcode_to_scan">Point at a barcode to scan</string>
-    <string name="barcode_scanner_frame">barcode scanner frame</string>
-    <string name="tap_to_dimiss">Tap to dimiss</string>
-    <string name="help">Help</string>
-    <string name="scan_text_ocr">Scan text OCR</string>
-    <string name="add">Add</string>
-    <string name="discard">Discard</string>
-    <string name="suggested_products">Suggested products</string>
-    <string name="clear_all">Clear all</string>
-    <string name="point_at_product_text_to_scan">Point at product text to scan</string>
 </resources>
