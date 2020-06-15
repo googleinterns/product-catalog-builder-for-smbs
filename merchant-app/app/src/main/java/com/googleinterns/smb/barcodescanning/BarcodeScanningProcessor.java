@@ -19,8 +19,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
@@ -47,12 +45,6 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
     private final FirebaseVisionBarcodeDetector detector;
     private Set<String> mDetectedBarcodes = new HashSet<>();
-
-    public interface StatusListener {
-        void onSuccess(List<String> barcodes);
-
-        void onFailure(Exception e);
-    }
 
     public BarcodeScanningProcessor() {
         // using EAN_13 barcode format
@@ -108,29 +100,6 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
     }
 
     public List<String> getDetectedBarCodes() {
-        return new ArrayList<>(mDetectedBarcodes);
-    }
-
-    public void getFromBitmap(Bitmap bitmap, final StatusListener listener) {
-        detectInImage(FirebaseVisionImage.fromBitmap(bitmap))
-                .addOnSuccessListener(
-                        new OnSuccessListener<List<FirebaseVisionBarcode>>() {
-                            @Override
-                            public void onSuccess(List<FirebaseVisionBarcode> barcodes) {
-                                List<String> mBarcodes = new ArrayList<>();
-                                for (int i = 0; i < barcodes.size(); i++) {
-                                    FirebaseVisionBarcode barcode = barcodes.get(i);
-                                    mBarcodes.add(barcode.getRawValue());
-                                }
-                                listener.onSuccess(mBarcodes);
-                            }
-                        })
-                .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                listener.onFailure(e);
-                            }
-                        });
+        return new ArrayList<String>(mDetectedBarcodes);
     }
 }

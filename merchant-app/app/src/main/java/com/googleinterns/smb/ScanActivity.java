@@ -23,6 +23,7 @@ import com.googleinterns.smb.common.GraphicOverlay;
 import com.googleinterns.smb.common.preference.SettingsActivity;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +45,8 @@ public class ScanActivity extends AppCompatActivity
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_scan);
         setTitle("Scan");
-        fireFaceOverlay = findViewById(R.id.fireFaceOverlay);
-        firePreview = findViewById(R.id.firePreview);
+        fireFaceOverlay = (GraphicOverlay) findViewById(R.id.fireFaceOverlay);
+        firePreview = (CameraSourcePreview) findViewById(R.id.firePreview);
         if (allPermissionsGranted()) {
             createCameraSource();
         } else {
@@ -75,8 +76,8 @@ public class ScanActivity extends AppCompatActivity
     /**
      * Add settings option in the menu bar
      *
-     * @param menu setting menu
-     * @return added status
+     * @param menu
+     * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,6 +88,9 @@ public class ScanActivity extends AppCompatActivity
 
     /**
      * Called when settings option is selected from menu
+     *
+     * @param item
+     * @return
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -155,7 +159,10 @@ public class ScanActivity extends AppCompatActivity
         if (cameraSource != null) {
             cameraSource.release();
         }
-        startActivity(ConfirmationActivity.makeIntent(this, mDetector.getDetectedBarCodes()));
+        // pass the detected barcodes to confirmation activity (to remove if any unwanted detected)
+        Intent intent = new Intent(this, ConfirmationActivity.class)
+                .putExtra(DETECTED_BARCODES, (Serializable) mDetector.getDetectedBarCodes());
+        startActivity(intent);
     }
 
     private String[] getRequiredPermissions() {
@@ -199,7 +206,7 @@ public class ScanActivity extends AppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            int requestCode, String[] permissions, @NonNull int[] grantResults) {
         Log.i(TAG, "Permission granted!");
         if (allPermissionsGranted()) {
             createCameraSource();
