@@ -137,10 +137,5 @@
     <string name="create_a_bill">Create a bill</string>
     <string name="percent">%</string>
     <string name="set_quantity">Set quantity</string>
-    <string name="quick_add_message">Some products are not in your inventory.</string>
-    <string name="products_added_to_inventory">Product(s) added to inventory</string>
-    <string name="data_update_failed">Error: data update failed</string>
-    <string name="set_discount">Set discount</string>
-    <string name="debug_tools">Debug tools</string>
-    <string name="no_internet_connection">No internet connection</string>
+    <string name="quick_add_message">Some products are not in your inventory. Would you like to add?</string>
 </resources>

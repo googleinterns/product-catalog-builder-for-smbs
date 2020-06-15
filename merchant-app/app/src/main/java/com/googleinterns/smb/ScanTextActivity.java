@@ -32,16 +32,10 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
         initRecyclerView();
     }
 
-    /**
-     * init recycler view in bottom sheet
-     */
     private void initRecyclerView() {
         List<Product> products = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.product_recycler_view);
-        // recycler view adapter
         ProductBottomSheetAdapter productBottomSheetAdapter = new ProductBottomSheetAdapter(products, this);
-
-        // bottom sheet handler object
         productBottomSheet = new ProductBottomSheet(productBottomSheetAdapter);
         recyclerView.setAdapter(productBottomSheetAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
@@ -50,8 +44,6 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
                 return true;
             }
         });
-
-        // clear all button
         Button clearButton = findViewById(R.id.clear);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,29 +71,18 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
         startActivity(intent);
     }
 
-    /**
-     * Callback when user discards a product in bottom sheet
-     */
     @Override
     public void onProductDiscard(Product product) {
         UIUtils.showToast(this, "Product discarded");
         productBottomSheet.onProductDiscard(product);
     }
 
-    /**
-     * Callback when user adds a product
-     */
     @Override
     public void onProductAdd(Product product) {
         UIUtils.showToast(this, "Product added");
         productBottomSheet.onProductAdd(product);
     }
 
-    /**
-     * Callback from TextRecognitionProcessor when new products are identified
-     *
-     * @param products new detected products
-     */
     @Override
     public void onProductFound(List<Product> products) {
         productBottomSheet.addProducts(products);

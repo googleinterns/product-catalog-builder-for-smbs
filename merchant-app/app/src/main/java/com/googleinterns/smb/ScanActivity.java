@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +19,6 @@ import androidx.core.content.ContextCompat;
 import com.googleinterns.smb.common.CameraSource;
 import com.googleinterns.smb.common.CameraSourcePreview;
 import com.googleinterns.smb.common.GraphicOverlay;
-import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.common.preference.SettingsActivity;
 
 import java.io.IOException;
@@ -44,12 +44,8 @@ public abstract class ScanActivity extends AppCompatActivity
         Log.d(TAG, "onCreate");
         // set content view and init child views
         initViews();
-
-        // initialise camera preview views
         fireFaceOverlay = findViewById(R.id.fireFaceOverlay);
         firePreview = findViewById(R.id.firePreview);
-
-        // get camera and read/write permissions
         if (allPermissionsGranted()) {
             createCameraSource();
         } else {
@@ -69,7 +65,11 @@ public abstract class ScanActivity extends AppCompatActivity
             setDetector();
         } catch (Exception e) {
             Log.e(TAG, "Can not create image processor", e);
-            UIUtils.showToast(this, "Can not create image processor");
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Can not create image processor" + e.getMessage(),
+                    Toast.LENGTH_LONG)
+                    .show();
         }
     }
 

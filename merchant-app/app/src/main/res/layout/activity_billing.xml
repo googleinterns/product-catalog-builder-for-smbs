@@ -143,8 +143,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:text="-5.0"
                     android:textColor="@color/discount"
                     app:layout_constraintBottom_toBottomOf="parent"

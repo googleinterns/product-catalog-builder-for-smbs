@@ -8,9 +8,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Model to implement product information
- */
 public class Product implements Serializable {
 
     protected static final String RUPEE = "\u20b9";
@@ -86,13 +83,8 @@ public class Product implements Serializable {
     public Product(DocumentSnapshot documentSnapshot) {
         productName = documentSnapshot.getString("product_name");
         MRP = documentSnapshot.getDouble("MRP");
-        // Initialise discounted price to be same as MRP if not discounted_price is present
-        Double d = documentSnapshot.getDouble("discounted_price");
-        if (d != null) {
-            discountedPrice = d;
-        } else {
-            discountedPrice = MRP;
-        }
+        // Initialise discounted price to be same as MRP
+        discountedPrice = MRP;
         imageURL = documentSnapshot.getString("image_url");
         EAN = documentSnapshot.getString("EAN");
     }

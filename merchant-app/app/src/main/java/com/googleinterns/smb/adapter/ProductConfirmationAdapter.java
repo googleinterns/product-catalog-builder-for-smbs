@@ -18,13 +18,10 @@ import com.googleinterns.smb.model.Product;
 
 import java.util.List;
 
-/**
- * Recycler view adapter for displaying products in confirmation activity
- */
+
 public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConfirmationAdapter.ViewHolder> {
 
     private static final String TAG = ProductConfirmationAdapter.class.getName();
-    // fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<Product> products;
 
@@ -59,11 +56,6 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
         holder.bind(product);
     }
 
-    /**
-     * Callback from view holder on product remove action
-     *
-     * @param position
-     */
     private void onDocumentRemoved(int position) {
         products.remove(position);
         notifyItemRemoved(position);
@@ -123,9 +115,6 @@ public class ProductConfirmationAdapter extends RecyclerView.Adapter<ProductConf
             mAdapter.onDocumentRemoved(getAdapterPosition());
         }
 
-        /**
-         * Callback from discount dialog, on new discount price set by merchant
-         */
         @Override
         public void onConfirm(Double discountPrice) {
             mAdapter.onConfirm(discountPrice, getAdapterPosition());

@@ -20,9 +20,6 @@ import com.googleinterns.smb.common.UIUtils;
 
 import java.util.Objects;
 
-/**
- * Dialog for editing merchant price in confirmation activity
- */
 public class EditPriceDialogFragment extends DialogFragment {
 
 

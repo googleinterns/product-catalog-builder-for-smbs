@@ -21,14 +21,9 @@ import com.googleinterns.smb.model.Product;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Confirmation Activity to display all scanned products.
- * Merchant can set his own price for products, remove products and add all to inventory.
- */
 public class ConfirmationActivity extends AppCompatActivity implements Merchant.OnDataUpdatedListener, FirebaseUtils.OnProductReceivedListener {
 
     private static final String TAG = ConfirmationActivity.class.getName();
-    // recycler view adapter for displaying products
     private ProductConfirmationAdapter mProductConfirmationAdapter;
     private Merchant merchant;
 
@@ -37,21 +32,15 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
         setTitle("Products");
-        // get current merchant
-        merchant = Merchant.getInstance();
-
-        // check the type of data in intent
+        merchant = new Merchant();
         if (getIntent().hasExtra(CommonUtils.DETECTED_BARCODES)) {
             // query for products from barcodes
             FirebaseUtils.queryProducts(this, CommonUtils.getBarcodes(getIntent()));
         } else if (getIntent().hasExtra(CommonUtils.DETECTED_PRODUCTS)) {
             initRecyclerView(CommonUtils.getProducts(getIntent()));
         } else {
-            // this cannot happen
             throw new AssertionError("Invalid data received in confirmation activity");
         }
-
-        // fab for adding all products in list to inventory
         FloatingActionButton mFABDone = findViewById(R.id.done);
         mFABDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,16 +51,16 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
     }
 
     /**
-     * Add all confirmed products to merchant's inventory
+     * Add all confirmed products to merchants inventory
      */
     private void addProducts() {
-        List<Product> products = mProductConfirmationAdapter.getProducts();
+        List<Product> products;
+        products = mProductConfirmationAdapter.getProducts();
         if (products.isEmpty()) {
             UIUtils.showToast(this, "No products to add");
             startActivity(MainActivity.makeIntent(this));
             return;
         }
-        // add products to database
         merchant.addProducts(this, products);
     }
 
@@ -115,28 +104,17 @@ public class ConfirmationActivity extends AppCompatActivity implements Merchant.
                 .putExtra(CommonUtils.DETECTED_PRODUCTS, (Serializable) products);
     }
 
-    /**
-     * Callback from merchant.addProducts(), on successful addition of products
-     */
     @Override
     public void onDataUpdateSuccess() {
         UIUtils.showToast(this, "Products added to inventory");
         startActivity(MainActivity.makeIntent(this));
     }
 
-    /**
-     * Callback from merchant.addProducts(), on database update failure
-     */
     @Override
     public void onDataUpdateFailure() {
         UIUtils.showToast(this, "Error: update failed");
     }
 
-    /**
-     * Callback from FirebaseUtils.queryProducts()
-     *
-     * @param products corresponding to scanned barcode EANs
-     */
     @Override
     public void onProductReceived(List<Product> products) {
         initRecyclerView(products);

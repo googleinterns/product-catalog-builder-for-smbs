@@ -1,9 +1,6 @@
 package com.googleinterns.smb.common;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.googleinterns.smb.model.Product;
@@ -56,18 +53,5 @@ public class CommonUtils {
             Log.e(TAG, "Error loading products from intent");
         }
         return products;
-    }
-
-    public static boolean isConnectedToInternet(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            for (NetworkInfo networkInfo : info) {
-                if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

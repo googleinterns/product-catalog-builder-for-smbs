@@ -22,11 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
 import com.googleinterns.smb.barcodescanning.BarcodeStatusListener;
-import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.common.VideoToBarcode;
 import com.googleinterns.smb.fragment.AddProductDialogFragment;
-import com.googleinterns.smb.model.Merchant;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -42,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements
 
     // video to barcode converter task
     private AsyncTask<?, ?, ?> task;
-    // dialog to display navigation options
     private DialogFragment mDialogFragment;
     private boolean isSigningIn = false;
 
@@ -56,40 +53,27 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // check internet connection
-        if (CommonUtils.isConnectedToInternet(this)) {
-            // initialize merchant
-            Merchant.getInstance();
-        } else {
-            UIUtils.showNoConnectionMessage(this, findViewById(R.id.main_layout));
-        }
-    }
-
-    /**
-     * Set menu options
-     */
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * handle menu item click actions
-     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_sign_out) {
             AuthUI.getInstance().signOut(this);
             startSignIn();
         }
-        if (item.getItemId() == R.id.menu_debug_tools) {
-            Intent intent = new Intent(this, DebugActivity.class);
-            startActivity(intent);
-        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Start sign in if necessary
+        if (isSignInRequired()) {
+            startSignIn();
+        }
     }
 
     private boolean isSignInRequired() {
@@ -115,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements
      * 2. Image upload from gallery - onImageUploadSelect()
      * 3. Video upload - onVideoUploadSelect()
      * 4. Scan text - onScanTextSelect()
-     * 5. Create bill - onBillSelect()
      *
      * @param view FAB
      */

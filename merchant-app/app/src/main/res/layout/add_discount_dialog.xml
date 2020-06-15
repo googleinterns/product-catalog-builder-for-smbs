@@ -10,20 +10,21 @@
     android:paddingBottom="8dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_layout_discount_amount"
+        android:id="@+id/text_layout_discount_percent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        app:endIconDrawable="@drawable/ic_percent"
+        app:endIconMode="custom"
         app:errorEnabled="true"
         app:layout_constraintStart_toStartOf="@+id/set_percent"
-        app:layout_constraintTop_toBottomOf="@+id/set_percent"
-        app:startIconDrawable="@drawable/ic_rupee">
+        app:layout_constraintTop_toBottomOf="@+id/set_percent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_field_discount_amount"
+            android:id="@+id/text_field_discount_percent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="numberDecimal" />
+            android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -31,7 +32,7 @@
         style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/set_discount"
+        android:text="Set discount percentage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

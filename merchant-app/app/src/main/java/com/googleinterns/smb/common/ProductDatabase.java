@@ -26,9 +26,6 @@ public class ProductDatabase {
 
     private List<Product> products = new ArrayList<>();
 
-    /**
-     * Load database into memory
-     */
     public ProductDatabase(CollectionReference collectionReference) {
         collectionReference.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

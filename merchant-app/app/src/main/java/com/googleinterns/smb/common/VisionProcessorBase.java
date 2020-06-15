@@ -76,7 +76,6 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
     }
 
     private synchronized void processLatestImage(final GraphicOverlay graphicOverlay) {
-        // get the latest image for processing
         processingImage = latestImage;
         processingMetaData = latestImageMetaData;
         latestImage = null;
