@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onSuccess(List<String> barcodes) {
         if (barcodes.size() > 0) {
             // pass the detected barcodes to confirmation activity (to remove if any unwanted detected)
-            startActivity(ConfirmationActivity.makeIntentFromBarcodes(this, barcodes));
+            startActivity(ConfirmationActivity.makeIntent(this, barcodes));
         } else {
             showToast(getString(R.string.no_barcode_found));
         }

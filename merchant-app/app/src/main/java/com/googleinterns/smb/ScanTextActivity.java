@@ -1,7 +1,5 @@
 package com.googleinterns.smb;
 
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -63,12 +61,7 @@ public class ScanTextActivity extends ScanActivity implements ProductAdapter.Pro
     @Override
     protected void createIntent() {
         List<Product> selectedProducts = productBottomSheet.getSelectedProducts();
-        Log.d(TAG, "Product list");
-        for (int i = 0; i < selectedProducts.size(); i++) {
-            Log.d(TAG, "Product: " + selectedProducts.get(i).getProductName());
-        }
-        Intent intent = ConfirmationActivity.makeIntentFromProducts(this, selectedProducts);
-        startActivity(intent);
+        // TODO create intent to confirmation activity
     }
 
     @Override

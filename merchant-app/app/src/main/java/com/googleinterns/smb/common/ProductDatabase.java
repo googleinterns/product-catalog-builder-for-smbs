@@ -21,10 +21,11 @@ import me.xdrop.fuzzywuzzy.model.BoundExtractedResult;
  */
 public class ProductDatabase {
 
-    private static final String TAG = ProductDatabase.class.getName();
-    private static final int CONFIDENCE_THRESHOLD = 90;
+    private static final String TAG = "ProductDatabase";
+    private static final int CONFIDENCE_THRESHOLD = 80;
 
     private List<Product> products = new ArrayList<>();
+    private List<String> productNames = new ArrayList<>();
 
     public ProductDatabase(CollectionReference collectionReference) {
         collectionReference.get()
@@ -35,6 +36,7 @@ public class ProductDatabase {
                             DocumentSnapshot documentSnapshot = documentChange.getDocument();
                             Product product = new Product(documentSnapshot);
                             products.add(product);
+                            productNames.add(product.getProductName());
                         }
                     }
                 });

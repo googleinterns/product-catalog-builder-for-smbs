@@ -25,6 +25,6 @@ public class ScanBarcodeActivity extends ScanActivity {
 
     @Override
     protected void createIntent() {
-        startActivity(ConfirmationActivity.makeIntentFromBarcodes(this, mDetector.getDetectedBarCodes()));
+        startActivity(ConfirmationActivity.makeIntent(this, mDetector.getDetectedBarCodes()));
     }
 }
