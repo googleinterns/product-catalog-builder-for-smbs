@@ -143,8 +143,4 @@
     <string name="set_discount">Set discount</string>
     <string name="debug_tools">Debug tools</string>
     <string name="no_internet_connection">No internet connection</string>
-    <string name="accept">Accept</string>
-    <string name="decline">Decline</string>
-    <string name="not_available">Not Available</string>
-    <string name="customer_name_placeholder">Raghu\'s order</string>
 </resources>

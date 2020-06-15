@@ -1,10 +1,6 @@
 package com.googleinterns.smb.model;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +10,6 @@ import java.util.List;
  */
 public class BillItem extends Product {
 
-    private static final String TAG = BillItem.class.getName();
     private int qty = 1;
 
     // empty constructor for firebase
@@ -24,19 +19,6 @@ public class BillItem extends Product {
 
     public BillItem(Product product) {
         super(product);
-    }
-
-    public BillItem(JSONObject orderJSONObject) {
-        try {
-            setEAN(orderJSONObject.getString("EAN"));
-            setMRP(orderJSONObject.getDouble("MRP"));
-            setQty(orderJSONObject.getInt("quantity"));
-            setDiscountedPrice(orderJSONObject.getDouble("discounted_price"));
-            setProductName(orderJSONObject.getString("product_name"));
-            setImageURL(orderJSONObject.getString("image_url"));
-        } catch (JSONException e) {
-            Log.e(TAG, "Invalid JSON", e);
-        }
     }
 
     /**

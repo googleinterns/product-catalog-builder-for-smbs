@@ -53,10 +53,17 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         // Enable Firestore logging
         FirebaseFirestore.setLoggingEnabled(true);
-        if (isSignInRequired()) {
-            startSignIn();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // check internet connection
+        if (CommonUtils.isConnectedToInternet(this)) {
+            // initialize merchant
+            Merchant.getInstance();
         } else {
-            initMerchant();
+            UIUtils.showNoConnectionMessage(this, findViewById(R.id.main_layout));
         }
     }
 
@@ -75,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_sign_out) {
-            Merchant.removeInstance();
             AuthUI.getInstance().signOut(this);
             startSignIn();
         }
@@ -195,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements
                 startSignIn();
             } else if (resultCode == RESULT_OK) {
                 UIUtils.showToast(this, "Sign In successful!");
-                initMerchant();
             }
         }
     }
@@ -232,15 +237,5 @@ public class MainActivity extends AppCompatActivity implements
     public static Intent makeIntent(Context context) {
         return new Intent(context, MainActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    }
-
-    private void initMerchant() {
-        // check internet connection
-        if (CommonUtils.isConnectedToInternet(this)) {
-            // initialize merchant
-            Merchant.getInstance();
-        } else {
-            UIUtils.showNoConnectionMessage(this, findViewById(R.id.main_layout));
-        }
     }
 }
