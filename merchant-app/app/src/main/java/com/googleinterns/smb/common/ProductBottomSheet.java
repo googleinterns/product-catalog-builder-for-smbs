@@ -73,4 +73,11 @@ public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStat
         mPresent.clear();
         productBottomSheetAdapter.clear();
     }
+
+    /**
+     * Return number of suggested products present in the bottom sheet
+     */
+    public int getNumberofProducts() {
+        return mPresent.size();
+    }
 }
