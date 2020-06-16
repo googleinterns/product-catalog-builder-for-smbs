@@ -31,34 +31,52 @@ public class BillItem extends Product {
 
     public BillItem(JSONObject orderJSONObject) {
         try {
-            setEAN(orderJSONObject.getString("EAN"));
-            setMRP(orderJSONObject.getDouble("MRP"));
+            if (orderJSONObject.has("EAN")) {
+                setEAN(orderJSONObject.getString("EAN"));
+            }
+            if (orderJSONObject.has("MRP")) {
+                setMRP(orderJSONObject.getDouble("MRP"));
+            } else {
+                setMRP(0.0);
+            }
             setQty(orderJSONObject.getInt("quantity"));
-            setDiscountedPrice(orderJSONObject.getDouble("discounted_price"));
+            if (orderJSONObject.has("discounted_price")) {
+                setDiscountedPrice(orderJSONObject.getDouble("discounted_price"));
+            } else {
+                setDiscountedPrice(0.0);
+            }
             setProductName(orderJSONObject.getString("product_name"));
-            setImageURL(orderJSONObject.getString("image_url"));
+            if (orderJSONObject.has("image_url")) {
+                setImageURL(orderJSONObject.getString("image_url"));
+            }
         } catch (JSONException e) {
             Log.e(TAG, "Invalid JSON", e);
         }
     }
 
     public BillItem(Map<String, Object> data) {
-        setEAN((String) data.get("EAN"));
-        Double mrp;
-        Double discountedPrice;
-        if (data.get("MRP") instanceof Long) {
-            mrp = ((Long) data.get("MRP")).doubleValue();
-            discountedPrice = ((Long) data.get("discounted_price")).doubleValue();
-        } else {
-            mrp = (Double) data.get("MRP");
-            discountedPrice = (Double) data.get("discounted_price");
+        if (data.get("EAN") != null) {
+            setEAN((String) data.get("EAN"));
+        }
+        Double mrp = 0.0;
+        Double discountedPrice = 0.0;
+        if (data.get("MRP") != null) {
+            if (data.get("MRP") instanceof Long) {
+                mrp = ((Long) data.get("MRP")).doubleValue();
+                discountedPrice = ((Long) data.get("discounted_price")).doubleValue();
+            } else {
+                mrp = (Double) data.get("MRP");
+                discountedPrice = (Double) data.get("discounted_price");
+            }
         }
         setMRP(mrp);
         setDiscountedPrice(discountedPrice);
         Long qty = (Long) data.get("quantity");
         setQty(qty.intValue());
         setProductName((String) data.get("product_name"));
-        setImageURL((String) data.get("image_url"));
+        if (data.get("image_url") != null) {
+            setImageURL((String) data.get("image_url"));
+        }
     }
 
     /**

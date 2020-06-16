@@ -108,8 +108,6 @@ public class FirebaseUtils {
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 Map<String, Object> data = documentSnapshot.getData();
                                 Order order = new Order(data);
-                                List<Double> location = (List<Double>) data.get("location");
-                                order.setCustomerLatLng(location);
                                 orders.add(order);
                             }
                             Log.e(TAG, "Orders " + orders.toString());
@@ -142,8 +140,6 @@ public class FirebaseUtils {
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 Map<String, Object> data = documentSnapshot.getData();
                                 Order order = new Order(data);
-                                List<Double> location = (List<Double>) data.get("location");
-                                order.setCustomerLatLng(location);
                                 orders.add(order);
                             }
                             listener.onOrderReceived(orders);

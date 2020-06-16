@@ -69,7 +69,7 @@ public class EditPriceDialogFragment extends DialogFragment {
                     public void onClick(View v) {
                         Double discountedPrice = getDiscountPrice();
                         // discount price greater than MRP is not allowed
-                        if (discountedPrice > mMRP) {
+                        if (mMRP > 0 && discountedPrice > mMRP) {
                             mEditTextLayout.setError("Error: price must be less than MRP");
                         } else {
                             UIUtils.closeKeyboard(requireContext());

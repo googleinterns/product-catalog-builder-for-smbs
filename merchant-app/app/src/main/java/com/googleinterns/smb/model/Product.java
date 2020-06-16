@@ -19,6 +19,8 @@ public class Product implements Serializable {
     private String imageURL;
     private String EAN;
 
+    private static String DEFAULT_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/mlkitsample-8fffb.appspot.com/o/product_images%2Fno_product_image.jpeg?alt=media&token=93edbbdf-00fc-481a-b5d0-5a3489c9f873";
+
     public String getProductName() {
         return productName;
     }
@@ -52,6 +54,9 @@ public class Product implements Serializable {
     }
 
     public String getImageURL() {
+        if (imageURL == null) {
+            return DEFAULT_IMAGE_URL;
+        }
         return imageURL;
     }
 
@@ -81,16 +86,24 @@ public class Product implements Serializable {
      */
     public Product(DocumentSnapshot documentSnapshot) {
         productName = documentSnapshot.getString("product_name");
-        MRP = documentSnapshot.getDouble("MRP");
-        // Initialise discounted price to be same as MRP if not discounted_price is present
-        Double d = documentSnapshot.getDouble("discounted_price");
-        if (d != null) {
-            discountedPrice = d;
-        } else {
-            discountedPrice = MRP;
+        if (documentSnapshot.contains("MRP")) {
+            MRP = documentSnapshot.getDouble("MRP");
         }
-        imageURL = documentSnapshot.getString("image_url");
-        EAN = documentSnapshot.getString("EAN");
+        if (documentSnapshot.contains("discounted_price")) {
+            // Initialise discounted price to be same as MRP if not discounted_price is present
+            Double d = documentSnapshot.getDouble("discounted_price");
+            if (d != null) {
+                discountedPrice = d;
+            } else {
+                discountedPrice = MRP;
+            }
+        }
+        if (documentSnapshot.contains("image_url")) {
+            imageURL = documentSnapshot.getString("image_url");
+        }
+        if (documentSnapshot.contains(("EAN"))) {
+            EAN = documentSnapshot.getString("EAN");
+        }
     }
 
     /**
