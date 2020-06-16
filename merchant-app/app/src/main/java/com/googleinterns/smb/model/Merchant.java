@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -18,7 +19,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -74,6 +74,8 @@ public class Merchant {
     private Uri photoUri;
     // Number of products in inventory
     private int numProducts;
+    // Merchant LatLng
+    private LatLng latLng;
     // Merchant inventory
     private Map<String, Product> inventory;
 
@@ -93,6 +95,7 @@ public class Merchant {
         email = user.getEmail();
         photoUri = user.getPhotoUrl();
         numProducts = getStoredNumProducts();
+        latLng = new LatLng(23.012265, 72.587970);
         final Map<String, Object> data = new HashMap<>();
         data.put("mid", mid);
         data.put("name", name);
@@ -302,7 +305,7 @@ public class Merchant {
      */
     public List<Product> getUpdatedProducts(NewProductsFoundListener listener, List<Product> products) {
         List<Product> newProducts = new ArrayList<>();
-        for (Product product: products) {
+        for (Product product : products) {
             Product merchantProduct = inventory.get(product.getEAN());
             if (merchantProduct != null) {
                 product.setDiscountedPrice(merchantProduct.getDiscountedPrice());
@@ -348,5 +351,9 @@ public class Merchant {
 
     public int getNumProducts() {
         return numProducts;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
     }
 }

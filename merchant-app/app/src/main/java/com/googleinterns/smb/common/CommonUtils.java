@@ -10,6 +10,7 @@ import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CommonUtils {
 
@@ -69,5 +70,22 @@ public class CommonUtils {
             }
         }
         return false;
+    }
+
+    public static String getFormattedTime(long diffInSec) {
+        if (diffInSec < 60) {
+            return String.format(Locale.getDefault(), "%d seconds", diffInSec);
+        }
+        long diffInMin = diffInSec / 60;
+        if (diffInMin < 60) {
+            String minutes = diffInMin == 1 ? "minute" : "minutes";
+            return String.format(Locale.getDefault(), "%d %s", diffInMin, minutes);
+        }
+        long diffInHour = diffInMin / 60;
+        if (diffInHour < 24) {
+            String hours = diffInHour == 1 ? "hour" : "hours";
+            return String.format(Locale.getDefault(), "%d %s", diffInHour, hours);
+        }
+        return "1 day";
     }
 }

@@ -3,6 +3,7 @@ package com.googleinterns.smb;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ import com.googleinterns.smb.model.Merchant;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = MainActivity.class.getName();
     private static final int START_SIGN_IN = 3;
     private static Context applicationContext;
 
