@@ -24,7 +24,7 @@ import java.util.Set;
  * It determines the number of frames which are processed per second. It implements BarcodeStatusListener as it makes
  * asynchronous requests to BarcodeScanningProcessor.
  */
-public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implements BarcodeStatusListener {
+public class VideoToBarcodeTask extends AsyncTask<Object, Void, List<String>> implements BarcodeStatusListener {
 
     private static final String TAG = "VideoToBarcode";
     private MediaMetadataRetriever mRetriever;
@@ -35,7 +35,7 @@ public class VideoToBarcode extends AsyncTask<Object, Void, List<String>> implem
     private Set<String> mBarcodes;
     private ProgressDialog mProgressDialog;
 
-    public VideoToBarcode(Context context, BarcodeStatusListener listener, Uri videoUri, @Nullable ProgressDialog progressDialog) {
+    public VideoToBarcodeTask(Context context, BarcodeStatusListener listener, Uri videoUri, @Nullable ProgressDialog progressDialog) {
         super();
         mListener = listener;
         mImageProcessor = new BarcodeScanningProcessor();

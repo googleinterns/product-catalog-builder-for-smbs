@@ -144,4 +144,12 @@ public class Order implements Serializable {
         LatLng latLng = new LatLng(customerLatLng.get(0), customerLatLng.get(1));
         return latLng;
     }
+
+    public String getCustomerUserId() {
+        return customerUserId;
+    }
+
+    public String getOid() {
+        return oid;
+    }
 }

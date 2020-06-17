@@ -26,7 +26,7 @@ import com.googleinterns.smb.adapter.ConfirmedOrderAdapter;
 import com.googleinterns.smb.common.APIHandler;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.UIUtils;
-import com.googleinterns.smb.model.DirectionResponse;
+import com.googleinterns.smb.pojo.DirectionResponse;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
 
@@ -101,11 +101,11 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity implements
         LatLng source = Merchant.getInstance().getLatLng();
         LatLng destination = order.getCustomerLatLng();
 
-        APIHandler.DirectionService directionService = APIHandler.getDirectionsAPIInterface();
+        APIHandler.DirectionService directionService = APIHandler.getDirectionService();
         Call<DirectionResponse> route = directionService.getRoute(
                 CommonUtils.getStringFromLatLng(source),
                 CommonUtils.getStringFromLatLng(destination),
-                getString(R.string.maps_api_key)
+                getString(R.string.directions_api_key)
         );
         route.enqueue(new Callback<DirectionResponse>() {
             @Override

@@ -1,4 +1,4 @@
-package com.googleinterns.smb.model;
+package com.googleinterns.smb.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
