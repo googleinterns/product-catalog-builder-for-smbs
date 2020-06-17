@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -136,6 +137,11 @@ public class Merchant {
      * Remove merchant instance
      */
     public static synchronized void removeInstance() {
+        if (mInstance != null) {
+            FirebaseFirestore.getInstance().collection("merchants")
+                    .document(mInstance.getMid())
+                    .update("token", FieldValue.delete());
+        }
         mInstance = null;
     }
 
