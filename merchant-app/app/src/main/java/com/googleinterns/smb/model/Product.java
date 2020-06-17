@@ -1,12 +1,11 @@
 package com.googleinterns.smb.model;
 
-import android.annotation.SuppressLint;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.googleinterns.smb.common.UIUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -32,9 +31,8 @@ public class Product implements Serializable {
         return MRP;
     }
 
-    @SuppressLint("DefaultLocale")
     public String getMRPString() {
-        return String.format(UIUtils.RUPEE + " %.2f", getMRP());
+        return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getMRP());
     }
 
     public void setMRP(Double MRP) {
@@ -45,9 +43,8 @@ public class Product implements Serializable {
         return discountedPrice;
     }
 
-    @SuppressLint("DefaultLocale")
     public String getDiscountedPriceString() {
-        return String.format(UIUtils.RUPEE + " %.2f", getDiscountedPrice());
+        return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getDiscountedPrice());
     }
 
     public void setDiscountedPrice(Double discountedPrice) {

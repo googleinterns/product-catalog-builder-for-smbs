@@ -1,6 +1,5 @@
 package com.googleinterns.smb.adapter;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Order;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Recycler view adapter for displaying order items in order display activity
@@ -39,21 +39,20 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         return createViewHolder(view);
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         // Initialise order view
         Order order = orders.get(position);
         holder.customerName.setText(order.getCustomerName());
         holder.customerAddress.setText(order.getCustomerAddress());
-        holder.orderTotal.setText(String.format("%s %.2f", UIUtils.RUPEE, order.getOrderTotal()));
+        holder.orderTotal.setText(String.format(Locale.getDefault(), "%s %.2f", UIUtils.RUPEE, order.getOrderTotal()));
         holder.timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
         String items = "items";
         int numItems = order.getItemCount();
         if (numItems == 1) {
             items = "item";
         }
-        holder.itemCount.setText(String.format("(%d %s)", numItems, items));
+        holder.itemCount.setText(String.format(Locale.getDefault(), "(%d %s)", numItems, items));
         holder.orderCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

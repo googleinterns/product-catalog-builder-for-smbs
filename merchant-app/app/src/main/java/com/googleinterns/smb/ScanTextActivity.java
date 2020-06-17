@@ -18,6 +18,7 @@ import com.googleinterns.smb.textrecognition.TextRecognitionProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ScanTextActivity extends ScanActivity implements ProductBottomSheetAdapter.ProductStatusListener, TextRecognitionProcessor.OnProductFoundListener {
 
@@ -123,7 +124,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
             numProductsBadge.setVisibility(View.INVISIBLE);
         } else {
             numProductsBadge.setVisibility(View.VISIBLE);
-            numSuggestedProducts.setText(String.format("%d", newCount));
+            numSuggestedProducts.setText(String.format(Locale.getDefault(), "%d", newCount));
         }
     }
 

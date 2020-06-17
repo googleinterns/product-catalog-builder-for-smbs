@@ -1,6 +1,5 @@
 package com.googleinterns.smb.model;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.googleinterns.smb.common.UIUtils;
@@ -10,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -76,9 +76,8 @@ public class BillItem extends Product {
         return qty;
     }
 
-    @SuppressLint("DefaultLocale")
     public String getQtyString() {
-        return String.format("%d", qty);
+        return String.format(Locale.getDefault(), "%d", qty);
     }
 
     public void setQty(int qty) {
@@ -89,8 +88,7 @@ public class BillItem extends Product {
         return qty * getDiscountedPrice();
     }
 
-    @SuppressLint("DefaultLocale")
     public String getTotalPriceString() {
-        return String.format(UIUtils.RUPEE + " %.2f", getTotalPrice());
+        return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getTotalPrice());
     }
 }

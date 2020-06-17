@@ -1,6 +1,5 @@
 package com.googleinterns.smb.model;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -87,26 +87,24 @@ public class Order implements Serializable {
         return billItems;
     }
 
-    @SuppressLint("DefaultLocale")
     public String getTimeElapsedString(long currentTime) {
         long diffInSec = (currentTime - timestamp) / 1000;
         if (diffInSec < 60) {
-            return String.format("%d seconds ago", diffInSec);
+            return String.format(Locale.getDefault(), "%d seconds ago", diffInSec);
         }
         long diffInMin = diffInSec / 60;
         if (diffInMin < 60) {
             String minutes = diffInMin == 1 ? "minute" : "minutes";
-            return String.format("%d %s ago", diffInMin, minutes);
+            return String.format(Locale.getDefault(), "%d %s ago", diffInMin, minutes);
         }
         long diffInHour = diffInMin / 60;
         if (diffInHour < 24) {
             String hours = diffInHour == 1 ? "hour" : "hours";
-            return String.format("%d %s ago", diffInHour, hours);
+            return String.format(Locale.getDefault(), "%d %s ago", diffInHour, hours);
         }
         return "1 day ago";
     }
 
-    @SuppressLint("DefaultLocale")
     public String getTimeOfOrder() {
         Date date = new Date(timestamp);
         Calendar calendar = Calendar.getInstance();
@@ -121,12 +119,12 @@ public class Order implements Serializable {
         if (hours > 12)
             hours -= 12;
         int minutes = calendar.get(Calendar.MINUTE);
-        return String.format("%d:%02d %s", hours, minutes, period);
+        return String.format(Locale.getDefault(), "%d:%02d %s", hours, minutes, period);
     }
 
     public int getItemCount() {
         int numItems = 0;
-        for (BillItem billItem: billItems) {
+        for (BillItem billItem : billItems) {
             numItems += billItem.getQty();
         }
         return numItems;
