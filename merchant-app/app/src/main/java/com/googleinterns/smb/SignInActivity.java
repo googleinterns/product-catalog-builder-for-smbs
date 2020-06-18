@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.SignInButton;
-import com.googleinterns.smb.common.UIUtils;
 
 import java.util.Collections;
 
@@ -60,7 +59,7 @@ public class SignInActivity extends AppCompatActivity {
         if (requestCode == START_SIGN_IN) {
             progressBar.setVisibility(View.INVISIBLE);
             if (resultCode == RESULT_OK) {
-                Intent intent = new Intent(this, InventoryActivity.class);
+                Intent intent = new Intent(this, OngoingOrdersActivity.class);
                 startActivity(intent);
                 finish();
             }

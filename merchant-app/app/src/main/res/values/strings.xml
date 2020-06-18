@@ -75,4 +75,6 @@
     <string name="upload">Upload from gallery</string>
     <string name="sign_out">Sign Out</string>
     <string name="delivered">Delivered</string>
+    <string name="empty_scan_list_msg">No products scanned</string>
+    <string name="empty_scan">Empty scan</string>
 </resources>

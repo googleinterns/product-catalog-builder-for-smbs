@@ -42,4 +42,34 @@
         tools:layout_editor_absoluteX="140dp"
         tools:layout_editor_absoluteY="311dp" />
 
+    <LinearLayout
+        android:id="@+id/empty_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/empty_scan"
+            app:srcCompat="@drawable/empty_scan"
+            tools:layout_editor_absoluteX="155dp"
+            tools:layout_editor_absoluteY="188dp" />
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/empty_scan_list_msg"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

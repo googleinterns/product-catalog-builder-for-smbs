@@ -29,8 +29,8 @@ public class FirebaseUtils {
 
     private static final String TAG = FirebaseUtils.class.getName();
 
-    public interface OnProductReceivedListener {
-        void onProductReceived(List<Product> products);
+    public interface BarcodeProductQueryListener {
+        void onQueryComplete(List<Product> products);
     }
 
     public interface OnOrderReceivedListener {
@@ -49,14 +49,14 @@ public class FirebaseUtils {
      * Get products from barcodes
      */
     public static void queryProducts(final Context context, List<String> barcodes) {
-        final OnProductReceivedListener listener;
+        final BarcodeProductQueryListener listener;
         try {
-            listener = (OnProductReceivedListener) context;
+            listener = (BarcodeProductQueryListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context + " must implement OnProductReceivedListener");
         }
         if (barcodes.isEmpty()) {
-            listener.onProductReceived(new ArrayList<Product>());
+            listener.onQueryComplete(new ArrayList<Product>());
             return;
         }
         Query query = FirebaseFirestore.getInstance().collection("products");
@@ -72,7 +72,7 @@ public class FirebaseUtils {
                             Product product = new Product(documentSnapshot);
                             products.add(product);
                         }
-                        listener.onProductReceived(products);
+                        listener.onQueryComplete(products);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -143,38 +143,6 @@ public class FirebaseUtils {
                             Log.e(TAG, "Firebase Error: ", task.getException());
                             UIUtils.showToast(context, "Could'nt fetch orders from database");
                         }
-                    }
-                });
-    }
-
-    public static void getInventory(final Context context) {
-        final OnProductReceivedListener listener;
-        try {
-            listener = (OnProductReceivedListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement OnProductReceivedListener");
-        }
-        Merchant merchant = Merchant.getInstance();
-        String mid = merchant.getMid();
-        Query query = FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products");
-        query.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<Product> products = new ArrayList<>();
-                        for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                            DocumentSnapshot documentSnapshot = documentChange.getDocument();
-                            Product product = new Product(documentSnapshot);
-                            products.add(product);
-                        }
-                        listener.onProductReceived(products);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Firebase Error: ", e);
-                        UIUtils.showToast(context, "Could'nt fetch products from database");
                     }
                 });
     }

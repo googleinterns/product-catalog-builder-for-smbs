@@ -23,15 +23,21 @@ import java.util.List;
  */
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
-    private static final String TAG = ProductAdapter.class.getName();
+    public interface ProductUpdateListener {
+        void onProductDeleted(Product product);
+
+        void onPriceChanged(Product updatedProduct);
+    }
 
     // Fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<Product> products;
+    private ProductUpdateListener listener;
 
-    public ProductAdapter(List<Product> products, FragmentManager fragmentManager) {
+    public ProductAdapter(List<Product> products, ProductUpdateListener listener, FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
         this.products = products;
+        this.listener = listener;
     }
 
     @NonNull
@@ -62,16 +68,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     /**
      * Callback from view holder on product remove action
-     *
-     * @param position
      */
     private void onDocumentRemoved(int position) {
+        Product product = products.get(position);
         products.remove(position);
         notifyItemRemoved(position);
+        listener.onProductDeleted(product);
     }
 
     /**
-     * called by ViewHolder class on discount price edit confirm
+     * Called by ViewHolder class on discount price edit confirm
      *
      * @param discountPrice updated discount price by user
      * @param position      position of card in recycler view
@@ -79,6 +85,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private void onConfirm(Double discountPrice, int position) {
         Product product = products.get(position);
         product.setDiscountedPrice(discountPrice);
+        listener.onPriceChanged(product);
         products.set(position, product);
         notifyItemChanged(position);
     }

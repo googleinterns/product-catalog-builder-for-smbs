@@ -57,7 +57,8 @@
             android:layout_gravity="center"
             app:srcCompat="@drawable/empty_box"
             tools:layout_editor_absoluteX="155dp"
-            tools:layout_editor_absoluteY="188dp" />
+            tools:layout_editor_absoluteY="188dp"
+            android:contentDescription="@string/empty_inventory_msg" />
 
         <TextView
             style="@style/TextAppearance.AppCompat.Body1"

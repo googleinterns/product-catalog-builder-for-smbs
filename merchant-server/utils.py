@@ -83,21 +83,16 @@ def confirm_order(mid, oid):
         raise InvalidRequest("Invalid order ID")
 
 
-def get_products_in_page(mid, page_num):
+def get_products_in_page(mid, last_ean):
     '''
     Returns a list of products from the inventory of the given merchant
-    for the corresponding page number of paginated view
+    having EAN after last_ean
     '''
     merchant = get_merchant(mid)
-    num_products = merchant["num_products"]
-    # When page query page number is more than total number of pages
-    if (page_num - 1) * PRODUCTS_PER_PAGE >= num_products:
-        return []
-    prev_page_last_sno = (page_num - 1) * PRODUCTS_PER_PAGE
     query = db.collection(f"merchants/{mid}/products") \
-        .order_by("sno") \
+        .order_by("EAN") \
         .start_after({
-            "sno": prev_page_last_sno
+            "EAN": last_ean
         }) \
         .limit(PRODUCTS_PER_PAGE) \
         .stream()

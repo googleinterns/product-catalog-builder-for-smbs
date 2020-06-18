@@ -28,11 +28,11 @@ import java.util.Locale;
  * Billing activity to display scanned bill items.
  */
 public class BillingActivity extends AppCompatActivity implements
-        FirebaseUtils.OnProductReceivedListener,
+        FirebaseUtils.BarcodeProductQueryListener,
         AddDiscountDialogFragment.DiscountDialogInterface,
         BillAdapter.QtyChangeListener,
-        Merchant.OnProductFetchedListener,
-        Merchant.OnDataUpdatedListener {
+        Merchant.OnDataUpdatedListener,
+        Merchant.NewProductsFoundListener {
 
     private static final String TAG = BillingActivity.class.getName();
 
@@ -99,18 +99,17 @@ public class BillingActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from FirebaseUtils.queryProducts()
+     * Callback from FirebaseUtils.queryProducts() convert from barcodes to products
      *
      * @param products products corresponding to EANs
      */
     @Override
-    public void onProductReceived(List<Product> products) {
+    public void onQueryComplete(List<Product> products) {
+        // Products with updated merchant price, and detect new products if any
+        List<Product> updatedProduct = merchant.getUpdatedProducts(this, products);
         initRecyclerView(products);
         View view = findViewById(R.id.progressBar);
         view.setVisibility(View.GONE);
-
-        // Check for new products scanned by merchant (which are not present in his inventory)
-        merchant.getNewProducts(this, products);
     }
 
     /**
@@ -156,19 +155,6 @@ public class BillingActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from merchant.getNewProducts()
-     *
-     * @param products new products which are not present in merchant's inventory
-     */
-    @Override
-    public void onProductFetched(final List<Product> products) {
-        if (products.isEmpty())
-            return;
-        merchant.addProducts(this, products);
-    }
-
-
-    /**
      * Callback from merchant.addProducts(), on successful addition of products
      */
     @Override
@@ -187,5 +173,10 @@ public class BillingActivity extends AppCompatActivity implements
     @Override
     public double getTotalPrice() {
         return mTotalPrice;
+    }
+
+    @Override
+    public void onNewProductsFound(List<Product> newProducts) {
+        merchant.addProducts(this, newProducts);
     }
 }
