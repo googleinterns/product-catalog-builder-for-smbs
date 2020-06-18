@@ -89,9 +89,16 @@ public class CommonUtils {
         }
         return "1 day";
     }
-
+    
     public static String getStringFromLatLng(LatLng latLng) {
         return String.format(Locale.getDefault(), "%f,%f", latLng.latitude, latLng.longitude);
     }
 
+    public static String getFormattedDistance(long distanceInMeters) {
+        if (distanceInMeters < 1000) {
+            return String.format(Locale.getDefault(), "%d m", (int) distanceInMeters);
+        }
+        double distanceInKms = (double) distanceInMeters / 1000;
+        return String.format(Locale.getDefault(), "%.2f km", distanceInKms);
+    }
 }

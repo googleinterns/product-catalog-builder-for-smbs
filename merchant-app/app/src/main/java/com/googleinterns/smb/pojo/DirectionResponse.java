@@ -22,6 +22,28 @@ public class DirectionResponse {
         this.routes = routes;
     }
 
+    public long getTotalDuration() {
+        List<DirectionResponse.Leg> legs = getRoutes().get(0).getLegs();
+        long durationInSecs = 0;
+        for (DirectionResponse.Leg leg : legs) {
+            durationInSecs += leg.getDuration().getValue();
+        }
+        return durationInSecs;
+    }
+
+    public long getTotalDistance() {
+        List<DirectionResponse.Leg> legs = getRoutes().get(0).getLegs();
+        long distanceInMeters = 0;
+        for (DirectionResponse.Leg leg : legs) {
+            distanceInMeters += leg.getDistance().getValue();
+        }
+        return distanceInMeters;
+    }
+
+    public String getEncodedPath() {
+        return getRoutes().get(0).getOverviewPolyline().getPath();
+    }
+
     public class Route {
 
         @SerializedName("legs")

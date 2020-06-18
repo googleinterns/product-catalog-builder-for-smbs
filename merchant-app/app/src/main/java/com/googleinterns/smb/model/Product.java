@@ -1,6 +1,7 @@
 package com.googleinterns.smb.model;
 
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Exclude;
 import com.googleinterns.smb.common.UIUtils;
 
 import java.io.Serializable;
@@ -33,6 +34,7 @@ public class Product implements Serializable {
         return MRP;
     }
 
+    @Exclude
     public String getMRPString() {
         return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getMRP());
     }
@@ -45,6 +47,7 @@ public class Product implements Serializable {
         return discountedPrice;
     }
 
+    @Exclude
     public String getDiscountedPriceString() {
         return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getDiscountedPrice());
     }
@@ -119,11 +122,11 @@ public class Product implements Serializable {
 
     public Map<String, Object> createFirebaseDocument() {
         Map<String, Object> data = new HashMap<>();
-        data.put("EAN", EAN);
-        data.put("product_name", productName);
-        data.put("MRP", MRP);
-        data.put("discounted_price", discountedPrice);
-        data.put("image_url", imageURL);
+        data.put("EAN", getEAN());
+        data.put("product_name", getProductName());
+        data.put("MRP", getMRP());
+        data.put("discounted_price", getDiscountedPrice());
+        data.put("image_url", getImageURL());
         return data;
     }
 }

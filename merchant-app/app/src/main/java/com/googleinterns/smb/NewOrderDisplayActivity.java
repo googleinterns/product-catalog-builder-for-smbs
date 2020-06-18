@@ -11,12 +11,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.chip.ChipGroup;
 import com.googleinterns.smb.adapter.OrderDisplayAdapter;
 import com.googleinterns.smb.common.APIHandler;
+import com.googleinterns.smb.common.CommonUtils;
+import com.googleinterns.smb.common.DeliveryTimePicker;
+import com.googleinterns.smb.common.FirebaseUtils;
+import com.googleinterns.smb.common.MapViewHandler;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.BillItem;
+import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
+import com.googleinterns.smb.pojo.DirectionResponse;
 import com.googleinterns.smb.pojo.SendBidRequest;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -28,11 +39,16 @@ import retrofit2.Response;
 
 public class NewOrderDisplayActivity extends AppCompatActivity implements OrderDisplayAdapter.PriceChangeListener {
 
+
     private static final String TAG = NewOrderDisplayActivity.class.getName();
 
     private TextView mTotalPrice;
     private OrderDisplayAdapter orderDisplayAdapter;
     private Order order;
+    private MapViewHandler mapViewHandler;
+    private LatLng merchantLatLng;
+    private LatLng customerLatLng;
+    private DeliveryTimePicker deliveryTimePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,44 +58,61 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         mTotalPrice = findViewById(R.id.total_price);
         TextView mTextViewCustomerName = findViewById(R.id.customer_name);
         order = (Order) getIntent().getSerializableExtra("order");
-        if (order != null) {
-            // Initialise views with order information
-            mTextViewCustomerName.setText(String.format(Locale.getDefault(), "%s's order", order.getCustomerName()));
-            TextView timeElapsed = findViewById(R.id.time_elapsed);
-            timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
-            TextView timeOfOrder = findViewById(R.id.time_of_order);
-            timeOfOrder.setText(order.getTimeOfOrder());
-            Button accept = findViewById(R.id.accept);
-            accept.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    SendBidRequest request = SendBidRequest.createSendBidRequest(order, orderDisplayAdapter);
-                    APIHandler.ConsumerService service = APIHandler.getConsumerService();
-                    Call<Void> response = service.sendBid(request);
-                    response.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            if (response.isSuccessful() && (response.code() == HttpURLConnection.HTTP_OK)) {
-                                UIUtils.showToast(NewOrderDisplayActivity.this, "Sent! You will be notified once customer confirms the order");
-                                Intent intent = OngoingOrdersActivity.makeIntent(NewOrderDisplayActivity.this);
-                                startActivity(intent);
-                            } else {
-                                UIUtils.showToast(NewOrderDisplayActivity.this, "Failed!");
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            UIUtils.showToast(NewOrderDisplayActivity.this, "Something went wrong. Please try again");
-                        }
-                    });
-                    UIUtils.showToast(NewOrderDisplayActivity.this, "Sending bid...");
+        // Initialise views with order information
+        mTextViewCustomerName.setText(String.format(Locale.getDefault(), "%s's order", order.getCustomerName()));
+        TextView timeElapsed = findViewById(R.id.time_elapsed);
+        timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
+        TextView timeOfOrder = findViewById(R.id.time_of_order);
+        timeOfOrder.setText(order.getTimeOfOrder());
+        Button accept = findViewById(R.id.accept);
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOrderAccept();
+            }
+        });
+        Button decline = findViewById(R.id.decline);
+        decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUtils.declineOrder(order);
+                exit();
+            }
+        });
+        // Setup delivery time picker
+        deliveryTimePicker = new DeliveryTimePicker((ChipGroup) findViewById(R.id.delivery_time_chip_group));
+
+        // Initialize Map view
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapViewHandler = new MapViewHandler(mapFragment);
+
+        merchantLatLng = Merchant.getInstance().getLatLng();
+        customerLatLng = order.getCustomerLatLng();
+
+        APIHandler.DirectionService directionService = APIHandler.getDirectionService();
+        Call<DirectionResponse> route = directionService.getRoute(
+                CommonUtils.getStringFromLatLng(merchantLatLng),
+                CommonUtils.getStringFromLatLng(customerLatLng),
+                getString(R.string.directions_api_key)
+        );
+        route.enqueue(new Callback<DirectionResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<DirectionResponse> call, @NotNull Response<DirectionResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    DirectionResponse direction = response.body();
+                    onDirectionsResult(direction.getTotalDistance(), direction.getTotalDuration(), direction.getEncodedPath());
                 }
-            });
-            initRecyclerView(order.getBillItems());
-        } else {
-            Log.e(TAG, "Error: No data received");
-        }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<DirectionResponse> call, @NotNull Throwable t) {
+                Log.e(TAG, "Error: fetching route information", t);
+            }
+        });
+
+        initRecyclerView(order.getBillItems());
     }
 
     private void initRecyclerView(List<BillItem> billItems) {
@@ -102,5 +135,61 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
     @Override
     public void onPriceChange(double newTotalPrice) {
         mTotalPrice.setText(String.format(Locale.getDefault(), "%.2f", newTotalPrice));
+    }
+
+    /**
+     * Callback from DirectionService result
+     *
+     * @param distanceInMeters  Distance from merchant to customer location
+     * @param durationInSeconds Travel time from merchant to customer
+     * @param encodedPath       Route from merchant to customer encoded in string representation
+     */
+    public void onDirectionsResult(long distanceInMeters, long durationInSeconds, String encodedPath) {
+        TextView distance = findViewById(R.id.distance);
+        distance.setText(CommonUtils.getFormattedDistance(distanceInMeters));
+        TextView expectedTime = findViewById(R.id.expected_time);
+        expectedTime.setText(CommonUtils.getFormattedTime(durationInSeconds));
+        mapViewHandler.setMapAttributes(merchantLatLng, customerLatLng, encodedPath);
+        deliveryTimePicker.setDefaultDeliveryTime((int) durationInSeconds);
+    }
+
+    public void onOrderAccept() {
+        List<BillItem> availableItems = orderDisplayAdapter.getAvailableItems();
+        if (availableItems.size() == 0) {
+            UIUtils.showToast(this, "No items marked available");
+            return;
+        }
+        // Update database with accepted order details
+        FirebaseUtils.acceptOrder(order, availableItems);
+        sendBidRequest();
+    }
+
+    private void exit() {
+        Intent intent = OngoingOrdersActivity.makeIntent(NewOrderDisplayActivity.this);
+        startActivity(intent);
+    }
+
+    private void sendBidRequest() {
+        SendBidRequest request = SendBidRequest.createSendBidRequest(order, orderDisplayAdapter);
+        request.setDeliveryTime((long) deliveryTimePicker.getDeliveryTimeInSeconds());
+        APIHandler.ConsumerService service = APIHandler.getConsumerService();
+        Call<Void> response = service.sendBid(request);
+        response.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful() && (response.code() == HttpURLConnection.HTTP_OK)) {
+                    UIUtils.showToast(NewOrderDisplayActivity.this, "Sent! You will be notified once customer confirms the order");
+                    exit();
+                } else {
+                    UIUtils.showToast(NewOrderDisplayActivity.this, "Failed!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                UIUtils.showToast(NewOrderDisplayActivity.this, "Something went wrong. Please try again");
+            }
+        });
+        UIUtils.showToast(NewOrderDisplayActivity.this, "Sending bid...");
     }
 }
