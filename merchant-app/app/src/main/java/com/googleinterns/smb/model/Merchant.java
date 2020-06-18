@@ -60,7 +60,7 @@ public class Merchant {
     }
 
     private final static String TAG = "Merchant";
-    private final static String NUM_PRODUCTS = "NUM_PRODUCTS";
+    public final static String NUM_PRODUCTS = "NUM_PRODUCTS";
 
     // Unique merchant UID given by firebase auth
     private String mid;

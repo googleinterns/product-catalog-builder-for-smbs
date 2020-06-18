@@ -44,13 +44,13 @@ public class MainActivity extends AppCompatActivity implements
         applicationContext = getApplicationContext();
         setContentView(R.layout.activity_main);
         container = findViewById(R.id.container);
-        initNavigationDrawer();
 
         // Enable Firestore logging
         FirebaseFirestore.setLoggingEnabled(true);
         if (isSignInRequired()) {
             startSignIn();
         } else {
+            initNavigationDrawer();
             initMerchant();
         }
     }
