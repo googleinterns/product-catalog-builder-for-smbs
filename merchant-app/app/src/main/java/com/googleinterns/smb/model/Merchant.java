@@ -75,7 +75,7 @@ public class Merchant {
     // Number of products in inventory
     private int numProducts;
     // Merchant LatLng
-    private LatLng latLng;
+    private LatLng latLng = new LatLng(23.012265, 72.587970);
     // Merchant inventory
     private Map<String, Product> inventory;
 
@@ -95,7 +95,6 @@ public class Merchant {
         email = user.getEmail();
         photoUri = user.getPhotoUrl();
         numProducts = getStoredNumProducts();
-        latLng = new LatLng(23.012265, 72.587970);
         final Map<String, Object> data = new HashMap<>();
         data.put("mid", mid);
         data.put("name", name);
