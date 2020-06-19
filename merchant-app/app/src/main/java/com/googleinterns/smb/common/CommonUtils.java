@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
@@ -88,4 +89,9 @@ public class CommonUtils {
         }
         return "1 day";
     }
+
+    public static String getStringFromLatLng(LatLng latLng) {
+        return String.format(Locale.getDefault(), "%f,%f", latLng.latitude, latLng.longitude);
+    }
+
 }

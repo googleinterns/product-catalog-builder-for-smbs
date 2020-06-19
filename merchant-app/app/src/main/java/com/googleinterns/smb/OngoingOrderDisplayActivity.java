@@ -27,18 +27,25 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.maps.android.PolyUtil;
 import com.googleinterns.smb.adapter.ConfirmedOrderAdapter;
+import com.googleinterns.smb.common.APIHandler;
 import com.googleinterns.smb.common.CommonUtils;
-import com.googleinterns.smb.common.FetchRequestTask;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+
 public class OngoingOrderDisplayActivity extends AppCompatActivity implements
-        OnMapReadyCallback,
-        FetchRequestTask.OnFetchCompleteListener {
+        OnMapReadyCallback {
 
     private static final String TAG = OngoingOrderDisplayActivity.class.getName();
 
@@ -97,9 +104,33 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Fetch data from directions API
-        String uri = getDirectionsAPIUri(Merchant.getInstance().getLatLng(), order.getCustomerLatLng());
-        new FetchRequestTask(this).execute(uri);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://maps.googleapis.com")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+
+        LatLng source = Merchant.getInstance().getLatLng();
+        LatLng destination = order.getCustomerLatLng();
+
+        APIHandler.DirectionsAPIInterface directionsAPIInterface = retrofit.create(APIHandler.DirectionsAPIInterface.class);
+        Call<String> route = directionsAPIInterface.getRoute(
+                CommonUtils.getStringFromLatLng(source),
+                CommonUtils.getStringFromLatLng(destination),
+                getString(R.string.maps_api_key)
+        );
+        route.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(@NotNull Call<String> call, @NotNull Response<String> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    onFetchComplete(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<String> call, @NotNull Throwable t) {
+                Log.e(TAG, "Error: fetching route information", t);
+            }
+        });
 
         ConfirmedOrderAdapter adapter = new ConfirmedOrderAdapter(order.getBillItems());
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -117,15 +148,6 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity implements
         });
     }
 
-    private String getDirectionsAPIUri(LatLng sourceLatLng, LatLng destinationLatLng) {
-        return String.format(
-                Locale.getDefault(),
-                "https://maps.googleapis.com/maps/api/directions/json?origin=%f,%f&destination=%f,%f&key=%s",
-                sourceLatLng.latitude, sourceLatLng.longitude,
-                destinationLatLng.latitude, destinationLatLng.longitude,
-                getString(R.string.maps_api_key));
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
@@ -134,7 +156,6 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
     public void onFetchComplete(String response) {
         JsonParser jsonParser = new JsonParser();
         JsonElement jsonElement = jsonParser.parse(response);
