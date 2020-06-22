@@ -171,12 +171,12 @@ public class Merchant {
             listener.onProductFetched(getInventory());
             return;
         }
-        inventory = new HashMap<>();
         Query query = FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products");
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        inventory = new HashMap<>();
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             Product product = new Product(document);
                             inventory.put(product.getEAN(), product);

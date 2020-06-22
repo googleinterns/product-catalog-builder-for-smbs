@@ -114,7 +114,6 @@ public class FirebaseUtils {
                                 Order order = new Order(data);
                                 orders.add(order);
                             }
-                            Log.e(TAG, "Orders " + orders.toString());
                             listener.onOrderReceived(orders);
                         } else {
                             Log.e(TAG, "Firebase Error: ", task.getException());
