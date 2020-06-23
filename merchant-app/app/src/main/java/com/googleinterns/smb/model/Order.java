@@ -28,6 +28,8 @@ public class Order implements Serializable {
     public static final String ACCEPTED = "ACCEPTED";
     public static final String DECLINED = "DECLINED";
     public static final String ONGOING = "ONGOING";
+    public static final String DISPATCHED = "DISPATCHED";
+    public static final String DELIVERED = "DELIVERED";
 
     private String customerName;
     private String customerAddress;
@@ -151,5 +153,26 @@ public class Order implements Serializable {
 
     public String getOid() {
         return oid;
+    }
+
+    public void notifyOrderDispatch() {
+        if (!status.equals(Order.ONGOING))
+            return;
+        status = DISPATCHED;
+        // API call dispatch
+    }
+
+    public void notifyOrderDelivered() {
+        if (status.equals(Order.DELIVERED))
+            return;
+        if (status.equals(ONGOING)) {
+            notifyOrderDispatch();
+        }
+        status = DELIVERED;
+        // API call delivered
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

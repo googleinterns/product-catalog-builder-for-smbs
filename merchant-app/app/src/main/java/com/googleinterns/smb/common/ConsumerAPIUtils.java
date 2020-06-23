@@ -21,9 +21,8 @@ public class ConsumerAPIUtils {
         JsonObject data = new JsonObject();
         Merchant merchant = Merchant.getInstance();
         data.addProperty("merchantId", merchant.getMid());
-        data.addProperty("merchantName", merchant.getName());
-        // TODO get merchant address
-        data.addProperty("merchantAddress", "Seva Kirana Store, near Chandranagar Society, Maninagar, Ahmedabad");
+        data.addProperty("merchantName", merchant.getStoreName());
+        data.addProperty("merchantAddress", merchant.getAddress());
         data.addProperty("totalPrice", totalPrice);
         data.addProperty("offersAvailed", 0.0);
         JsonArray items = new JsonArray();

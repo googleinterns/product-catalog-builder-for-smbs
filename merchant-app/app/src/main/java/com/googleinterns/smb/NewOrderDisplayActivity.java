@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,8 +42,8 @@ import retrofit2.Response;
 
 public class NewOrderDisplayActivity extends AppCompatActivity implements OrderDisplayAdapter.PriceChangeListener {
 
-
     private static final String TAG = NewOrderDisplayActivity.class.getName();
+    private static final int REQUEST_MERCHANT_DETAILS = 1;
 
     private TextView mTotalPrice;
     private OrderDisplayAdapter orderDisplayAdapter;
@@ -93,27 +94,9 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         merchantLatLng = Merchant.getInstance().getLatLng();
         customerLatLng = order.getCustomerLatLng();
 
-        DirectionService directionService = APIHandler.getDirectionService();
-        Call<DirectionResponse> route = directionService.getRoute(
-                CommonUtils.getStringFromLatLng(merchantLatLng),
-                CommonUtils.getStringFromLatLng(customerLatLng),
-                getString(R.string.directions_api_key)
-        );
-        route.enqueue(new Callback<DirectionResponse>() {
-            @Override
-            public void onResponse(@NotNull Call<DirectionResponse> call, @NotNull Response<DirectionResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    DirectionResponse direction = response.body();
-                    onDirectionsResult(direction.getTotalDistance(), direction.getTotalDuration(), direction.getEncodedPath());
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<DirectionResponse> call, @NotNull Throwable t) {
-                Log.e(TAG, "Error: fetching route information", t);
-            }
-        });
-
+        if (merchantLatLng != null) {
+            fetchDirections();
+        }
         initRecyclerView(order.getBillItems());
     }
 
@@ -156,6 +139,12 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
     }
 
     public void onOrderAccept() {
+        if (merchantLatLng == null) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            UIUtils.showToast(this, "Details required to place order");
+            startActivityForResult(intent, REQUEST_MERCHANT_DETAILS);
+            return;
+        }
         List<BillItem> availableItems = orderDisplayAdapter.getAvailableItems();
         if (availableItems.size() == 0) {
             UIUtils.showToast(this, "No items marked available");
@@ -170,6 +159,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         Intent intent = OngoingOrdersActivity.makeIntent(NewOrderDisplayActivity.this);
         startActivity(intent);
     }
+
 
     private void sendBidRequest() {
         SendBidRequest request = SendBidRequest.createSendBidRequest(order, orderDisplayAdapter);
@@ -193,5 +183,40 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
             }
         });
         UIUtils.showToast(NewOrderDisplayActivity.this, "Sending bid...");
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_MERCHANT_DETAILS) {
+            if (resultCode == RESULT_OK) {
+                merchantLatLng = Merchant.getInstance().getLatLng();
+                fetchDirections();
+            }
+        }
+    }
+
+    private void fetchDirections() {
+        DirectionService directionService = APIHandler.getDirectionService();
+        Call<DirectionResponse> route = directionService.getRoute(
+                CommonUtils.getStringFromLatLng(merchantLatLng),
+                CommonUtils.getStringFromLatLng(customerLatLng),
+                getString(R.string.directions_api_key)
+        );
+        route.enqueue(new Callback<DirectionResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<DirectionResponse> call, @NotNull Response<DirectionResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    DirectionResponse direction = response.body();
+                    onDirectionsResult(direction.getTotalDistance(), direction.getTotalDuration(), direction.getEncodedPath());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<DirectionResponse> call, @NotNull Throwable t) {
+                Log.e(TAG, "Error: fetching route information", t);
+            }
+        });
     }
 }
