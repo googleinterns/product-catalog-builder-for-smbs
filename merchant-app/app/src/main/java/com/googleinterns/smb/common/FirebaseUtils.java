@@ -42,6 +42,10 @@ public class FirebaseUtils {
         void onOrderReceived(List<Order> orders);
     }
 
+    public interface DomainAvaliabilityCheckListener {
+        void onCheckComplete(boolean isAvailable);
+    }
+
     // Utility class shouldn't be instantiated
     private FirebaseUtils() {
 
@@ -179,6 +183,21 @@ public class FirebaseUtils {
                         UIUtils.showToast(MainActivity.getContext(), "Order declined");
                     }
                 });
+    }
+
+    public static void isDomainAvailable(String domain, final DomainAvaliabilityCheckListener listener) {
+        final DocumentReference doc_ref = FirebaseFirestore.getInstance().collection("domains/").document(domain);
+        doc_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    boolean isDomainUsed = Objects.requireNonNull(task.getResult()).exists();
+                    listener.onCheckComplete(!isDomainUsed);
+                } else {
+                    listener.onCheckComplete(false);
+                }
+            }
+        });
     }
 
 }

@@ -75,7 +75,13 @@ public class Merchant {
     // Number of products in inventory
     private int numProducts;
     // Merchant LatLng
-    private LatLng latLng = new LatLng(23.012265, 72.587970);
+    private LatLng latLng;
+    // Merchant address
+    private String address;
+    // Merchant store name
+    private String storeName;
+    // Merchant domain name
+    private String domainName;
     // Merchant inventory
     private Map<String, Product> inventory;
 
@@ -110,15 +116,31 @@ public class Merchant {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (!document.exists()) {
+                                // New merchant sign in
                                 FirebaseFirestore.getInstance().collection("merchants")
                                         .document(mid)
                                         .set(data);
                             } else {
+                                // Merchant already exists
                                 oldToken = document.getString("token");
                                 numProducts = document.getLong("num_products").intValue();
+                                if (document.get("store_name") != null) {
+                                    storeName = document.getString("store_name");
+                                }
+                                if (document.get("address") != null) {
+                                    address = document.getString("address");
+                                }
+                                if (document.get("location") != null) {
+                                    Map<String, Double> location = (Map<String, Double>) document.get("location");
+                                    latLng = new LatLng(location.get("latitude"), location.get("longitude"));
+                                }
+                                if (document.get("domain_name") != null) {
+                                    domainName = document.getString("domain_name");
+                                }
                                 storeNumProducts();
                             }
                             final String finalOldToken = oldToken;
+                            // Check if device token has changed. If yes, then update new token in database
                             FirebaseInstanceId.getInstance().getInstanceId()
                                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                                         @Override
@@ -354,5 +376,52 @@ public class Merchant {
 
     public LatLng getLatLng() {
         return latLng;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("address", address);
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("store_name", storeName);
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("location", latLng);
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("domain_name", domainName);
+        Map<String, Object> data = new HashMap<>();
+        data.put("domain_name", domainName);
+        data.put("mid", getMid());
+        FirebaseFirestore.getInstance()
+                .collection("domains")
+                .document(domainName)
+                .set(data);
     }
 }

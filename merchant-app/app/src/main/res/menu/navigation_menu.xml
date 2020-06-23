@@ -17,6 +17,11 @@
         android:icon="@drawable/ic_action_bill"
         android:title="@string/create_a_bill" />
     <item
+        android:id="@+id/menu_offers"
+        android:icon="@drawable/ic_offers"
+        android:title="@string/offers" />
+    <item
+        android:id="@+id/menu_settings"
         android:icon="@drawable/ic_action_settings"
         android:title="@string/settings" />
     <item
