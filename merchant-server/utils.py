@@ -130,3 +130,15 @@ def get_all_merchants():
             del merchant["token"]
         merchants.append(merchant)
     return merchants
+
+
+def get_mid(domain_name):
+    '''
+    Get merchant mid from domain_name
+    '''
+    collection_ref = db.collection("domains").document(domain_name)
+    domain = collection_ref.get()
+    if domain.exists:
+        return domain.to_dict()["mid"]
+    else:
+        raise InvalidRequest("Domain name doesn't exists")
