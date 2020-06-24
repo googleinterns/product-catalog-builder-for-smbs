@@ -1,7 +1,9 @@
 package com.googleinterns.smb;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -17,6 +20,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -28,9 +33,14 @@ import com.googleinterns.smb.common.UIUtils;
 public class LocationPickerActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = LocationPickerActivity.class.getName();
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    // Setting default location to New Delhi, India
+    private static final LatLng defaultLocation = new LatLng(28.6139, 77.2090);
+
     private GoogleMap googleMap;
     private boolean isGPSAvailable = false;
     private LatLng lastLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +49,6 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_location_picker);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        promptEnableGPS();
         Button confirm = findViewById(R.id.confirm_location);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +64,15 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 finish();
             }
         });
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION_PERMISSION);
+        } else {
+            // Permission satisfied
+            promptEnableGPS();
+        }
     }
 
     @Override
@@ -62,6 +80,8 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         this.googleMap = googleMap;
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(defaultLocation, 10);
+        googleMap.animateCamera(cameraUpdate);
         if (isGPSAvailable) {
             googleMap.setMyLocationEnabled(true);
         }
@@ -91,6 +111,18 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                     break;
                 default:
                     break;
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                promptEnableGPS();
+            } else {
+                setResult(RESULT_CANCELED);
+                finish();
             }
         }
     }

@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/pick_location_marker"
-                android:src="@drawable/ic_merchant_store" />
+                android:src="@drawable/ic_drop_pin" />
         </LinearLayout>
     </FrameLayout>
 
