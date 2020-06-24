@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:errorEnabled="true"
-        app:layout_constraintStart_toStartOf="@+id/set_percent"
-        app:layout_constraintTop_toBottomOf="@+id/set_percent"
+        app:layout_constraintStart_toStartOf="@+id/set_percent_discount"
+        app:layout_constraintTop_toBottomOf="@+id/set_percent_discount"
         app:startIconDrawable="@drawable/ic_rupee">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -27,7 +27,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/set_percent"
+        android:id="@+id/set_percent_discount"
         style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

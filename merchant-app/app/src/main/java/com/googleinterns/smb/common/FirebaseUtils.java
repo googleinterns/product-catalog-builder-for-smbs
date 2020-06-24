@@ -16,13 +16,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
-import com.googleinterns.smb.MainActivity;
 import com.googleinterns.smb.model.BillItem;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
 import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -137,7 +137,7 @@ public class FirebaseUtils {
         }
         Merchant merchant = Merchant.getInstance();
         Query query = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders");
-        query = query.whereEqualTo("status", Order.ONGOING);
+        query = query.whereIn("status", Arrays.asList(Order.ONGOING, Order.DISPATCHED, Order.DELIVERED));
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -172,22 +172,9 @@ public class FirebaseUtils {
         batch.commit();
     }
 
-    public static void declineOrder(Order order) {
-        String oid = order.getOid();
-        Merchant merchant = Merchant.getInstance();
-        DocumentReference orderRef = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
-        orderRef.update("status", Order.DECLINED)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        UIUtils.showToast(MainActivity.getContext(), "Order declined");
-                    }
-                });
-    }
-
     public static void isDomainAvailable(String domain, final DomainAvaliabilityCheckListener listener) {
-        final DocumentReference doc_ref = FirebaseFirestore.getInstance().collection("domains/").document(domain);
-        doc_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        final DocumentReference domainRef = FirebaseFirestore.getInstance().collection("domains/").document(domain);
+        domainRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -198,6 +185,22 @@ public class FirebaseUtils {
                 }
             }
         });
+    }
+
+    public static void updateOrderStatus(String oid, String newStatus) {
+        Merchant merchant = Merchant.getInstance();
+        DocumentReference orderRef = FirebaseFirestore.getInstance()
+                .collection("merchants/" + merchant.getMid() + "/orders")
+                .document(oid);
+        orderRef.update("status", newStatus);
+    }
+
+    public static void updateProductOffers(Product product) {
+        String ean = product.getEAN();
+        String mid = Merchant.getInstance().getMid();
+        FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products")
+                .document(ean)
+                .update("offers", product.getOffers());
     }
 
 }

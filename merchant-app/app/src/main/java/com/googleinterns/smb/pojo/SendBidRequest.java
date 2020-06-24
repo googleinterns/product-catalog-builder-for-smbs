@@ -32,9 +32,8 @@ public class SendBidRequest {
         Merchant merchant = Merchant.getInstance();
         SendBidRequest request = new SendBidRequest();
         request.setMerchantId(merchant.getMid());
-        request.setMerchantName(merchant.getName());
-        // TODO get merchant address
-        request.setMerchantAddress("N.A.");
+        request.setMerchantName(merchant.getStoreName());
+        request.setMerchantAddress(merchant.getAddress());
         request.setTotalPrice(adapter.getTotalPrice());
         request.setOffersAvailed(0.0);
 

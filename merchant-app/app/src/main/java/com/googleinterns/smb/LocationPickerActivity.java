@@ -78,13 +78,14 @@ public class LocationPickerActivity extends AppCompatActivity implements
         }
     }
 
+
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(defaultLocation, 10);
-        googleMap.animateCamera(cameraUpdate);
+        googleMap.moveCamera(cameraUpdate);
         if (isGPSAvailable) {
             googleMap.setMyLocationEnabled(true);
         }

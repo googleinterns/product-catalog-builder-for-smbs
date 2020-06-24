@@ -31,7 +31,7 @@ public class AddDiscountDialogFragment extends DialogFragment {
         double getTotalPrice();
     }
 
-    private static final String TAG = "AddDiscountDialog";
+    private static final String TAG = AddDiscountDialogFragment.class.getName();
 
     private DiscountDialogInterface listener;
     private View mDialogView;

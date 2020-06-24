@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.googleinterns.smb.adapter.OngoingOrderAdapter;
 import com.googleinterns.smb.adapter.OrderAdapter;
 import com.googleinterns.smb.common.FirebaseUtils;
-import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
 
 import java.util.List;
@@ -24,7 +23,6 @@ public class OngoingOrdersActivity extends MainActivity implements
         OrderAdapter.OrderSelectListener {
 
     private static final String TAG = OngoingOrdersActivity.class.getName();
-
     private View contentView;
 
     @Override
@@ -34,11 +32,6 @@ public class OngoingOrdersActivity extends MainActivity implements
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         contentView = inflater.inflate(R.layout.activity_new_orders, null, false);
         container.addView(contentView, 0);
-        Merchant merchant = Merchant.getInstance();
-        if (merchant.getNumProducts() == 0) {
-            startActivity(InventoryActivity.makeIntent(this));
-            finish();
-        }
         FirebaseUtils.getOngoingOrders(this);
     }
 

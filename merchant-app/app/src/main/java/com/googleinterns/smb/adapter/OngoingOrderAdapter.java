@@ -35,9 +35,14 @@ public class OngoingOrderAdapter extends OrderAdapter {
                 viewHolder.toggleGroup.check(R.id.in_progress);
                 break;
             case Order.DISPATCHED:
+                viewHolder.inProgress.setEnabled(false);
+                viewHolder.dispatched.setClickable(false);
                 viewHolder.toggleGroup.check(R.id.dispatched);
                 break;
             case Order.DELIVERED:
+                viewHolder.inProgress.setEnabled(false);
+                viewHolder.dispatched.setEnabled(false);
+                viewHolder.delivered.setClickable(false);
                 viewHolder.toggleGroup.check(R.id.delivered);
         }
         viewHolder.toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {

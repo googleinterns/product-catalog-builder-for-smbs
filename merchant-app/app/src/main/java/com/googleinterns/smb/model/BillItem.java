@@ -3,6 +3,7 @@ package com.googleinterns.smb.model;
 import android.util.Log;
 
 import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.PropertyName;
 import com.googleinterns.smb.common.UIUtils;
 
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class BillItem extends Product {
 
     private static final String TAG = BillItem.class.getName();
+    @PropertyName("quantity")
     private int qty = 1;
 
     // Empty constructor for firebase
@@ -92,6 +94,7 @@ public class BillItem extends Product {
         return billItems;
     }
 
+    @PropertyName("quantity")
     public int getQty() {
         return qty;
     }
@@ -101,6 +104,7 @@ public class BillItem extends Product {
         return String.format(Locale.getDefault(), "%d", qty);
     }
 
+    @PropertyName("quantity")
     public void setQty(int qty) {
         this.qty = qty;
     }

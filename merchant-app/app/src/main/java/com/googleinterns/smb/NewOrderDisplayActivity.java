@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.chip.ChipGroup;
 import com.googleinterns.smb.adapter.OrderDisplayAdapter;
 import com.googleinterns.smb.common.APIHandler;
 import com.googleinterns.smb.common.APIHandler.ConsumerService;
@@ -79,12 +78,12 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUtils.declineOrder(order);
+                order.decline();
                 exit();
             }
         });
         // Setup delivery time picker
-        deliveryTimePicker = new DeliveryTimePicker((ChipGroup) findViewById(R.id.delivery_time_chip_group));
+        deliveryTimePicker = new DeliveryTimePicker(findViewById(R.id.delivery_time_chip_group));
 
         // Initialize Map view
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.

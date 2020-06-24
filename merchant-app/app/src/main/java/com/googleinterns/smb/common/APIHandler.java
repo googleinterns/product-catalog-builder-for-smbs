@@ -1,16 +1,17 @@
 package com.googleinterns.smb.common;
 
 import com.googleinterns.smb.pojo.DirectionResponse;
+import com.googleinterns.smb.pojo.OrderStatus;
 import com.googleinterns.smb.pojo.SendBidRequest;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -62,10 +63,15 @@ public class APIHandler {
     public interface ConsumerService {
         @POST("/sendBid")
         Call<Void> sendBid(@Body SendBidRequest sendBidRequest);
+
+        String DISPATCHED_STATUS_MESSAGE = "packageDispatched";
+        String DELIVERED_STATUS_MESSAGE = "packageDelivered";
+
+        @POST("/updateOrderStatus")
+        Call<Void> notifyOrderStatus(@Body OrderStatus orderStatus);
     }
 
     public static ConsumerService getConsumerService() {
         return getInstance(CONSUMER_API_BASE).retrofit.create(ConsumerService.class);
     }
-
 }

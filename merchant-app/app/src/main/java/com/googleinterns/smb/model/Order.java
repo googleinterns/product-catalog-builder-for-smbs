@@ -3,6 +3,9 @@ package com.googleinterns.smb.model;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.googleinterns.smb.common.APIHandler;
+import com.googleinterns.smb.common.FirebaseUtils;
+import com.googleinterns.smb.pojo.OrderStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +18,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Class to model the customer order
@@ -159,7 +166,9 @@ public class Order implements Serializable {
         if (!status.equals(Order.ONGOING))
             return;
         status = DISPATCHED;
-        // API call dispatch
+        FirebaseUtils.updateOrderStatus(oid, DISPATCHED);
+        // Consumer side API call to notify order dispatch
+        notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DISPATCHED_STATUS_MESSAGE);
     }
 
     public void notifyOrderDelivered() {
@@ -169,10 +178,35 @@ public class Order implements Serializable {
             notifyOrderDispatch();
         }
         status = DELIVERED;
-        // API call delivered
+        FirebaseUtils.updateOrderStatus(oid, DELIVERED);
+        // Consumer side API call to notify order delivered
+        notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DELIVERED_STATUS_MESSAGE);
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public void decline() {
+        FirebaseUtils.updateOrderStatus(oid, DECLINED);
+    }
+
+    private void notifyNewOrderStatus(String userID, String orderID, String newStatus) {
+        APIHandler.ConsumerService service = APIHandler.getConsumerService();
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setUserId(getCustomerUserId());
+        orderStatus.setOrderId(oid);
+        orderStatus.setStatus(newStatus);
+        Call<Void> request = service.notifyOrderStatus(orderStatus);
+        request.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // TODO retry
+            }
+        });
     }
 }
