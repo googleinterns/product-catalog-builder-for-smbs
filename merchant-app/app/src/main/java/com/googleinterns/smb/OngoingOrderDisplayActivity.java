@@ -21,15 +21,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.maps.android.PolyUtil;
 import com.googleinterns.smb.adapter.ConfirmedOrderAdapter;
 import com.googleinterns.smb.common.APIHandler;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.UIUtils;
+import com.googleinterns.smb.model.DirectionResponse;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
 
@@ -41,15 +38,12 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class OngoingOrderDisplayActivity extends AppCompatActivity implements
         OnMapReadyCallback {
 
     private static final String TAG = OngoingOrderDisplayActivity.class.getName();
 
-    // TODO move to colors.xml
     private static final int PATH_STROKE_WIDTH_PX = 16;
     private static final int PATH_COLOR = 0xff6199f5;
 
@@ -104,30 +98,25 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com")
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
-
         LatLng source = Merchant.getInstance().getLatLng();
         LatLng destination = order.getCustomerLatLng();
 
-        APIHandler.DirectionsAPIInterface directionsAPIInterface = retrofit.create(APIHandler.DirectionsAPIInterface.class);
-        Call<String> route = directionsAPIInterface.getRoute(
+        APIHandler.DirectionService directionService = APIHandler.getDirectionsAPIInterface();
+        Call<DirectionResponse> route = directionService.getRoute(
                 CommonUtils.getStringFromLatLng(source),
                 CommonUtils.getStringFromLatLng(destination),
                 getString(R.string.maps_api_key)
         );
-        route.enqueue(new Callback<String>() {
+        route.enqueue(new Callback<DirectionResponse>() {
             @Override
-            public void onResponse(@NotNull Call<String> call, @NotNull Response<String> response) {
+            public void onResponse(@NotNull Call<DirectionResponse> call, @NotNull Response<DirectionResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     onFetchComplete(response.body());
                 }
             }
 
             @Override
-            public void onFailure(@NotNull Call<String> call, @NotNull Throwable t) {
+            public void onFailure(@NotNull Call<DirectionResponse> call, @NotNull Throwable t) {
                 Log.e(TAG, "Error: fetching route information", t);
             }
         });
@@ -156,26 +145,19 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity implements
         }
     }
 
-    public void onFetchComplete(String response) {
-        JsonParser jsonParser = new JsonParser();
-        JsonElement jsonElement = jsonParser.parse(response);
-        JsonObject data = jsonElement.getAsJsonObject();
-        JsonArray routes = data.getAsJsonArray("routes");
-        JsonObject route = routes.get(0).getAsJsonObject();
-        JsonArray legs = route.getAsJsonArray("legs");
-
+    public void onFetchComplete(DirectionResponse response) {
         // Compute total duration and distance
+        // Using the first Route from getRoutes()
+        List<DirectionResponse.Leg> legs = response.getRoutes().get(0).getLegs();
         long durationInSecs = 0;
         long distanceInMeters = 0;
-        for (int i = 0; i < legs.size(); i++) {
-            JsonObject leg = legs.get(i).getAsJsonObject();
-            JsonObject duration = leg.getAsJsonObject("duration");
-            durationInSecs += duration.get("value").getAsLong();
-            JsonObject distance = leg.getAsJsonObject("distance");
-            distanceInMeters += distance.get("value").getAsLong();
+        for (DirectionResponse.Leg leg : legs) {
+            durationInSecs += leg.getDuration().getValue();
+            distanceInMeters += leg.getDistance().getValue();
         }
-        JsonObject overview = route.getAsJsonObject("overview_polyline");
-        String encodedPath = overview.get("points").getAsString();
+        // Get encoded path, geometry from API
+        String encodedPath = response.getRoutes().get(0).getOverviewPolyline().getPath();
+        // Decode into List<LatLng> to draw the path on the map
         path = PolyUtil.decode(encodedPath);
         if (googleMap != null) {
             loadMap();

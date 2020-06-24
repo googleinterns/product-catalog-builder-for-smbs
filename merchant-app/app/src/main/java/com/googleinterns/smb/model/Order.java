@@ -9,6 +9,7 @@ import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -70,11 +71,7 @@ public class Order implements Serializable {
                 billItems.add(billItem);
             }
             JSONArray location = new JSONArray(data.get("location"));
-            Double lat = location.getDouble(0);
-            Double lng = location.getDouble(1);
-            customerLatLng = new ArrayList<>();
-            customerLatLng.add(lat);
-            customerLatLng.add(lng);
+            customerLatLng = Arrays.asList(location.getDouble(0), location.getDouble(1));
         } catch (JSONException e) {
             Log.e(TAG, "Error while initialising order", e);
         }
