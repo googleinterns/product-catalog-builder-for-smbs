@@ -1,16 +1,19 @@
 package com.googleinterns.smb;
 
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.TooltipCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
@@ -18,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.googleinterns.smb.common.FirebaseUtils;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Merchant;
+import com.tooltip.Tooltip;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -31,6 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextInputEditText domainNameEditText;
     private TextInputLayout domainNameEditLayout;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +108,18 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         ImageView domainNameHelp = findViewById(R.id.domain_name_help);
-        TooltipCompat.setTooltipText(domainNameHelp, getString(R.string.domain_name_help_info));
+        domainNameHelp.setTooltipText(getString(R.string.domain_name_help_info));
+        final Tooltip toolTip = new Tooltip.Builder(domainNameHelp, R.style.TooltipStyle)
+                .setText(R.string.domain_name_help_info)
+                .setCancelable(true)
+                .build();
+        domainNameHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toolTip.show();
+            }
+        });
+
         domainNameEditLayout = findViewById(R.id.domain_name_edit_layout);
         domainNameEditText = findViewById(R.id.domain_name_edit_text);
         if (merchant.getDomainName() != null) {
