@@ -20,6 +20,7 @@ import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -105,9 +106,11 @@ public class FirebaseUtils {
                         if (task.isSuccessful()) {
                             List<Order> orders = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
-                                Order order = new Order(documentSnapshot.getData());
+                                Map<String, Object> data = documentSnapshot.getData();
+                                Order order = new Order(data);
                                 orders.add(order);
                             }
+                            Log.e(TAG, "Orders " + orders.toString());
                             listener.onOrderReceived(orders);
                         } else {
                             Log.e(TAG, "Firebase Error: ", task.getException());
@@ -135,7 +138,8 @@ public class FirebaseUtils {
                         if (task.isSuccessful()) {
                             List<Order> orders = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
-                                Order order = new Order(documentSnapshot.getData());
+                                Map<String, Object> data = documentSnapshot.getData();
+                                Order order = new Order(data);
                                 orders.add(order);
                             }
                             listener.onOrderReceived(orders);

@@ -2,11 +2,14 @@ package com.googleinterns.smb.model;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -28,21 +31,25 @@ public class Order implements Serializable {
 
     private String customerName;
     private String customerAddress;
+    private String customerUserId;
     private String oid;
     private List<BillItem> billItems = new ArrayList<>();
     private String status;
     private long timestamp;
+    private List<Double> customerLatLng;
 
     public Order() {
 
     }
 
     public Order(Map<String, Object> data) {
+        customerUserId = (String) data.get("user_id");
         customerName = (String) data.get("customer_name");
         customerAddress = (String) data.get("customer_address");
         oid = (String) data.get("oid");
         status = (String) data.get("status");
         timestamp = (long) data.get("timestamp");
+        customerLatLng = (List<Double>) data.get("location");
         List<Map<String, Object>> items = (List<Map<String, Object>>) data.get("items");
         for (Map<String, Object> item : items) {
             BillItem billItem = new BillItem(item);
@@ -51,6 +58,7 @@ public class Order implements Serializable {
     }
 
     public Order(Map<String, String> data, boolean remoteMessage) {
+        customerUserId = data.get("user_id");
         customerName = data.get("customer_name");
         customerAddress = data.get("customer_address");
         oid = data.get("oid");
@@ -62,6 +70,8 @@ public class Order implements Serializable {
                 BillItem billItem = new BillItem(items.getJSONObject(i));
                 billItems.add(billItem);
             }
+            JSONArray location = new JSONArray(data.get("location"));
+            customerLatLng = Arrays.asList(location.getDouble(0), location.getDouble(1));
         } catch (JSONException e) {
             Log.e(TAG, "Error while initialising order", e);
         }
@@ -128,5 +138,10 @@ public class Order implements Serializable {
             numItems += billItem.getQty();
         }
         return numItems;
+    }
+
+    public LatLng getCustomerLatLng() {
+        LatLng latLng = new LatLng(customerLatLng.get(0), customerLatLng.get(1));
+        return latLng;
     }
 }

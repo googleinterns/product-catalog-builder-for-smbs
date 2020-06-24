@@ -31,13 +31,17 @@ def get_products_for_merchant(mid, items):
     '''
     Get products from list of EANs for given merchant
     '''
-    order_products = {}
+    # Adding dummpy value to avoid exception due to empty query
+    order_products = {"0": None}
+    products = []
     for item in items:
-        order_products[item["EAN"]] = item
+        if item.get("EAN") != None:
+            order_products[item["EAN"]] = item
+        else:
+            products.append(item)
     query = db.collection(f"merchants/{mid}/products") \
         .where("EAN", "in", list(order_products.keys())) \
         .stream()
-    products = []
     for doc in query:
         product = doc.to_dict()
         ean = product["EAN"]
@@ -71,7 +75,6 @@ def confirm_order(mid, oid):
     '''
     Confirm order 'oid' to merchant 'mid'
     '''
-    print(oid)
     order_ref = db.collection(f"merchants/{mid}/orders").document(oid)
     order = order_ref.get()
     if order.exists:
@@ -113,3 +116,17 @@ def get_inventory(mid):
         product = doc.to_dict()
         products.append(product)
     return products
+
+
+def get_all_merchants():
+    '''
+    Get all merchants
+    '''
+    collection_ref = db.collection("merchants").stream()
+    merchants = []
+    for doc in collection_ref:
+        merchant = doc.to_dict()
+        if merchant.get("token") != None:
+            del merchant["token"]
+        merchants.append(merchant)
+    return merchants

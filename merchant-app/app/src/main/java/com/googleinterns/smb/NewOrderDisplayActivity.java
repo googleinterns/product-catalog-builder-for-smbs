@@ -1,6 +1,5 @@
 package com.googleinterns.smb;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,7 +71,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
             }
         });
     }
-    
+
     @Override
     public void onPriceChange(double newTotalPrice) {
         mTotalPrice.setText(String.format(Locale.getDefault(), "%.2f", newTotalPrice));

@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import utils
 import fcm
 import traceback
@@ -6,7 +7,7 @@ import time
 from exceptions import BaseHttpException, InvalidRequest
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/')
 def home(methods=['GET']):
@@ -70,7 +71,7 @@ def get_page():
 
 
 @app.route('/inventory', methods=['GET'])
-def get():
+def get_inventory():
     '''
     Get all products in the merchant inventory
     '''
@@ -86,6 +87,16 @@ def get():
         "message": "OK"
     }
 
+@app.route('/merchants/all', methods=['GET'])
+def get_all_merchants():
+    '''
+    Get information for all merchants
+    '''
+    merchants = utils.get_all_merchants()
+    return {
+        "message": "OK",
+        "merchants": merchants
+    }
 
 @app.errorhandler(BaseHttpException)
 def handle_http_exception(error):

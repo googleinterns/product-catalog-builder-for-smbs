@@ -1,6 +1,7 @@
 package com.googleinterns.smb.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.googleinterns.smb.R;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.fragment.EditPriceDialogFragment;
 import com.googleinterns.smb.model.BillItem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,12 +38,25 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
     private List<BillItem> billItems;
     private List<Boolean> availableItems;
     private PriceChangeListener mListener;
+    private Context context;
 
-    public OrderDisplayAdapter(PriceChangeListener listener, List<BillItem> billItems, FragmentManager fragmentManager) {
+    public OrderDisplayAdapter(Context context, List<BillItem> billItems, FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
+        this.context = context;
         this.billItems = billItems;
-        availableItems = new ArrayList<>(Collections.nCopies(billItems.size(), true));
-        mListener = listener;
+        availableItems = new ArrayList<>();
+        for (BillItem billItem : billItems) {
+            if (billItem.getMRP() > 0.0) {
+                availableItems.add(true);
+            } else {
+                availableItems.add(false);
+            }
+        }
+        try {
+            mListener = (PriceChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context + " must implement" + PriceChangeListener.class.getName());
+        }
         // Notify listener with initial total price
         mListener.onPriceChange(getTotalPrice());
     }
@@ -64,14 +78,14 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item, parent, false);
-        return new ViewHolder(view, this, mFragmentManager);
+        return new ViewHolder(view, this);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         // Initialise bill item view
-        BillItem billItem = billItems.get(position);
+        final BillItem billItem = billItems.get(position);
         holder.mProductName.setText(billItem.getProductName());
         holder.mPrice.setText(billItem.getDiscountedPriceString());
         holder.mQty.setText(billItem.getQtyString());
@@ -80,16 +94,43 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
                 .load(billItem.getImageURL())
                 .fitCenter()
                 .into(holder.mProductImage);
+        // Setup edit dialog
+        holder.mEditQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditPriceDialogFragment editQtyDialogFragment = new EditPriceDialogFragment(
+                        new EditPriceDialogFragment.EditPriceDialogInterface() {
+                            @Override
+                            public void onConfirm(Double discountPrice) {
+                                OrderDisplayAdapter.this.onConfirm(discountPrice, position);
+                            }
+
+                            @Override
+                            public Double getMRP() {
+                                return OrderDisplayAdapter.this.getMRP(position);
+                            }
+                        });
+                editQtyDialogFragment.show(mFragmentManager, "Edit qty dialog");
+            }
+        });
+        holder.mCheckBoxAvailable.setChecked(availableItems.get(position));
+        holder.mCheckBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked && billItems.get(position).getDiscountedPrice() <= 0.0) {
+                    UIUtils.showToast(context, "Set a price to mark available");
+                    buttonView.setChecked(false);
+                    return;
+                }
+                availableItems.set(position, isChecked);
+                mListener.onPriceChange(getTotalPrice());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return billItems.size();
-    }
-
-    private void updateAvailability(int position, boolean isAvailable) {
-        availableItems.set(position, isAvailable);
-        mListener.onPriceChange(getTotalPrice());
     }
 
     /**
@@ -110,15 +151,17 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
         return billItems.get(position).getMRP();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements EditPriceDialogFragment.EditPriceDialogInterface {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         private OrderDisplayAdapter mAdapter;
         private TextView mProductName;
         private TextView mPrice;
         private TextView mTotalPrice;
         private ImageView mProductImage;
         private TextView mQty;
+        private ImageButton mEditQty;
+        private CheckBox mCheckBoxAvailable;
 
-        ViewHolder(@NonNull View itemView, OrderDisplayAdapter adapter, final FragmentManager fragmentManager) {
+        ViewHolder(@NonNull View itemView, OrderDisplayAdapter adapter) {
             super(itemView);
             mAdapter = adapter;
             mProductName = itemView.findViewById(R.id.product_name);
@@ -126,35 +169,8 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
             mProductImage = itemView.findViewById(R.id.product_image);
             mQty = itemView.findViewById(R.id.qty_val);
             mTotalPrice = itemView.findViewById(R.id.total);
-            ImageButton mEditQty = itemView.findViewById(R.id.edit_price);
-            // Setup edit dialog
-            mEditQty.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditPriceDialogFragment editQtyDialogFragment = new EditPriceDialogFragment(ViewHolder.this);
-                    editQtyDialogFragment.show(fragmentManager, "Edit qty dialog");
-                }
-            });
-            CheckBox mCheckBoxAvailable = itemView.findViewById(R.id.checkbox_not_available);
-            mCheckBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mAdapter.updateAvailability(ViewHolder.this.getAdapterPosition(), isChecked);
-                }
-            });
-        }
-
-        /**
-         * Callback from Edit price dialog
-         */
-        @Override
-        public void onConfirm(Double newPrice) {
-            mAdapter.onConfirm(newPrice, getAdapterPosition());
-        }
-
-        @Override
-        public Double getMRP() {
-            return mAdapter.getMRP(getAdapterPosition());
+            mEditQty = itemView.findViewById(R.id.edit_price);
+            mCheckBoxAvailable = itemView.findViewById(R.id.checkbox_not_available);
         }
     }
 }
