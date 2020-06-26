@@ -1,14 +1,18 @@
 package com.googleinterns.smb.common;
 
-import com.googleinterns.smb.model.DirectionResponse;
+import com.googleinterns.smb.pojo.DirectionResponse;
+import com.googleinterns.smb.pojo.SendBidRequest;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -17,6 +21,7 @@ import retrofit2.http.Query;
 public class APIHandler {
 
     private static final String DIRECTIONS_API_BASE = "https://maps.googleapis.com";
+    private static final String CONSUMER_API_BASE = "https://kirana-g.uc.r.appspot.com/";
 
     private Retrofit retrofit;
     // Mapping for multiple API handlers, for each base API
@@ -50,7 +55,17 @@ public class APIHandler {
         );
     }
 
-    public static DirectionService getDirectionsAPIInterface() {
+    public static DirectionService getDirectionService() {
         return getInstance(DIRECTIONS_API_BASE).retrofit.create(DirectionService.class);
     }
+
+    public interface ConsumerService {
+        @POST("/sendBid")
+        Call<Void> sendBid(@Body SendBidRequest sendBidRequest);
+    }
+
+    public static ConsumerService getConsumerService() {
+        return getInstance(CONSUMER_API_BASE).retrofit.create(ConsumerService.class);
+    }
+
 }

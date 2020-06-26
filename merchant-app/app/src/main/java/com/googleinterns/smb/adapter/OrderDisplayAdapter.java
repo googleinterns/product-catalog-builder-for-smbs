@@ -36,7 +36,7 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
     // Fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<BillItem> billItems;
-    private List<Boolean> availableItems;
+    private List<Boolean> itemAvailabilities;
     private PriceChangeListener mListener;
     private Context context;
 
@@ -44,12 +44,12 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
         mFragmentManager = fragmentManager;
         this.context = context;
         this.billItems = billItems;
-        availableItems = new ArrayList<>();
+        itemAvailabilities = new ArrayList<>();
         for (BillItem billItem : billItems) {
             if (billItem.getMRP() > 0.0) {
-                availableItems.add(true);
+                itemAvailabilities.add(true);
             } else {
-                availableItems.add(false);
+                itemAvailabilities.add(false);
             }
         }
         try {
@@ -64,10 +64,10 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
     /**
      * Compute total price by summing price for each item
      */
-    private Double getTotalPrice() {
+    public Double getTotalPrice() {
         Double totalPrice = 0.0;
         for (int i = 0; i < billItems.size(); i++) {
-            if (availableItems.get(i)) {
+            if (itemAvailabilities.get(i)) {
                 totalPrice += billItems.get(i).getTotalPrice();
             }
         }
@@ -113,7 +113,7 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
                 editQtyDialogFragment.show(mFragmentManager, "Edit qty dialog");
             }
         });
-        holder.mCheckBoxAvailable.setChecked(availableItems.get(position));
+        holder.mCheckBoxAvailable.setChecked(itemAvailabilities.get(position));
         holder.mCheckBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -122,7 +122,7 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
                     buttonView.setChecked(false);
                     return;
                 }
-                availableItems.set(position, isChecked);
+                itemAvailabilities.set(position, isChecked);
                 mListener.onPriceChange(getTotalPrice());
             }
         });
@@ -149,6 +149,14 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
 
     private Double getMRP(int position) {
         return billItems.get(position).getMRP();
+    }
+
+    public List<Boolean> getItemAvailabilities() {
+        return itemAvailabilities;
+    }
+
+    public List<BillItem> getBillItems() {
+        return billItems;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

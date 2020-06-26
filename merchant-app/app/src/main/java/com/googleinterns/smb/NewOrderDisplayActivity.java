@@ -12,18 +12,27 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.googleinterns.smb.adapter.OrderDisplayAdapter;
+import com.googleinterns.smb.common.APIHandler;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.BillItem;
 import com.googleinterns.smb.model.Order;
+import com.googleinterns.smb.pojo.SendBidRequest;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NewOrderDisplayActivity extends AppCompatActivity implements OrderDisplayAdapter.PriceChangeListener {
 
     private static final String TAG = NewOrderDisplayActivity.class.getName();
 
     private TextView mTotalPrice;
+    private OrderDisplayAdapter orderDisplayAdapter;
+    private Order order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +41,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         setTitle("Order");
         mTotalPrice = findViewById(R.id.total_price);
         TextView mTextViewCustomerName = findViewById(R.id.customer_name);
-        Order order = (Order) getIntent().getSerializableExtra("order");
+        order = (Order) getIntent().getSerializableExtra("order");
         if (order != null) {
             // Initialise views with order information
             mTextViewCustomerName.setText(String.format(Locale.getDefault(), "%s's order", order.getCustomerName()));
@@ -44,9 +53,27 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UIUtils.showToast(NewOrderDisplayActivity.this, "Accepted order. You will be notified once order is confirmed");
-                    Intent intent = OngoingOrdersActivity.makeIntent(NewOrderDisplayActivity.this);
-                    startActivity(intent);
+                    SendBidRequest request = SendBidRequest.createSendBidRequest(order, orderDisplayAdapter);
+                    APIHandler.ConsumerService service = APIHandler.getConsumerService();
+                    Call<Void> response = service.sendBid(request);
+                    response.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful() && (response.code() == HttpURLConnection.HTTP_OK)) {
+                                UIUtils.showToast(NewOrderDisplayActivity.this, "Sent! You will be notified once customer confirms the order");
+                                Intent intent = OngoingOrdersActivity.makeIntent(NewOrderDisplayActivity.this);
+                                startActivity(intent);
+                            } else {
+                                UIUtils.showToast(NewOrderDisplayActivity.this, "Failed!");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            UIUtils.showToast(NewOrderDisplayActivity.this, "Something went wrong. Please try again");
+                        }
+                    });
+                    UIUtils.showToast(NewOrderDisplayActivity.this, "Sending bid...");
                 }
             });
             initRecyclerView(order.getBillItems());
@@ -56,7 +83,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
     }
 
     private void initRecyclerView(List<BillItem> billItems) {
-        OrderDisplayAdapter orderDisplayAdapter = new OrderDisplayAdapter(this, billItems, getSupportFragmentManager());
+        orderDisplayAdapter = new OrderDisplayAdapter(this, billItems, getSupportFragmentManager());
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(orderDisplayAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {

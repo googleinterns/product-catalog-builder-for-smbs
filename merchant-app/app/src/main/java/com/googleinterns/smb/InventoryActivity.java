@@ -21,7 +21,7 @@ import com.googleinterns.smb.adapter.ProductAdapter;
 import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
 import com.googleinterns.smb.barcodescanning.BarcodeStatusListener;
 import com.googleinterns.smb.common.UIUtils;
-import com.googleinterns.smb.common.VideoToBarcode;
+import com.googleinterns.smb.common.VideoToBarcodeTask;
 import com.googleinterns.smb.fragment.AddProductDialogFragment;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Product;
@@ -160,7 +160,7 @@ public class InventoryActivity extends MainActivity implements
                 ProgressDialog mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 mProgressDialog.setMessage(getString(R.string.processing));
-                task = new VideoToBarcode(this, this, videoUri, mProgressDialog);
+                task = new VideoToBarcodeTask(this, this, videoUri, mProgressDialog);
                 task.execute();
                 mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.show();
