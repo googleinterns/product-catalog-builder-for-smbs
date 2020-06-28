@@ -75,7 +75,9 @@
         <activity
             android:name=".LocationPickerActivity"
             android:parentActivityName=".SettingsActivity" />
-        <activity android:name=".SettingsActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".OfferDetailsActivity"
             android:parentActivityName=".ProductOfferActivity" />
