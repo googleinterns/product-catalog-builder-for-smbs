@@ -44,6 +44,7 @@ public class MapViewHandler implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
         if (source != null) {
             loadMap();
         }

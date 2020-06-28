@@ -78,7 +78,7 @@ public class FirebaseUtils {
                         List<Product> products = new ArrayList<>();
                         for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                             DocumentSnapshot documentSnapshot = documentChange.getDocument();
-                            Product product = new Product(documentSnapshot);
+                            Product product = documentSnapshot.toObject(Product.class);
                             products.add(product);
                         }
                         listener.onQueryComplete(products);
@@ -164,11 +164,7 @@ public class FirebaseUtils {
         DocumentReference orderRef = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
         batch.update(orderRef, "status", Order.ACCEPTED);
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (BillItem billItem : billItems) {
-            items.add(billItem.createFirebaseDocument());
-        }
-        batch.update(orderRef, "items", items);
+        batch.update(orderRef, "items", billItems);
         batch.commit();
     }
 

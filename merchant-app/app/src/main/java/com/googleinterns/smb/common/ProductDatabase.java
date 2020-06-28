@@ -36,7 +36,7 @@ public class ProductDatabase {
                     public void onSuccess(QuerySnapshot documentSnapshots) {
                         for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
                             DocumentSnapshot documentSnapshot = documentChange.getDocument();
-                            Product product = new Product(documentSnapshot);
+                            Product product = documentSnapshot.toObject(Product.class);
                             products.add(product);
                         }
                     }

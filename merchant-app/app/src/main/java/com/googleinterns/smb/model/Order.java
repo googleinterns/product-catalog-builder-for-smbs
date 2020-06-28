@@ -46,10 +46,7 @@ public class Order implements Serializable {
     private String status;
     private long timestamp;
     private List<Double> customerLatLng;
-
-    public Order() {
-
-    }
+    private String customerContact;
 
     public Order(Map<String, Object> data) {
         customerUserId = (String) data.get("user_id");
@@ -59,6 +56,9 @@ public class Order implements Serializable {
         status = (String) data.get("status");
         timestamp = (long) data.get("timestamp");
         customerLatLng = (List<Double>) data.get("location");
+        if (data.containsKey("customer_contact")) {
+            customerContact = (String) data.get("customer_contact");
+        }
         List<Map<String, Object>> items = (List<Map<String, Object>>) data.get("items");
         for (Map<String, Object> item : items) {
             BillItem billItem = new BillItem(item);
@@ -73,6 +73,9 @@ public class Order implements Serializable {
         oid = data.get("oid");
         status = data.get("status");
         timestamp = Long.parseLong(data.get("timestamp"));
+        if (data.containsKey("customer_contact")) {
+            customerContact = data.get("customer_contact");
+        }
         try {
             JSONArray items = new JSONArray(data.get("items"));
             for (int i = 0; i < items.length(); i++) {
@@ -150,8 +153,7 @@ public class Order implements Serializable {
     }
 
     public LatLng getCustomerLatLng() {
-        LatLng latLng = new LatLng(customerLatLng.get(0), customerLatLng.get(1));
-        return latLng;
+        return new LatLng(customerLatLng.get(0), customerLatLng.get(1));
     }
 
     public String getCustomerUserId() {
@@ -160,6 +162,10 @@ public class Order implements Serializable {
 
     public String getOid() {
         return oid;
+    }
+
+    public String getCustomerContact() {
+        return customerContact;
     }
 
     public void notifyOrderDispatch() {

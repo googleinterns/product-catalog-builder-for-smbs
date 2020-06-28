@@ -1,6 +1,7 @@
 package com.googleinterns.smb;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -70,6 +71,22 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 UIUtils.showToast(OngoingOrderDisplayActivity.this, "Delivery has started via partner");
                 Intent intent = OngoingOrdersActivity.makeIntent(OngoingOrderDisplayActivity.this);
+                startActivity(intent);
+            }
+        });
+
+        Button call = findViewById(R.id.action_call);
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String contact = order.getCustomerContact();
+                if (contact == null) {
+                    UIUtils.showToast(OngoingOrderDisplayActivity.this, "No contact provided");
+                    return;
+                }
+                String uri = "tel:" + contact;
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse(uri));
                 startActivity(intent);
             }
         });

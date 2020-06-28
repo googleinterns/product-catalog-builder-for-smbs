@@ -71,7 +71,7 @@ def save_order(mid, order):
     db.collection(f"merchants/{mid}/orders").document(oid).set(order)
 
 
-def confirm_order(mid, oid):
+def confirm_order(mid, oid, customer_contact):
     '''
     Confirm order 'oid' to merchant 'mid'
     '''
@@ -80,6 +80,7 @@ def confirm_order(mid, oid):
     if order.exists:
         data = order.to_dict()
         data["status"] = ONGOING
+        data["customer_contact"] = customer_contact
         order_ref.set(data)
         return data
     else:

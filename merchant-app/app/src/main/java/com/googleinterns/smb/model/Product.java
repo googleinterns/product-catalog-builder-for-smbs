@@ -1,18 +1,13 @@
 package com.googleinterns.smb.model;
 
-import android.util.Log;
-
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.PropertyName;
 import com.googleinterns.smb.common.UIUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Model to implement product information
@@ -109,34 +104,6 @@ public class Product implements Serializable {
     }
 
     /**
-     * Initialise product using firebase documentSnapshot
-     *
-     * @param documentSnapshot document snapshot from firebase
-     */
-    public Product(DocumentSnapshot documentSnapshot) {
-        productName = documentSnapshot.getString("product_name");
-        if (documentSnapshot.contains("MRP")) {
-            MRP = documentSnapshot.getDouble("MRP");
-        }
-        if (documentSnapshot.contains("discounted_price")) {
-            discountedPrice = documentSnapshot.getDouble("discounted_price");
-        } else {
-            // Initialise discounted price to be same as MRP if discounted_price is not present
-            discountedPrice = MRP;
-        }
-        if (documentSnapshot.contains("image_url")) {
-            imageURL = documentSnapshot.getString("image_url");
-        }
-        if (documentSnapshot.contains("EAN")) {
-            EAN = documentSnapshot.getString("EAN");
-        }
-        if (documentSnapshot.contains("offers")) {
-            Product product = documentSnapshot.toObject(Product.class);
-            offers = product.getOffers();
-        }
-    }
-
-    /**
      * Copy constructor
      */
     public Product(Product product) {
@@ -146,17 +113,6 @@ public class Product implements Serializable {
         setMRP(product.getMRP());
         setEAN(product.getEAN());
         setOffers(product.getOffers());
-    }
-
-    public Map<String, Object> createFirebaseDocument() {
-        Map<String, Object> data = new HashMap<>();
-        data.put("EAN", getEAN());
-        data.put("product_name", getProductName());
-        data.put("MRP", getMRP());
-        data.put("discounted_price", getDiscountedPrice());
-        data.put("image_url", getImageURL());
-        data.put("offers", getOffers());
-        return data;
     }
 
     @Exclude
@@ -169,7 +125,7 @@ public class Product implements Serializable {
         int numOffers = getNumOffers();
         switch (numOffers) {
             case 0:
-                return "No offer added";
+                return "No offers added";
             case 1:
                 return "1 offer added";
             default:

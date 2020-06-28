@@ -199,7 +199,7 @@ public class Merchant {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         inventory = new HashMap<>();
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            Product product = new Product(document);
+                            Product product = document.toObject(Product.class);
                             inventory.put(product.getEAN(), product);
                         }
                         numProducts = inventory.size();
@@ -250,8 +250,7 @@ public class Merchant {
         for (Product product : products) {
             String collectionPath = "merchants/" + mid + "/products";
             DocumentReference documentReference = FirebaseFirestore.getInstance().collection(collectionPath).document(product.getEAN());
-            Map<String, Object> data = product.createFirebaseDocument();
-            batch.set(documentReference, data);
+            batch.set(documentReference, product);
             inventory.put(product.getEAN(), product);
         }
         numProducts = inventory.size();
@@ -306,7 +305,7 @@ public class Merchant {
         FirebaseFirestore.getInstance()
                 .collection("merchants/" + mid + "/products")
                 .document(product.getEAN())
-                .set(product.createFirebaseDocument())
+                .set(product)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

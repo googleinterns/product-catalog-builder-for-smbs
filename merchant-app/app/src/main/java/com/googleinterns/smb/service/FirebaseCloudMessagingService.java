@@ -51,7 +51,6 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
                     NotificationUtils.createNotification(this, NotificationUtils.ORDER_CHANNEL, "New order received", "Tap to view", pendingIntent);
                 } else if (Order.ONGOING.equals(data.getString("status"))) {
                     Order order = new Order(remoteMessage.getData(), true);
-                    Log.d(TAG, "Ongoing order received" + order.toString());
                     NotificationUtils.createNotificationChannel(this, NotificationUtils.ORDER_CHANNEL);
                     Intent parentIntent = new Intent(this, OngoingOrdersActivity.class);
                     Intent intent = new Intent(this, OngoingOrderDisplayActivity.class);

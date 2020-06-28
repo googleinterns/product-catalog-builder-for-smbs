@@ -99,14 +99,14 @@ public class BillItem extends Product {
         return qty;
     }
 
-    @Exclude
-    public String getQtyString() {
-        return String.format(Locale.getDefault(), "%d", qty);
-    }
-
     @PropertyName("quantity")
     public void setQty(int qty) {
         this.qty = qty;
+    }
+
+    @Exclude
+    public String getQtyString() {
+        return String.format(Locale.getDefault(), "%d", qty);
     }
 
     @Exclude
@@ -117,12 +117,5 @@ public class BillItem extends Product {
     @Exclude
     public String getTotalPriceString() {
         return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getTotalPrice());
-    }
-
-    @Override
-    public Map<String, Object> createFirebaseDocument() {
-        Map<String, Object> document = super.createFirebaseDocument();
-        document.put("quantity", getQty());
-        return document;
     }
 }
