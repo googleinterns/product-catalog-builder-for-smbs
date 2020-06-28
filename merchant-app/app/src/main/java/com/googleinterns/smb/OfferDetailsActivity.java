@@ -25,56 +25,59 @@ import com.googleinterns.smb.model.Offer;
 import java.util.Calendar;
 import java.util.Objects;
 
+/**
+ * Activity to add and edit offer details.
+ */
 public class OfferDetailsActivity extends AppCompatActivity {
 
     public static final int RC_ADD_OFFER = 1;
     public static final int RC_EDIT_OFFER = 2;
 
-    private RadioGroup selectDiscountType;
-    private TextInputEditText discountEditText;
-    private TextInputLayout discountLayout;
-    private MaterialCheckBox checkBoxMarkForever;
-    private TextView validityTextView;
-    private MaterialDatePicker<Long> datePicker;
-    private Long validityEndDate;
-    private Button changeValidity;
+    private RadioGroup mDiscountType;
+    private TextInputEditText mEditTextDiscount;
+    private TextInputLayout mTextLayoutDiscount;
+    private MaterialCheckBox mCheckBoxMarkForever;
+    private TextView mValidity;
+    private MaterialDatePicker<Long> mDatePicker;
+    private Long mValidityEndDate;
+    private Button mChangeValidity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_offer);
+        setContentView(R.layout.activity_offer_details);
         setTitle("Offer");
-        selectDiscountType = findViewById(R.id.set_discount_radio_group);
-        selectDiscountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        mDiscountType = findViewById(R.id.radio_group_set_discount_type);
+        mDiscountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.set_percent_discount) {
-                    discountLayout.setStartIconVisible(false);
-                    discountLayout.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
-                    discountLayout.setEndIconDrawable(R.drawable.ic_percent);
+                if (checkedId == R.id.radio_button_set_percent_discount) {
+                    mTextLayoutDiscount.setStartIconVisible(false);
+                    mTextLayoutDiscount.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
+                    mTextLayoutDiscount.setEndIconDrawable(R.drawable.ic_percent);
                 } else {
-                    discountLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    discountLayout.setStartIconDrawable(R.drawable.ic_rupee);
-                    discountLayout.setStartIconVisible(true);
+                    mTextLayoutDiscount.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                    mTextLayoutDiscount.setStartIconDrawable(R.drawable.ic_rupee);
+                    mTextLayoutDiscount.setStartIconVisible(true);
                 }
             }
         });
-        discountEditText = findViewById(R.id.discount_edit_text);
-        discountLayout = findViewById(R.id.discount_edit_layout);
-        checkBoxMarkForever = findViewById(R.id.checkbox_mark_forever);
-        checkBoxMarkForever.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mEditTextDiscount = findViewById(R.id.edit_text_discount);
+        mTextLayoutDiscount = findViewById(R.id.layout_edit_text_discount);
+        mCheckBoxMarkForever = findViewById(R.id.checkbox_mark_forever);
+        mCheckBoxMarkForever.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    changeValidity.setEnabled(false);
-                    validityTextView.setText(UIUtils.NIL_DATE);
+                    mChangeValidity.setEnabled(false);
+                    mValidity.setText(UIUtils.NIL_DATE);
                 } else {
-                    changeValidity.setEnabled(true);
+                    mChangeValidity.setEnabled(true);
                 }
             }
         });
-        checkBoxMarkForever.setChecked(true);
-        validityTextView = findViewById(R.id.end_date);
+        mCheckBoxMarkForever.setChecked(true);
+        mValidity = findViewById(R.id.text_view_end_date);
         Calendar now = Calendar.getInstance();
         Calendar today = Calendar.getInstance();
         today.clear();
@@ -98,72 +101,72 @@ public class OfferDetailsActivity extends AppCompatActivity {
                     }
                 })
                 .build();
-        datePicker = MaterialDatePicker.Builder.datePicker()
+        mDatePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Set validity")
                 .setCalendarConstraints(constraints)
                 .setSelection(now.getTimeInMillis())
                 .build();
-        datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+        mDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
-                validityEndDate = selection;
-                validityTextView.setText(CommonUtils.getFormattedDate(validityEndDate));
+                mValidityEndDate = selection;
+                mValidity.setText(CommonUtils.getFormattedDate(mValidityEndDate));
             }
         });
-        datePicker.addOnCancelListener(new DialogInterface.OnCancelListener() {
+        mDatePicker.addOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                datePicker.dismiss();
+                mDatePicker.dismiss();
             }
         });
-        datePicker.addOnNegativeButtonClickListener(new View.OnClickListener() {
+        mDatePicker.addOnNegativeButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePicker.dismiss();
+                mDatePicker.dismiss();
             }
         });
-        changeValidity = findViewById(R.id.change_validity);
-        changeValidity.setOnClickListener(new View.OnClickListener() {
+        mChangeValidity = findViewById(R.id.button_change_validity);
+        mChangeValidity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePicker.show(getSupportFragmentManager(), MaterialDatePicker.class.getName());
+                mDatePicker.show(getSupportFragmentManager(), MaterialDatePicker.class.getName());
             }
         });
-        Button save = findViewById(R.id.save);
+        Button save = findViewById(R.id.button_save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Offer.OfferType offerType;
-                if (selectDiscountType.getCheckedRadioButtonId() == R.id.set_percent_discount)
+                if (mDiscountType.getCheckedRadioButtonId() == R.id.radio_button_set_percent_discount)
                     offerType = Offer.OfferType.PERCENTAGE_OFFER;
                 else
                     offerType = Offer.OfferType.FLAT_OFFER;
                 int discount;
                 try {
-                    discount = Integer.parseInt(Objects.requireNonNull(discountEditText.getText()).toString());
+                    discount = Integer.parseInt(Objects.requireNonNull(mEditTextDiscount.getText()).toString());
                 } catch (NumberFormatException e) {
-                    discountLayout.setError("Invalid discount");
+                    mTextLayoutDiscount.setError("Invalid discount");
                     return;
                 }
                 if (offerType == Offer.OfferType.PERCENTAGE_OFFER) {
                     if (discount > 100) {
-                        discountLayout.setError("Percentage cannot be greater than 100");
+                        mTextLayoutDiscount.setError("Percentage cannot be greater than 100");
                         return;
                     }
                 }
-                Boolean isValidForever = checkBoxMarkForever.isChecked();
-                if (validityEndDate == null && !isValidForever) {
+                Boolean isValidForever = mCheckBoxMarkForever.isChecked();
+                if (mValidityEndDate == null && !isValidForever) {
                     UIUtils.showToast(OfferDetailsActivity.this, "Please set offer validity");
                     return;
                 }
-                Offer offer = new Offer(offerType, discount, validityEndDate, isValidForever);
+                Offer offer = new Offer(offerType, discount, mValidityEndDate, isValidForever);
                 Intent intent = new Intent();
                 intent.putExtra("offer", offer);
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
-        Button cancel = findViewById(R.id.cancel);
+        Button cancel = findViewById(R.id.button_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,17 +180,17 @@ public class OfferDetailsActivity extends AppCompatActivity {
         if (requestCode == RC_EDIT_OFFER) {
             Offer offer = (Offer) intent.getSerializableExtra("offer");
             if (offer.getOfferType() == Offer.OfferType.PERCENTAGE_OFFER) {
-                selectDiscountType.check(R.id.set_percent_discount);
+                mDiscountType.check(R.id.radio_button_set_percent_discount);
             } else {
-                selectDiscountType.check(R.id.set_flat_discount);
+                mDiscountType.check(R.id.radio_button_set_flat_discount);
             }
             int discount = offer.getOfferAmount();
-            discountEditText.setText(String.valueOf(discount));
+            mEditTextDiscount.setText(String.valueOf(discount));
             Boolean isValidForever = offer.getValidForever();
-            checkBoxMarkForever.setChecked(isValidForever);
+            mCheckBoxMarkForever.setChecked(isValidForever);
             if (!isValidForever) {
-                validityEndDate = offer.getValidityEndDate();
-                validityTextView.setText(CommonUtils.getFormattedDate(validityEndDate));
+                mValidityEndDate = offer.getValidityEndDate();
+                mValidity.setText(CommonUtils.getFormattedDate(mValidityEndDate));
             }
         }
     }

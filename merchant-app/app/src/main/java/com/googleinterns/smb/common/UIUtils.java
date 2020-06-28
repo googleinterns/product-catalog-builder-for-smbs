@@ -14,7 +14,7 @@ import com.googleinterns.smb.R;
  */
 public class UIUtils {
 
-    private static final String TAG = "UIUtils";
+    private static final String TAG = UIUtils.class.getName();
 
     // Constants
     public static final String RUPEE = "\u20b9";

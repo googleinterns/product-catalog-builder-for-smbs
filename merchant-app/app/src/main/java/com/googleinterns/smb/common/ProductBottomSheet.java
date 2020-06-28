@@ -1,7 +1,7 @@
 package com.googleinterns.smb.common;
 
 
-import com.googleinterns.smb.adapter.ProductBottomSheetAdapter;
+import com.googleinterns.smb.adapter.BottomSheetItemAdapter;
 import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * This class acts as a view model for product display in ScanTextActivity bottom sheet
  */
-public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStatusListener {
+public class ProductBottomSheet implements BottomSheetItemAdapter.ProductStatusListener {
 
     // Set of products already confirmed by user to add
     private Set<Product> mAdded = new HashSet<>();
@@ -23,10 +23,10 @@ public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStat
     // Set of products now present in recycler view
     private Set<Product> mPresent = new HashSet<>();
 
-    private ProductBottomSheetAdapter productBottomSheetAdapter;
+    private BottomSheetItemAdapter mBottomSheetItemAdapter;
 
-    public ProductBottomSheet(ProductBottomSheetAdapter productBottomSheetAdapter) {
-        this.productBottomSheetAdapter = productBottomSheetAdapter;
+    public ProductBottomSheet(BottomSheetItemAdapter bottomSheetItemAdapter) {
+        mBottomSheetItemAdapter = bottomSheetItemAdapter;
     }
 
     /**
@@ -41,7 +41,7 @@ public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStat
                 continue;
             }
             // Add product to bottom sheet recycler view
-            productBottomSheetAdapter.addProduct(product);
+            mBottomSheetItemAdapter.addProduct(product);
             mPresent.add(product);
         }
     }
@@ -71,13 +71,6 @@ public class ProductBottomSheet implements ProductBottomSheetAdapter.ProductStat
      */
     public void clear() {
         mPresent.clear();
-        productBottomSheetAdapter.clear();
-    }
-
-    /**
-     * Return number of suggested products present in the bottom sheet
-     */
-    public int getNumberofProducts() {
-        return mPresent.size();
+        mBottomSheetItemAdapter.clear();
     }
 }

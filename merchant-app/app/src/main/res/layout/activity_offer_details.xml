@@ -10,37 +10,37 @@
         style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set offer amount"
+        android:text="@string/set_offer_amount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
-        android:id="@+id/set_discount_radio_group"
+        android:id="@+id/radio_group_set_discount_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:checkedButton="@+id/set_percent_discount"
+        android:checkedButton="@+id/radio_button_set_percent_discount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_set_discount">
 
         <RadioButton
-            android:id="@+id/set_percent_discount"
+            android:id="@+id/radio_button_set_percent_discount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="4dp"
-            android:text="Set percent discount" />
+            android:text="@string/set_percent_discount" />
 
         <RadioButton
-            android:id="@+id/set_flat_discount"
+            android:id="@+id/radio_button_set_flat_discount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="4dp"
-            android:text="Set flat discount" />
+            android:text="@string/set_flat_discount" />
     </RadioGroup>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/discount_edit_layout"
+        android:id="@+id/layout_edit_text_discount"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,10 +51,10 @@
         app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/set_discount_radio_group">
+        app:layout_constraintTop_toBottomOf="@+id/radio_group_set_discount_type">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/discount_edit_text"
+            android:id="@+id/edit_text_discount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number" />
@@ -67,9 +67,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Set offer validity"
+        android:text="@string/set_offer_validity"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/discount_edit_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_discount" />
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/checkbox_mark_forever"
@@ -84,50 +84,50 @@
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mark as valid forever"
+        android:text="@string/mark_as_valid_forever"
         app:layout_constraintBottom_toBottomOf="@id/checkbox_mark_forever"
         app:layout_constraintStart_toEndOf="@+id/checkbox_mark_forever"
         app:layout_constraintTop_toTopOf="@+id/checkbox_mark_forever" />
 
     <TextView
-        android:id="@+id/validity_label"
+        android:id="@+id/label_validity"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Valid till"
+        android:text="@string/valid_till"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_mark_forever" />
 
     <TextView
-        android:id="@+id/end_date"
+        android:id="@+id/text_view_end_date"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:text="@string/nil_date"
         android:textSize="18sp"
-        android:text="--/--/----"
-        app:layout_constraintBottom_toBottomOf="@+id/validity_label"
-        app:layout_constraintStart_toEndOf="@+id/validity_label"
-        app:layout_constraintTop_toTopOf="@+id/validity_label" />
+        app:layout_constraintBottom_toBottomOf="@+id/label_validity"
+        app:layout_constraintStart_toEndOf="@+id/label_validity"
+        app:layout_constraintTop_toTopOf="@+id/label_validity" />
 
 
     <Button
-        android:id="@+id/change_validity"
+        android:id="@+id/button_change_validity"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:text="Change"
         android:enabled="false"
+        android:text="@string/change"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="@+id/end_date"
-        app:layout_constraintStart_toEndOf="@+id/end_date"
-        app:layout_constraintTop_toTopOf="@+id/end_date" />
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_end_date"
+        app:layout_constraintStart_toEndOf="@+id/text_view_end_date"
+        app:layout_constraintTop_toTopOf="@+id/text_view_end_date" />
 
     <Button
-        android:id="@+id/save"
+        android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -138,13 +138,13 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/cancel"
+        android:id="@+id/button_cancel"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="@+id/save"
-        app:layout_constraintEnd_toStartOf="@+id/save"
-        app:layout_constraintTop_toTopOf="@+id/save" />
+        app:layout_constraintBottom_toBottomOf="@+id/button_save"
+        app:layout_constraintEnd_toStartOf="@+id/button_save"
+        app:layout_constraintTop_toTopOf="@+id/button_save" />
 </androidx.constraintlayout.widget.ConstraintLayout>

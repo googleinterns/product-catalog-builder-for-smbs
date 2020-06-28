@@ -1,7 +1,7 @@
 package com.googleinterns.smb.pojo;
 
 import com.google.gson.annotations.SerializedName;
-import com.googleinterns.smb.adapter.OrderDisplayAdapter;
+import com.googleinterns.smb.adapter.NewOrderItemAdapter;
 import com.googleinterns.smb.model.BillItem;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * POJO class to send bid request to consumer side API.
+ * POJO class to send bid request to consumer side API. See {@link com.googleinterns.smb.common.APIHandler}
  */
 public class SendBidRequest {
 
@@ -28,7 +28,7 @@ public class SendBidRequest {
     private GeoLocation geoLocation;
     private Long deliveryTime;
 
-    public static SendBidRequest createSendBidRequest(Order order, OrderDisplayAdapter adapter) {
+    public static SendBidRequest createSendBidRequest(Order order, NewOrderItemAdapter adapter) {
         Merchant merchant = Merchant.getInstance();
         SendBidRequest request = new SendBidRequest();
         request.setMerchantId(merchant.getMid());

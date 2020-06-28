@@ -25,68 +25,75 @@ import com.googleinterns.smb.R;
 
 import java.util.List;
 
-public class MapViewHandler implements OnMapReadyCallback {
+/**
+ * Map handler to display navigation path from merchant to customer location.
+ * See {@link com.googleinterns.smb.NewOrderDisplayActivity} and {@link com.googleinterns.smb.OngoingOrderDisplayActivity}
+ */
+public class NavigationMapViewHandler implements OnMapReadyCallback {
 
-    private GoogleMap googleMap;
-    private LatLng source;
-    private LatLng destination;
-    private String encodedPath;
-    private boolean isMapLoaded = false;
+    private GoogleMap mGoogleMap;
+    private LatLng mSource;
+    private LatLng mDestination;
+    private String mEncodedPath;
+    private boolean mIsMapLoaded = false;
 
     // Maps view constants
     private static final int PATH_STROKE_WIDTH_PX = 16;
     private static final int PATH_COLOR = 0xff6199f5;
+    private static final int MAP_PADDING = 50;
 
-    public MapViewHandler(SupportMapFragment mapFragment) {
+    public NavigationMapViewHandler(SupportMapFragment mapFragment) {
         mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
+        this.mGoogleMap = googleMap;
         googleMap.getUiSettings().setZoomControlsEnabled(true);
-        if (source != null) {
+        if (mSource != null) {
             loadMap();
         }
     }
 
     public void setMapAttributes(LatLng source, LatLng destination, String encodedPath) {
-        this.source = source;
-        this.destination = destination;
-        this.encodedPath = encodedPath;
-        if (googleMap != null) {
+        this.mSource = source;
+        this.mDestination = destination;
+        this.mEncodedPath = encodedPath;
+        if (mGoogleMap != null) {
             loadMap();
         }
     }
 
     private synchronized void loadMap() {
-        if (isMapLoaded)
+        if (mIsMapLoaded)
             return;
-        googleMap.addMarker(new MarkerOptions().position(destination).title("Customer"));
-        googleMap.addMarker(new MarkerOptions()
-                .position(source)
-                .icon(bitmapDescriptorFromVector(MainActivity.getContext(), R.drawable.ic_merchant_store))
+        // Add merchant and customer location markers
+        mGoogleMap.addMarker(new MarkerOptions().position(mDestination).title("Customer"));
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(mSource)
+                .icon(bitmapDescriptorFromVector(MainActivity.getContext()))
                 .title("You")
                 .flat(true));
+        // Create bounding box for setting camera zoom
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(source);
-        builder.include(destination);
-        List<LatLng> path = PolyUtil.decode(encodedPath);
+        builder.include(mSource);
+        builder.include(mDestination);
+        List<LatLng> path = PolyUtil.decode(mEncodedPath);
         for (int i = 0; i < path.size(); i++) {
             builder.include(path.get(i));
         }
-        int padding = 50;
         LatLngBounds bounds = builder.build();
-        Polyline polyline = googleMap.addPolyline(new PolylineOptions().addAll(path));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        // Draw route from merchant to customer
+        Polyline polyline = mGoogleMap.addPolyline(new PolylineOptions().addAll(path));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, MAP_PADDING));
         polyline.setColor(PATH_COLOR);
         polyline.setWidth(PATH_STROKE_WIDTH_PX);
         polyline.setJointType(JointType.ROUND);
-        isMapLoaded = true;
+        mIsMapLoaded = true;
     }
 
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_merchant_store);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

@@ -8,6 +8,9 @@ import com.googleinterns.smb.common.UIUtils;
 import java.io.Serializable;
 import java.util.Locale;
 
+/**
+ * Product offer model
+ */
 public class Offer implements Serializable {
 
     // Offer types

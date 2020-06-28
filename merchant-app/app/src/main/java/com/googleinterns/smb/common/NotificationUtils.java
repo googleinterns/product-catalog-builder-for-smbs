@@ -30,27 +30,37 @@ public class NotificationUtils {
     private static final String TAG = NotificationUtils.class.getName();
 
     // Notification channel IDs
-    // Channel for order notifications
+    // Channel for card_new_order notifications
     public static final int ORDER_CHANNEL = 0;
     // Channel for merchant engagement notifications
     public static final int UPDATE_CHANNEL = 1;
 
     // Channel IDs
-    private static final List<String> channelIDs = Arrays.asList("ORDER_CHANNEL", "UPDATE_CHANNEL");
+    private static final List<String> channelIDs = Arrays.asList(
+            "ORDER_CHANNEL",
+            "UPDATE_CHANNEL");
     // Information about notification channel
-    private static final List<String> channelNames = Arrays.asList("Order Notifications", "Update Notifications");
+    private static final List<String> channelNames = Arrays.asList(
+            "Order Notifications",
+            "Update Notifications");
     // Channel descriptions
-    private static final List<String> channelDescriptions = Arrays.asList("Customer order notifications", "Other updates notifications");
+    private static final List<String> channelDescriptions = Arrays.asList(
+            "Customer card_new_order notifications",
+            "Other updates notifications");
 
     public static void createNotificationChannel(Context context, int channel) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager == null) {
             Log.e(TAG, "Unable to get notification manager");
             return;
         }
         // Create notification channel for android Oreo and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(channelIDs.get(channel), channelNames.get(channel), NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    channelIDs.get(channel),
+                    channelNames.get(channel),
+                    NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.enableLights(true);
             notificationChannel.enableVibration(true);
             notificationChannel.setDescription(channelDescriptions.get(channel));
@@ -77,5 +87,4 @@ public class NotificationUtils {
         int uniqueID = (int) ((new Date().getTime() / 1000L)) % Integer.MAX_VALUE;
         notificationManager.notify(uniqueID, notification);
     }
-
 }

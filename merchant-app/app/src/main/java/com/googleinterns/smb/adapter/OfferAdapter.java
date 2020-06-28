@@ -13,6 +13,9 @@ import com.googleinterns.smb.model.Offer;
 
 import java.util.List;
 
+/**
+ * Recycler view adapter to display offers in {@link com.googleinterns.smb.fragment.ViewOfferDialogFragment}
+ */
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> {
 
     public interface OfferActionListener {
@@ -21,37 +24,37 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
         void onDeleteOfferSelect(int position);
     }
 
-    private OfferActionListener listener;
-    private List<Offer> offers;
+    private OfferActionListener mListener;
+    private List<Offer> mOffers;
 
     public OfferAdapter(OfferActionListener listener, List<Offer> offers) {
-        this.listener = listener;
-        this.offers = offers;
+        mListener = listener;
+        mOffers = offers;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_offer_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Offer offer = offers.get(position);
-        holder.discountValue.setText(offer.getOfferAmountString());
-        holder.validity.setText(offer.getValidity());
-        holder.status.setText(offer.getStatus());
-        holder.edit.setOnClickListener(new View.OnClickListener() {
+        Offer offer = mOffers.get(position);
+        holder.mDiscountValue.setText(offer.getOfferAmountString());
+        holder.mValidity.setText(offer.getValidity());
+        holder.mStatus.setText(offer.getStatus());
+        holder.mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onEditOfferSelect(position);
+                mListener.onEditOfferSelect(position);
             }
         });
-        holder.delete.setOnClickListener(new View.OnClickListener() {
+        holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDeleteOfferSelect(position);
+                mListener.onDeleteOfferSelect(position);
                 notifyItemRemoved(position);
             }
         });
@@ -59,24 +62,24 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return offers.size();
+        return mOffers.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView discountValue;
-        private TextView validity;
-        private View delete;
-        private View edit;
-        private TextView status;
+        private TextView mDiscountValue;
+        private TextView mValidity;
+        private View mDelete;
+        private View mEdit;
+        private TextView mStatus;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            discountValue = itemView.findViewById(R.id.discount_value);
-            validity = itemView.findViewById(R.id.validity);
-            delete = itemView.findViewById(R.id.delete);
-            edit = itemView.findViewById(R.id.edit);
-            status = itemView.findViewById(R.id.status);
+            mDiscountValue = itemView.findViewById(R.id.text_view_discount_value);
+            mValidity = itemView.findViewById(R.id.text_view_validity);
+            mDelete = itemView.findViewById(R.id.image_view_delete);
+            mEdit = itemView.findViewById(R.id.image_view_edit);
+            mStatus = itemView.findViewById(R.id.text_view_status);
         }
     }
 }

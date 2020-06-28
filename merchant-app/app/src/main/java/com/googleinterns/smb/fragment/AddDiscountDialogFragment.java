@@ -21,7 +21,7 @@ import com.googleinterns.smb.common.UIUtils;
 import java.util.Objects;
 
 /**
- * Dialog for adding discount in billing activity
+ * Dialog for adding discount in {@link com.googleinterns.smb.BillingActivity}
  */
 public class AddDiscountDialogFragment extends DialogFragment {
 
@@ -33,7 +33,7 @@ public class AddDiscountDialogFragment extends DialogFragment {
 
     private static final String TAG = AddDiscountDialogFragment.class.getName();
 
-    private DiscountDialogInterface listener;
+    private DiscountDialogInterface mListener;
     private View mDialogView;
     private TextInputEditText mDiscount;
     private TextInputLayout mDiscountTextLayout;
@@ -62,12 +62,12 @@ public class AddDiscountDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         double discount = getDiscount();
-                        double total = listener.getTotalPrice();
+                        double total = mListener.getTotalPrice();
                         if (total < discount) {
                             mDiscountTextLayout.setError("Error: discount greater than total");
                         } else {
                             UIUtils.closeKeyboard(requireContext());
-                            listener.onDiscountSelect(discount);
+                            mListener.onDiscountSelect(discount);
                             dismiss();
                         }
                     }
@@ -93,16 +93,16 @@ public class AddDiscountDialogFragment extends DialogFragment {
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the DiscountDialogInterface so we can send events to the host
-            listener = (DiscountDialogInterface) context;
+            mListener = (DiscountDialogInterface) context;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(getActivity().toString()
-                    + " must implement OptionSelectListener");
+                    + " must implement " + DiscountDialogInterface.class.getName());
         }
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.add_discount_dialog, null);
-        mDiscount = mDialogView.findViewById(R.id.text_field_discount_amount);
-        mDiscountTextLayout = mDialogView.findViewById(R.id.text_layout_discount_amount);
+        mDialogView = inflater.inflate(R.layout.dialog_add_discount, null);
+        mDiscount = mDialogView.findViewById(R.id.edit_text_discount);
+        mDiscountTextLayout = mDialogView.findViewById(R.id.layout_edit_text_discount);
         mDiscount.requestFocus();
         UIUtils.showKeyboard(requireContext());
     }

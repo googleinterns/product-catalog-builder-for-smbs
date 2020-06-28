@@ -9,6 +9,9 @@ import androidx.preference.PreferenceManager;
 
 import com.googleinterns.smb.model.Merchant;
 
+/**
+ * Startup activity to display brand logo during app cold-start.
+ */
 public class EntryActivity extends AppCompatActivity {
 
     @Override

@@ -24,17 +24,17 @@ import java.util.Objects;
  */
 public class EditQtyDialogFragment extends DialogFragment {
 
-    public interface OptionSelectListener {
-        void onConfirm(int qty);
+    public interface QtyConfirmationListener {
+        void onQtyConfirm(int qty);
     }
 
     private static final String TAG = "EditPriceDialogFragment";
-    private OptionSelectListener listener;
+    private QtyConfirmationListener mListener;
     private View mDialogView;
     private TextInputEditText mEditTextQty;
 
-    public EditQtyDialogFragment(OptionSelectListener listener) {
-        this.listener = listener;
+    public EditQtyDialogFragment(QtyConfirmationListener listener) {
+        mListener = listener;
     }
 
     @NonNull
@@ -75,8 +75,8 @@ public class EditQtyDialogFragment extends DialogFragment {
      * Calls the registered listener with the updated value of quantity
      */
     private void updateQty(int qty) {
-        if (listener != null) {
-            listener.onConfirm(qty);
+        if (mListener != null) {
+            mListener.onQtyConfirm(qty);
         } else {
             Log.e(TAG, "Error while updating quantity");
         }
@@ -86,10 +86,10 @@ public class EditQtyDialogFragment extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.set_qty, null);
+        mDialogView = inflater.inflate(R.layout.dialog_set_qty, null);
         // Initialise views
-        TextInputLayout mEditTextLayout = mDialogView.findViewById(R.id.text_layout_qty);
-        mEditTextQty = mDialogView.findViewById(R.id.text_field_qty);
+        TextInputLayout mEditTextLayout = mDialogView.findViewById(R.id.layout_edit_text_qty);
+        mEditTextQty = mDialogView.findViewById(R.id.edit_text_qty);
         mEditTextQty.requestFocus();
         UIUtils.showKeyboard(requireContext());
     }

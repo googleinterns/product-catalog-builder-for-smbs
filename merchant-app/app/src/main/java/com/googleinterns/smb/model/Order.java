@@ -27,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Class to model the customer order
+ * Class to model the customer card_new_order
  */
 public class Order implements Serializable {
 
@@ -41,23 +41,34 @@ public class Order implements Serializable {
     public static final String DISPATCHED = "DISPATCHED";
     public static final String DELIVERED = "DELIVERED";
 
-    @PropertyName("customer_name")
+    // Field constants
+    public static final String FIELD_CUSTOMER_NAME = "customer_name";
+    public static final String FIELD_CUSTOMER_ADDRESS = "customer_address";
+    public static final String FIELD_USER_ID = "user_id";
+    public static final String FIELD_OID = "oid";
+    public static final String FIELD_ITEMS = "items";
+    public static final String FIELD_STATUS = "status";
+    public static final String FIELD_TIMESTAMP = "timestamp";
+    public static final String FIELD_LOCATION = "location";
+    public static final String FIELD_CUSTOMER_CONTACT = "customer_contact";
+
+    @PropertyName(FIELD_CUSTOMER_NAME)
     private String customerName;
-    @PropertyName("customer_address")
+    @PropertyName(FIELD_CUSTOMER_ADDRESS)
     private String customerAddress;
-    @PropertyName("user_id")
+    @PropertyName(FIELD_USER_ID)
     private String customerUserId;
-    @PropertyName("oid")
+    @PropertyName(FIELD_OID)
     private String oid;
-    @PropertyName("items")
+    @PropertyName(FIELD_ITEMS)
     private List<BillItem> billItems = new ArrayList<>();
-    @PropertyName("status")
+    @PropertyName(FIELD_STATUS)
     private String status;
-    @PropertyName("timestamp")
+    @PropertyName(FIELD_TIMESTAMP)
     private long timestamp;
-    @PropertyName("location")
+    @PropertyName(FIELD_LOCATION)
     private List<Double> customerLatLng;
-    @PropertyName("customer_contact")
+    @PropertyName(FIELD_CUSTOMER_CONTACT)
     private String customerContact;
 
     /**
@@ -68,25 +79,25 @@ public class Order implements Serializable {
     }
 
     public Order(Map<String, String> data) {
-        customerUserId = data.get("user_id");
-        customerName = data.get("customer_name");
-        customerAddress = data.get("customer_address");
-        oid = data.get("oid");
-        status = data.get("status");
-        timestamp = Long.parseLong(Objects.requireNonNull(data.get("timestamp")));
-        if (data.containsKey("customer_contact")) {
-            customerContact = data.get("customer_contact");
+        customerUserId = data.get(FIELD_USER_ID);
+        customerName = data.get(FIELD_CUSTOMER_NAME);
+        customerAddress = data.get(FIELD_CUSTOMER_ADDRESS);
+        oid = data.get(FIELD_OID);
+        status = data.get(FIELD_STATUS);
+        timestamp = Long.parseLong(Objects.requireNonNull(data.get(FIELD_TIMESTAMP)));
+        if (data.containsKey(FIELD_CUSTOMER_CONTACT)) {
+            customerContact = data.get(FIELD_CUSTOMER_CONTACT);
         }
         try {
-            JSONArray items = new JSONArray(data.get("items"));
+            JSONArray items = new JSONArray(data.get(FIELD_ITEMS));
             for (int i = 0; i < items.length(); i++) {
                 BillItem billItem = new BillItem(items.getJSONObject(i));
                 billItems.add(billItem);
             }
-            JSONArray location = new JSONArray(data.get("location"));
+            JSONArray location = new JSONArray(data.get(FIELD_LOCATION));
             customerLatLng = Arrays.asList(location.getDouble(0), location.getDouble(1));
         } catch (JSONException e) {
-            Log.e(TAG, "Error while initialising order", e);
+            Log.e(TAG, "Error while initialising card_new_order", e);
         }
     }
 
@@ -150,7 +161,7 @@ public class Order implements Serializable {
             return;
         status = DISPATCHED;
         FirebaseUtils.updateOrderStatus(oid, DISPATCHED);
-        // Consumer side API call to notify order dispatch
+        // Consumer side API call to notify card_new_order dispatch
         notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DISPATCHED_STATUS_MESSAGE);
     }
 
@@ -162,7 +173,7 @@ public class Order implements Serializable {
         }
         status = DELIVERED;
         FirebaseUtils.updateOrderStatus(oid, DELIVERED);
-        // Consumer side API call to notify order delivered
+        // Consumer side API call to notify card_new_order delivered
         notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DELIVERED_STATUS_MESSAGE);
     }
 
@@ -171,6 +182,7 @@ public class Order implements Serializable {
     }
 
     private void notifyNewOrderStatus(String userID, String orderID, String newStatus) {
+        // Notify new card_new_order status to consumer side
         APIHandler.ConsumerService service = APIHandler.getConsumerService();
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setUserId(getCustomerUserId());
@@ -188,96 +200,97 @@ public class Order implements Serializable {
         });
     }
 
+    @Exclude
     public LatLng getCustomerLocation() {
         return new LatLng(customerLatLng.get(0), customerLatLng.get(1));
     }
 
-    @PropertyName("customer_name")
+    @PropertyName(FIELD_CUSTOMER_NAME)
     public String getCustomerName() {
         return customerName;
     }
 
-    @PropertyName("customer_name")
+    @PropertyName(FIELD_CUSTOMER_NAME)
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
 
-    @PropertyName("customer_address")
+    @PropertyName(FIELD_CUSTOMER_ADDRESS)
     public String getCustomerAddress() {
         return customerAddress;
     }
 
-    @PropertyName("customer_address")
+    @PropertyName(FIELD_CUSTOMER_ADDRESS)
     public void setCustomerAddress(String customerAddress) {
         this.customerAddress = customerAddress;
     }
 
-    @PropertyName("user_id")
+    @PropertyName(FIELD_USER_ID)
     public String getCustomerUserId() {
         return customerUserId;
     }
 
-    @PropertyName("user_id")
+    @PropertyName(FIELD_USER_ID)
     public void setCustomerUserId(String customerUserId) {
         this.customerUserId = customerUserId;
     }
 
-    @PropertyName("oid")
+    @PropertyName(FIELD_OID)
     public String getOid() {
         return oid;
     }
 
-    @PropertyName("oid")
+    @PropertyName(FIELD_OID)
     public void setOid(String oid) {
         this.oid = oid;
     }
 
-    @PropertyName("items")
+    @PropertyName(FIELD_ITEMS)
     public List<BillItem> getBillItems() {
         return billItems;
     }
 
-    @PropertyName("items")
+    @PropertyName(FIELD_ITEMS)
     public void setBillItems(List<BillItem> billItems) {
         this.billItems = billItems;
     }
 
-    @PropertyName("status")
+    @PropertyName(FIELD_STATUS)
     public String getStatus() {
         return status;
     }
 
-    @PropertyName("status")
+    @PropertyName(FIELD_STATUS)
     public void setStatus(String status) {
         this.status = status;
     }
 
-    @PropertyName("timestamp")
+    @PropertyName(FIELD_TIMESTAMP)
     public long getTimestamp() {
         return timestamp;
     }
 
-    @PropertyName("timestamp")
+    @PropertyName(FIELD_TIMESTAMP)
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    @PropertyName("location")
+    @PropertyName(FIELD_LOCATION)
     public void setCustomerLatLng(List<Double> customerLatLng) {
         this.customerLatLng = customerLatLng;
     }
 
-    @PropertyName("location")
+    @PropertyName(FIELD_LOCATION)
     public List<Double> getCustomerLatLng() {
         return customerLatLng;
     }
 
-    @PropertyName("customer_contact")
+    @PropertyName(FIELD_CUSTOMER_CONTACT)
     public String getCustomerContact() {
         return customerContact;
     }
 
-    @PropertyName("customer_contact")
+    @PropertyName(FIELD_CUSTOMER_CONTACT)
     public void setCustomerContact(String customerContact) {
         this.customerContact = customerContact;
     }

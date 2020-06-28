@@ -17,20 +17,20 @@ import com.googleinterns.smb.model.BillItem;
 import java.util.List;
 
 /**
- * Recycler view adapter for displaying order items in order display activity
+ * Recycler view adapter for displaying confirmed card_new_order items in {@link com.googleinterns.smb.OngoingOrderDisplayActivity}
  */
-public class ConfirmedOrderAdapter extends RecyclerView.Adapter<ConfirmedOrderAdapter.ViewHolder> {
+public class ConfirmedItemAdapter extends RecyclerView.Adapter<ConfirmedItemAdapter.ViewHolder> {
 
-    private List<BillItem> billItems;
+    private List<BillItem> mBillItems;
 
-    public ConfirmedOrderAdapter(List<BillItem> billItems) {
-        this.billItems = billItems;
+    public ConfirmedItemAdapter(List<BillItem> billItems) {
+        mBillItems = billItems;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.confirmed_order_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_confirmed_order_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -38,7 +38,7 @@ public class ConfirmedOrderAdapter extends RecyclerView.Adapter<ConfirmedOrderAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Initialise bill item view
-        BillItem billItem = billItems.get(position);
+        BillItem billItem = mBillItems.get(position);
         holder.mProductName.setText(billItem.getProductName());
         holder.mPrice.setText(billItem.getDiscountedPriceString());
         holder.mQty.setText(billItem.getQtyString());
@@ -51,11 +51,11 @@ public class ConfirmedOrderAdapter extends RecyclerView.Adapter<ConfirmedOrderAd
 
     @Override
     public int getItemCount() {
-        return billItems.size();
+        return mBillItems.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private ConfirmedOrderAdapter mAdapter;
+
         private TextView mProductName;
         private TextView mPrice;
         private TextView mTotalPrice;
@@ -64,11 +64,11 @@ public class ConfirmedOrderAdapter extends RecyclerView.Adapter<ConfirmedOrderAd
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mProductName = itemView.findViewById(R.id.product_name);
+            mProductName = itemView.findViewById(R.id.text_view_product_name);
             mPrice = itemView.findViewById(R.id.merchant_price);
-            mProductImage = itemView.findViewById(R.id.product_image);
-            mQty = itemView.findViewById(R.id.qty_val);
-            mTotalPrice = itemView.findViewById(R.id.total);
+            mProductImage = itemView.findViewById(R.id.image_view_product);
+            mQty = itemView.findViewById(R.id.text_view_qty);
+            mTotalPrice = itemView.findViewById(R.id.text_view_total);
         }
     }
 }

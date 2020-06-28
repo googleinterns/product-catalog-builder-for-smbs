@@ -18,31 +18,34 @@ import com.googleinterns.smb.model.Order;
 
 import java.util.List;
 
+/**
+ * Activity to display all ongoing orders
+ */
 public class OngoingOrdersActivity extends MainActivity implements
         FirebaseUtils.OnOrderReceivedListener,
         OrderAdapter.OrderSelectListener {
 
     private static final String TAG = OngoingOrdersActivity.class.getName();
-    private View contentView;
+    private View mContentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Ongoing orders");
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        contentView = inflater.inflate(R.layout.activity_new_orders, null, false);
-        container.addView(contentView, 0);
+        mContentView = inflater.inflate(R.layout.activity_new_orders, null, false);
+        mContainer.addView(mContentView, 0);
         FirebaseUtils.getOngoingOrders(this);
     }
 
     private void initRecyclerView(List<Order> orders) {
         if (orders.isEmpty()) {
-            TextView emptyOrderMsg = contentView.findViewById(R.id.empty_orders_msg);
+            TextView emptyOrderMsg = mContentView.findViewById(R.id.empty_orders_msg);
             emptyOrderMsg.setText(R.string.empty_ongoing_orders_msg);
-            View emptyMsgLayout = contentView.findViewById(R.id.empty_msg);
+            View emptyMsgLayout = mContentView.findViewById(R.id.empty_msg);
             emptyMsgLayout.setVisibility(View.VISIBLE);
         }
-        RecyclerView recyclerView = contentView.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = mContentView.findViewById(R.id.recycler_view);
         Log.d(TAG, orders.toString());
         recyclerView.setAdapter(new OngoingOrderAdapter(this, orders));
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
@@ -55,7 +58,7 @@ public class OngoingOrdersActivity extends MainActivity implements
 
     @Override
     public void onOrderReceived(List<Order> orders) {
-        View progressBar = contentView.findViewById(R.id.progress_bar);
+        View progressBar = mContentView.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
         initRecyclerView(orders);
     }
@@ -63,7 +66,7 @@ public class OngoingOrdersActivity extends MainActivity implements
     @Override
     public void onOrderSelect(Order order) {
         Intent intent = new Intent(this, OngoingOrderDisplayActivity.class);
-        intent.putExtra("order", order);
+        intent.putExtra("card_new_order", order);
         startActivity(intent);
     }
 

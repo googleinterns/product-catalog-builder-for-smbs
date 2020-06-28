@@ -18,7 +18,7 @@
             android:padding="4dp">
 
             <ImageView
-                android:id="@+id/product_image"
+                android:id="@+id/image_view_product"
                 android:layout_width="110dp"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/product_image"
@@ -31,7 +31,7 @@
                 android:padding="4dp">
 
                 <TextView
-                    android:id="@+id/product_name"
+                    android:id="@+id/text_view_product_name"
                     style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -54,7 +54,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/mrp"
+                        android:id="@+id/text_view_mrp"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -80,7 +80,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/discounted_price"
+                        android:id="@+id/text_view_discounted_price"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -96,23 +96,23 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/offers_count"
+                        android:id="@+id/text_view_offer_count"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="No offers added"
+                        android:text="@string/no_offers_added"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
-                        android:id="@+id/view_offers"
+                        android:id="@+id/button_view_offers"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View"
+                        android:text="@string/view"
                         android:textAllCaps="false"
                         app:icon="@drawable/ic_action_view"
                         app:iconPadding="8dp"

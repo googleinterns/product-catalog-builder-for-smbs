@@ -1,5 +1,8 @@
 package com.googleinterns.smb.pojo;
 
+/**
+ * POJO class for modelling OrderStatus request. See {@link com.googleinterns.smb.common.APIHandler}
+ */
 public class OrderStatus {
 
     private String userId;

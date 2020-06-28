@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/store_name_edit_layout"
+            android:id="@+id/layout_edit_text_store_name"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toBottomOf="@+id/label_store_name">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/store_name_edit_text"
+                android:id="@+id/edit_text_store_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -48,10 +48,10 @@
             android:layout_marginTop="32dp"
             android:text="@string/store_address"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/store_name_edit_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_store_name" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/store_address_edit_layout"
+            android:id="@+id/layout_edit_text_store_address"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
             app:layout_constraintTop_toBottomOf="@+id/label_store_address">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/store_address_edit_text"
+                android:id="@+id/edit_text_store_address"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:gravity="top"
@@ -81,10 +81,10 @@
             android:layout_marginTop="32dp"
             android:text="@string/store_location"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/store_address_edit_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_store_address" />
 
         <Button
-            android:id="@+id/set_location"
+            android:id="@+id/button_set_location"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginStart="16dp"
@@ -105,10 +105,10 @@
             android:layout_marginTop="32dp"
             android:text="@string/domain_name_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/set_location" />
+            app:layout_constraintTop_toBottomOf="@+id/button_set_location" />
 
         <RelativeLayout
-            android:id="@+id/domain_name_wrapper_layout"
+            android:id="@+id/layout_domain_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -119,26 +119,26 @@
             app:layout_constraintTop_toBottomOf="@+id/label_merchant_domain_name">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/domain_name_edit_layout"
+                android:id="@+id/layout_edit_text_domain_name"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:endIconMode="custom">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/domain_name_edit_text"
+                    android:id="@+id/edit_text_domain_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <ProgressBar
-                android:id="@+id/search_progress"
+                android:id="@+id/progress_bar_search"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_alignTop="@id/domain_name_edit_layout"
-                android:layout_alignEnd="@id/domain_name_edit_layout"
-                android:layout_alignBottom="@id/domain_name_edit_layout"
+                android:layout_alignTop="@id/layout_edit_text_domain_name"
+                android:layout_alignEnd="@id/layout_edit_text_domain_name"
+                android:layout_alignBottom="@id/layout_edit_text_domain_name"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="10dp"
                 android:visibility="invisible" />
@@ -146,7 +146,7 @@
         </RelativeLayout>
 
         <ImageView
-            android:id="@+id/domain_name_help"
+            android:id="@+id/image_view_help"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -157,7 +157,7 @@
             app:srcCompat="@drawable/ic_action_help_black" />
 
         <Button
-            android:id="@+id/save"
+            android:id="@+id/button_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -167,18 +167,18 @@
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/domain_name_wrapper_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_domain_name" />
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="@+id/save"
-            app:layout_constraintEnd_toStartOf="@+id/save"
-            app:layout_constraintTop_toTopOf="@+id/save" />
+            app:layout_constraintBottom_toBottomOf="@+id/button_save"
+            app:layout_constraintEnd_toStartOf="@+id/button_save"
+            app:layout_constraintTop_toTopOf="@+id/button_save" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

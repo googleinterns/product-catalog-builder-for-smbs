@@ -25,41 +25,39 @@ import java.util.Objects;
  */
 public class EditPriceDialogFragment extends DialogFragment {
 
-    public interface EditPriceDialogInterface {
-        void onConfirm(Double discountPrice);
-
-        Double getMRP();
+    public interface PriceConfirmationListener {
+        void onPriceConfirm(Double discountPrice);
     }
 
-    private static final String TAG = "EditPriceDialogFragment";
-    private EditPriceDialogInterface listener;
+    private static final String TAG = EditPriceDialogFragment.class.getName();
+    private PriceConfirmationListener mListener;
     private View mDialogView;
     private TextInputEditText mEditTextDiscountPrice;
     private TextInputLayout mEditTextLayout;
     private Double mMRP;
 
-    public EditPriceDialogFragment(EditPriceDialogInterface listener) {
-        this.listener = listener;
+    public EditPriceDialogFragment(PriceConfirmationListener listener, Double MRP) {
+        mListener = listener;
+        mMRP = MRP;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mMRP = listener.getMRP();
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(mDialogView)
                 .setTitle(R.string.set_discount_price)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // ignore
+                        // Ignore
                         UIUtils.closeKeyboard(requireContext());
                     }
                 })
-                .setPositiveButton(R.string.done, null); // listener overridden later
+                .setPositiveButton(R.string.done, null); // Listener overridden later
         final Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
-        // manually set on click listener to positive button for validation before dismissing the dialog
+        // Manually set on click listener to positive button for validation before dismissing the dialog
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
@@ -68,7 +66,7 @@ public class EditPriceDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         Double discountedPrice = getDiscountPrice();
-                        // discount price greater than MRP is not allowed
+                        // Discount price greater than MRP is not allowed
                         if (mMRP > 0 && discountedPrice > mMRP) {
                             mEditTextLayout.setError("Error: price must be less than MRP");
                         } else {
@@ -98,8 +96,8 @@ public class EditPriceDialogFragment extends DialogFragment {
      * Calls the registered listener with the updated value of discount price
      */
     private void updateDiscountPrice(Double discountPrice) {
-        if (listener != null) {
-            listener.onConfirm(discountPrice);
+        if (mListener != null) {
+            mListener.onPriceConfirm(discountPrice);
         } else {
             Log.e(TAG, "Error while updating discount price");
         }
@@ -109,10 +107,10 @@ public class EditPriceDialogFragment extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.set_price, null);
+        mDialogView = inflater.inflate(R.layout.dialog_set_price, null);
         // initialise views
-        mEditTextLayout = mDialogView.findViewById(R.id.text_layout_discount_price);
-        mEditTextDiscountPrice = mDialogView.findViewById(R.id.text_field_discount_price);
+        mEditTextLayout = mDialogView.findViewById(R.id.layout_edit_text_discount_price);
+        mEditTextDiscountPrice = mDialogView.findViewById(R.id.edit_text_discount_price);
         mEditTextDiscountPrice.requestFocus();
         UIUtils.showKeyboard(requireContext());
     }

@@ -1,4 +1,4 @@
-package com.googleinterns.smb;
+package com.googleinterns.smb.scan;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,7 +10,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.googleinterns.smb.adapter.ProductBottomSheetAdapter;
+import com.googleinterns.smb.ConfirmationActivity;
+import com.googleinterns.smb.R;
+import com.googleinterns.smb.adapter.BottomSheetItemAdapter;
 import com.googleinterns.smb.common.ProductBottomSheet;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Product;
@@ -20,23 +22,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ScanTextActivity extends ScanActivity implements ProductBottomSheetAdapter.ProductStatusListener, TextRecognitionProcessor.OnProductFoundListener {
+/**
+ * Specialisation of {@link ScanActivity} to implement Text scan functionality
+ */
+public class ScanTextActivity extends ScanActivity implements
+        BottomSheetItemAdapter.ProductStatusListener,
+        TextRecognitionProcessor.OnProductFoundListener {
 
     private ProductBottomSheet productBottomSheet;
     private TextView numSuggestedProducts;
     private View numProductsBadge;
-    private ProductBottomSheetAdapter productBottomSheetAdapter;
+    private BottomSheetItemAdapter bottomSheetItemAdapter;
 
     @Override
     protected void initViews() {
         setTitle("Scan Text");
         setContentView(R.layout.activity_scan_text);
-        TextView helpText = findViewById(R.id.help_text);
+        TextView helpText = findViewById(R.id.text_view_help);
         helpText.setText(R.string.point_at_product_text_to_scan);
 
         // Current number of suggested products in bottom sheet
-        numSuggestedProducts = findViewById(R.id.bottom_sheet_product_count);
-        numProductsBadge = findViewById(R.id.num_products_badge);
+        numSuggestedProducts = findViewById(R.id.text_view_product_count);
+        numProductsBadge = findViewById(R.id.card_view_num_products_badge);
         initRecyclerView();
     }
 
@@ -45,13 +52,13 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
      */
     private void initRecyclerView() {
         List<Product> products = new ArrayList<>();
-        RecyclerView recyclerView = findViewById(R.id.product_recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         // Recycler view adapter
-        productBottomSheetAdapter = new ProductBottomSheetAdapter(products, this);
+        bottomSheetItemAdapter = new BottomSheetItemAdapter(products, this);
 
         // Bottom sheet handler object
-        productBottomSheet = new ProductBottomSheet(productBottomSheetAdapter);
-        recyclerView.setAdapter(productBottomSheetAdapter);
+        productBottomSheet = new ProductBottomSheet(bottomSheetItemAdapter);
+        recyclerView.setAdapter(bottomSheetItemAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
@@ -59,12 +66,12 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
             }
         });
 
-        Button clearButton = findViewById(R.id.clear);
+        Button clearButton = findViewById(R.id.button_clear_all);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 productBottomSheet.clear();
-                updateBadgeCount(productBottomSheetAdapter.getItemCount());
+                updateBadgeCount(bottomSheetItemAdapter.getItemCount());
             }
         });
     }
@@ -73,7 +80,12 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     protected void setDetector() {
         // Attach text detector to camera source for live preview
         TextRecognitionProcessor mDetector = new TextRecognitionProcessor(this);
-        cameraSource.setMachineLearningFrameProcessor(mDetector);
+        mCameraSource.setMachineLearningFrameProcessor(mDetector);
+    }
+
+    @Override
+    protected boolean isProductDetected() {
+        return !productBottomSheet.getSelectedProducts().isEmpty();
     }
 
     @Override
@@ -94,7 +106,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     public void onProductDiscard(Product product) {
         UIUtils.showToast(this, "Product discarded");
         productBottomSheet.onProductDiscard(product);
-        updateBadgeCount(productBottomSheetAdapter.getItemCount());
+        updateBadgeCount(bottomSheetItemAdapter.getItemCount());
     }
 
     /**
@@ -104,7 +116,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     public void onProductAdd(Product product) {
         UIUtils.showToast(this, "Product added");
         productBottomSheet.onProductAdd(product);
-        updateBadgeCount(productBottomSheetAdapter.getItemCount());
+        updateBadgeCount(bottomSheetItemAdapter.getItemCount());
     }
 
     /**
@@ -115,7 +127,7 @@ public class ScanTextActivity extends ScanActivity implements ProductBottomSheet
     @Override
     public void onProductFound(List<Product> products) {
         productBottomSheet.addProducts(products);
-        updateBadgeCount(productBottomSheetAdapter.getItemCount());
+        updateBadgeCount(bottomSheetItemAdapter.getItemCount());
     }
 
     @SuppressLint("DefaultLocale")

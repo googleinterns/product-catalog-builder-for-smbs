@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 import com.googleinterns.smb.R;
 
 /**
- * Dialog for showing different ways to add new product to inventory
+ * Dialog for showing different options to add new product to inventory. See {@link com.googleinterns.smb.InventoryActivity}
  */
 public class AddProductDialogFragment extends DialogFragment {
 
@@ -27,7 +27,7 @@ public class AddProductDialogFragment extends DialogFragment {
         void onScanTextSelect();
     }
 
-    private OptionSelectListener listener;
+    private OptionSelectListener mListener;
     private View mDialogView;
 
     @NonNull
@@ -45,43 +45,43 @@ public class AddProductDialogFragment extends DialogFragment {
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = (OptionSelectListener) context;
+            mListener = (OptionSelectListener) context;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(getActivity().toString()
                     + " must implement OptionSelectListener");
         }
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.select_dialog, null);
+        mDialogView = inflater.inflate(R.layout.dialog_select, null);
         // Initialise views
-        View scanLayout = mDialogView.findViewById(R.id.scanLayout);
-        View imageLayout = mDialogView.findViewById(R.id.imageLayout);
-        View videoLayout = mDialogView.findViewById(R.id.videoLayout);
-        View ocrLayout = mDialogView.findViewById(R.id.ocrLayout);
+        View scanLayout = mDialogView.findViewById(R.id.layout_scan);
+        View imageLayout = mDialogView.findViewById(R.id.layout_image);
+        View videoLayout = mDialogView.findViewById(R.id.layout_video);
+        View ocrLayout = mDialogView.findViewById(R.id.layout_ocr);
 
         // Attach listener
         scanLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onScanSelect();
+                mListener.onScanSelect();
             }
         });
         imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onImageUploadSelect();
+                mListener.onImageUploadSelect();
             }
         });
         videoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onVideoUploadSelect();
+                mListener.onVideoUploadSelect();
             }
         });
         ocrLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onScanTextSelect();
+                mListener.onScanTextSelect();
             }
         });
     }

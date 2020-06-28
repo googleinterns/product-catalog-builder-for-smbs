@@ -21,25 +21,28 @@ import com.googleinterns.smb.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity to add, remove and view offers on individual items.
+ */
 public class ProductOfferActivity extends MainActivity implements ProductOfferAdapter.OfferActionListener {
 
-    private View contentView;
-    private ProductOfferAdapter productOfferAdapter;
-    private List<Product> products;
+    private View mContentView;
+    private ProductOfferAdapter mProductOfferAdapter;
+    private List<Product> mProducts;
     // Product index related to last offer change
-    private int productIdx;
+    private int mProductIdx;
     // Offer index in a product related to last offer change
-    private int offerIdx;
+    private int mOfferIdx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Offers");
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        contentView = inflater.inflate(R.layout.activity_product_offer, null, false);
-        container.addView(contentView, 0);
+        mContentView = inflater.inflate(R.layout.activity_product_offer, null, false);
+        mContainer.addView(mContentView, 0);
 
-        TextInputEditText searchText = contentView.findViewById(R.id.search_edit_text);
+        TextInputEditText searchText = mContentView.findViewById(R.id.edit_text_search);
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -60,33 +63,34 @@ public class ProductOfferActivity extends MainActivity implements ProductOfferAd
         merchant.fetchProducts(new Merchant.OnProductFetchedListener() {
             @Override
             public void onProductFetched(List<Product> products) {
-                ProductOfferActivity.this.products = products;
+                ProductOfferActivity.this.mProducts = products;
                 initRecyclerView();
             }
         });
     }
 
     private void filter(String searchText) {
-        if (products == null) {
+        if (mProducts == null) {
             return;
         }
+        // Discard empty search, and set all products
         if (searchText.trim().equals("")) {
-            productOfferAdapter.setProducts(products);
+            mProductOfferAdapter.setProducts(mProducts);
             return;
         }
         List<Product> filteredList = new ArrayList<>();
-        for (Product product : products) {
+        for (Product product : mProducts) {
             if (product.getProductName().toLowerCase().contains(searchText.toLowerCase())) {
                 filteredList.add(product);
             }
         }
-        productOfferAdapter.setProducts(filteredList);
+        mProductOfferAdapter.setProducts(filteredList);
     }
 
     private void initRecyclerView() {
-        productOfferAdapter = new ProductOfferAdapter(this, products, getSupportFragmentManager());
-        RecyclerView recyclerView = contentView.findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(productOfferAdapter);
+        mProductOfferAdapter = new ProductOfferAdapter(this, mProducts, getSupportFragmentManager());
+        RecyclerView recyclerView = mContentView.findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(mProductOfferAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
@@ -98,7 +102,7 @@ public class ProductOfferActivity extends MainActivity implements ProductOfferAd
 
     @Override
     public void onAddOfferSelect(int productIdx) {
-        this.productIdx = productIdx;
+        this.mProductIdx = productIdx;
         Intent intent = new Intent(this, OfferDetailsActivity.class);
         intent.putExtra("requestCode", OfferDetailsActivity.RC_ADD_OFFER);
         startActivityForResult(intent, OfferDetailsActivity.RC_ADD_OFFER);
@@ -106,18 +110,18 @@ public class ProductOfferActivity extends MainActivity implements ProductOfferAd
 
     @Override
     public void onEditOfferSelect(int productIdx, int offerIdx) {
-        this.productIdx = productIdx;
-        this.offerIdx = offerIdx;
+        this.mProductIdx = productIdx;
+        this.mOfferIdx = offerIdx;
         Intent intent = new Intent(this, OfferDetailsActivity.class);
         intent.putExtra("requestCode", OfferDetailsActivity.RC_EDIT_OFFER);
-        Offer offer = productOfferAdapter.getProducts().get(productIdx).getOffers().get(offerIdx);
+        Offer offer = mProductOfferAdapter.getProducts().get(productIdx).getOffers().get(offerIdx);
         intent.putExtra("offer", offer);
         startActivityForResult(intent, OfferDetailsActivity.RC_EDIT_OFFER);
     }
 
     @Override
     public void onDeleteOfferSelect(int productIdx, int offerIdx) {
-        Product product = productOfferAdapter.getProducts().get(productIdx);
+        Product product = mProductOfferAdapter.getProducts().get(productIdx);
         product.getOffers().remove(offerIdx);
         FirebaseUtils.updateProductOffers(product);
     }
@@ -128,13 +132,13 @@ public class ProductOfferActivity extends MainActivity implements ProductOfferAd
         if (resultCode == RESULT_OK) {
             if (requestCode == OfferDetailsActivity.RC_ADD_OFFER) {
                 Offer newOffer = (Offer) data.getSerializableExtra("offer");
-                Product product = productOfferAdapter.getProducts().get(productIdx);
+                Product product = mProductOfferAdapter.getProducts().get(mProductIdx);
                 product.getOffers().add(newOffer);
                 FirebaseUtils.updateProductOffers(product);
             } else if (requestCode == OfferDetailsActivity.RC_EDIT_OFFER) {
                 Offer updatedOffer = (Offer) data.getSerializableExtra("offer");
-                Product product = productOfferAdapter.getProducts().get(productIdx);
-                product.getOffers().set(offerIdx, updatedOffer);
+                Product product = mProductOfferAdapter.getProducts().get(mProductIdx);
+                product.getOffers().set(mOfferIdx, updatedOffer);
                 FirebaseUtils.updateProductOffers(product);
             }
         }

@@ -1,6 +1,5 @@
 package com.googleinterns.smb.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Recycler view adapter for displaying order items in order display activity
+ * Recycler view adapter for displaying card_new_order items in card_new_order display activity
  */
-public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapter.ViewHolder> {
+public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapter.ViewHolder> {
 
     public interface PriceChangeListener {
         void onPriceChange(double newTotalPrice);
@@ -35,27 +34,27 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
 
     // Fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
-    private List<BillItem> billItems;
-    private List<Boolean> itemAvailabilities;
+    private List<BillItem> mBillItems;
+    private List<Boolean> mItemAvailabilities;
     private PriceChangeListener mListener;
-    private Context context;
+    private Context mContext;
 
-    public OrderDisplayAdapter(Context context, List<BillItem> billItems, FragmentManager fragmentManager) {
+    public NewOrderItemAdapter(Context context, List<BillItem> billItems, FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
-        this.context = context;
-        this.billItems = billItems;
-        itemAvailabilities = new ArrayList<>();
+        mContext = context;
+        mBillItems = billItems;
+        mItemAvailabilities = new ArrayList<>();
         for (BillItem billItem : billItems) {
             if (billItem.getMRP() > 0.0) {
-                itemAvailabilities.add(true);
+                mItemAvailabilities.add(true);
             } else {
-                itemAvailabilities.add(false);
+                mItemAvailabilities.add(false);
             }
         }
         try {
             mListener = (PriceChangeListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement" + PriceChangeListener.class.getName());
+            throw new ClassCastException(context + " must implement " + PriceChangeListener.class.getName());
         }
         // Notify listener with initial total price
         mListener.onPriceChange(getTotalPrice());
@@ -66,9 +65,9 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
      */
     public Double getTotalPrice() {
         Double totalPrice = 0.0;
-        for (int i = 0; i < billItems.size(); i++) {
-            if (itemAvailabilities.get(i)) {
-                totalPrice += billItems.get(i).getTotalPrice();
+        for (int i = 0; i < mBillItems.size(); i++) {
+            if (mItemAvailabilities.get(i)) {
+                totalPrice += mBillItems.get(i).getTotalPrice();
             }
         }
         return totalPrice;
@@ -77,15 +76,14 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_new_order_item, parent, false);
         return new ViewHolder(view, this);
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         // Initialise bill item view
-        final BillItem billItem = billItems.get(position);
+        final BillItem billItem = mBillItems.get(position);
         holder.mProductName.setText(billItem.getProductName());
         holder.mPrice.setText(billItem.getDiscountedPriceString());
         holder.mQty.setText(billItem.getQtyString());
@@ -94,35 +92,31 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
                 .load(billItem.getImageURL())
                 .fitCenter()
                 .into(holder.mProductImage);
-        // Setup edit dialog
+        // Setup edit price dialog
         holder.mEditQty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditPriceDialogFragment editQtyDialogFragment = new EditPriceDialogFragment(
-                        new EditPriceDialogFragment.EditPriceDialogInterface() {
+                        new EditPriceDialogFragment.PriceConfirmationListener() {
                             @Override
-                            public void onConfirm(Double discountPrice) {
-                                OrderDisplayAdapter.this.onConfirm(discountPrice, position);
+                            public void onPriceConfirm(Double discountPrice) {
+                                NewOrderItemAdapter.this.onConfirm(discountPrice, position);
                             }
-
-                            @Override
-                            public Double getMRP() {
-                                return OrderDisplayAdapter.this.getMRP(position);
-                            }
-                        });
-                editQtyDialogFragment.show(mFragmentManager, "Edit qty dialog");
+                        }, billItem.getMRP());
+                editQtyDialogFragment.show(mFragmentManager, EditPriceDialogFragment.class.getName());
             }
         });
-        holder.mCheckBoxAvailable.setChecked(itemAvailabilities.get(position));
+        holder.mCheckBoxAvailable.setChecked(mItemAvailabilities.get(position));
         holder.mCheckBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && billItems.get(position).getDiscountedPrice() <= 0.0) {
-                    UIUtils.showToast(context, "Set a price to mark available");
+                // Display error message if product is marked available without setting price first
+                if (isChecked && mBillItems.get(position).getDiscountedPrice() <= 0.0) {
+                    UIUtils.showToast(mContext, mContext.getString(R.string.set_price_msg));
                     buttonView.setChecked(false);
                     return;
                 }
-                itemAvailabilities.set(position, isChecked);
+                mItemAvailabilities.set(position, isChecked);
                 mListener.onPriceChange(getTotalPrice());
             }
         });
@@ -130,47 +124,42 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
 
     @Override
     public int getItemCount() {
-        return billItems.size();
+        return mBillItems.size();
     }
 
     /**
-     * Called by ViewHolder class on price edit confirm
+     * Called by {@link EditPriceDialogFragment.PriceConfirmationListener} on price edit confirm
      *
      * @param discountPrice updated price by user
      * @param position      position of card in recycler view
      */
     private void onConfirm(Double discountPrice, int position) {
-        BillItem billItem = billItems.get(position);
+        BillItem billItem = mBillItems.get(position);
         billItem.setDiscountedPrice(discountPrice);
-        billItems.set(position, billItem);
+        mBillItems.set(position, billItem);
         notifyItemChanged(position);
         mListener.onPriceChange(getTotalPrice());
     }
 
-    private Double getMRP(int position) {
-        return billItems.get(position).getMRP();
-    }
-
     public List<Boolean> getItemAvailabilities() {
-        return itemAvailabilities;
+        return mItemAvailabilities;
     }
 
     public List<BillItem> getBillItems() {
-        return billItems;
+        return mBillItems;
     }
 
     public List<BillItem> getAvailableItems() {
         List<BillItem> availableItems = new ArrayList<>();
-        for (int i = 0; i < billItems.size(); i++) {
-            if (itemAvailabilities.get(i)) {
-                availableItems.add(billItems.get(i));
+        for (int i = 0; i < mBillItems.size(); i++) {
+            if (mItemAvailabilities.get(i)) {
+                availableItems.add(mBillItems.get(i));
             }
         }
         return availableItems;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private OrderDisplayAdapter mAdapter;
         private TextView mProductName;
         private TextView mPrice;
         private TextView mTotalPrice;
@@ -179,14 +168,13 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
         private ImageButton mEditQty;
         private CheckBox mCheckBoxAvailable;
 
-        ViewHolder(@NonNull View itemView, OrderDisplayAdapter adapter) {
+        ViewHolder(@NonNull View itemView, NewOrderItemAdapter adapter) {
             super(itemView);
-            mAdapter = adapter;
-            mProductName = itemView.findViewById(R.id.product_name);
+            mProductName = itemView.findViewById(R.id.text_view_product_name);
             mPrice = itemView.findViewById(R.id.merchant_price);
-            mProductImage = itemView.findViewById(R.id.product_image);
-            mQty = itemView.findViewById(R.id.qty_val);
-            mTotalPrice = itemView.findViewById(R.id.total);
+            mProductImage = itemView.findViewById(R.id.image_view_product);
+            mQty = itemView.findViewById(R.id.text_view_qty);
+            mTotalPrice = itemView.findViewById(R.id.text_view_total);
             mEditQty = itemView.findViewById(R.id.edit_price);
             mCheckBoxAvailable = itemView.findViewById(R.id.checkbox_not_available);
         }

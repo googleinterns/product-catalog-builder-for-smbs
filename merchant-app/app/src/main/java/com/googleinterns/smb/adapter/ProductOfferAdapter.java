@@ -27,15 +27,15 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
         void onDeleteOfferSelect(int productIdx, int offerIdx);
     }
 
-    private OfferActionListener listener;
-    private List<Product> products;
-    private FragmentManager fragmentManager;
-    private ViewOfferDialogFragment viewOfferDialogFragment;
+    private OfferActionListener mListener;
+    private List<Product> mProducts;
+    private FragmentManager mFragmentManager;
+    private ViewOfferDialogFragment mViewOfferDialogFragment;
 
     public ProductOfferAdapter(OfferActionListener listener, List<Product> products, FragmentManager fragmentManager) {
-        this.listener = listener;
-        this.products = products;
-        this.fragmentManager = fragmentManager;
+        mListener = listener;
+        mProducts = products;
+        mFragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -47,7 +47,7 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Product product = products.get(position);
+        final Product product = mProducts.get(position);
         holder.mProductName.setText(product.getProductName());
         holder.mMRP.setText(product.getMRPString());
         holder.mDiscountedPrice.setText(product.getDiscountedPriceString());
@@ -55,47 +55,47 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
                 .load(product.getImageURL())
                 .fitCenter()
                 .into(holder.mProductImage);
-        holder.offersCount.setText(product.getOfferCountString());
-        holder.viewOffers.setOnClickListener(new View.OnClickListener() {
+        holder.mOfferCount.setText(product.getOfferCountString());
+        holder.mViewOffers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewOfferDialogFragment = new ViewOfferDialogFragment(
+                mViewOfferDialogFragment = new ViewOfferDialogFragment(
                         product.getOffers(),
                         new ViewOfferDialogFragment.OffersDialogInterface() {
                             @Override
                             public void onAddOfferSelect() {
-                                viewOfferDialogFragment.dismiss();
-                                listener.onAddOfferSelect(position);
+                                mViewOfferDialogFragment.dismiss();
+                                mListener.onAddOfferSelect(position);
                             }
 
                             @Override
                             public void onEditOfferSelect(int offerIdx) {
-                                viewOfferDialogFragment.dismiss();
-                                listener.onEditOfferSelect(position, offerIdx);
+                                mViewOfferDialogFragment.dismiss();
+                                mListener.onEditOfferSelect(position, offerIdx);
                             }
 
                             @Override
                             public void onDeleteOfferSelect(int offerIdx) {
-                                listener.onDeleteOfferSelect(position, offerIdx);
+                                mListener.onDeleteOfferSelect(position, offerIdx);
                             }
                         });
-                viewOfferDialogFragment.show(fragmentManager, ViewOfferDialogFragment.class.getName());
+                mViewOfferDialogFragment.show(mFragmentManager, ViewOfferDialogFragment.class.getName());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return mProducts.size();
     }
 
     public void setProducts(List<Product> products) {
-        this.products = products;
+        this.mProducts = products;
         notifyDataSetChanged();
     }
 
     public List<Product> getProducts() {
-        return products;
+        return mProducts;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,17 +104,17 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
         private TextView mMRP;
         private TextView mDiscountedPrice;
         private ImageView mProductImage;
-        private TextView offersCount;
-        private Button viewOffers;
+        private TextView mOfferCount;
+        private Button mViewOffers;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mProductName = itemView.findViewById(R.id.product_name);
-            mMRP = itemView.findViewById(R.id.mrp);
-            mDiscountedPrice = itemView.findViewById(R.id.discounted_price);
-            mProductImage = itemView.findViewById(R.id.product_image);
-            offersCount = itemView.findViewById(R.id.offers_count);
-            viewOffers = itemView.findViewById(R.id.view_offers);
+            mProductName = itemView.findViewById(R.id.text_view_product_name);
+            mMRP = itemView.findViewById(R.id.text_view_mrp);
+            mDiscountedPrice = itemView.findViewById(R.id.text_view_discounted_price);
+            mProductImage = itemView.findViewById(R.id.image_view_product);
+            mOfferCount = itemView.findViewById(R.id.text_view_offer_count);
+            mViewOffers = itemView.findViewById(R.id.button_view_offers);
         }
     }
 }

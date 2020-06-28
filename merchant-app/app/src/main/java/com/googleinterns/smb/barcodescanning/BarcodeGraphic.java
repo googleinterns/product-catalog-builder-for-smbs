@@ -33,23 +33,23 @@ public class BarcodeGraphic extends Graphic {
     private static final float TEXT_SIZE = 54.0f;
     private static final float STROKE_WIDTH = 4.0f;
 
-    private final Paint rectPaint;
-    private final Paint barcodePaint;
-    private final FirebaseVisionBarcode barcode;
+    private final Paint mRectPaint;
+    private final Paint mBarcodePaint;
+    private final FirebaseVisionBarcode mBarcode;
 
     BarcodeGraphic(GraphicOverlay overlay, FirebaseVisionBarcode barcode) {
         super(overlay);
 
-        this.barcode = barcode;
+        mBarcode = barcode;
 
-        rectPaint = new Paint();
-        rectPaint.setColor(TEXT_COLOR);
-        rectPaint.setStyle(Paint.Style.STROKE);
-        rectPaint.setStrokeWidth(STROKE_WIDTH);
+        mRectPaint = new Paint();
+        mRectPaint.setColor(TEXT_COLOR);
+        mRectPaint.setStyle(Paint.Style.STROKE);
+        mRectPaint.setStrokeWidth(STROKE_WIDTH);
 
-        barcodePaint = new Paint();
-        barcodePaint.setColor(TEXT_COLOR);
-        barcodePaint.setTextSize(TEXT_SIZE);
+        mBarcodePaint = new Paint();
+        mBarcodePaint.setColor(TEXT_COLOR);
+        mBarcodePaint.setTextSize(TEXT_SIZE);
     }
 
     /**
@@ -57,19 +57,19 @@ public class BarcodeGraphic extends Graphic {
      */
     @Override
     public void draw(Canvas canvas) {
-        if (barcode == null) {
+        if (mBarcode == null) {
             throw new IllegalStateException("Attempting to draw a null barcode.");
         }
 
         // Draws the bounding box around the BarcodeBlock.
-        RectF rect = new RectF(barcode.getBoundingBox());
+        RectF rect = new RectF(mBarcode.getBoundingBox());
         rect.left = translateX(rect.left);
         rect.top = translateY(rect.top);
         rect.right = translateX(rect.right);
         rect.bottom = translateY(rect.bottom);
-        canvas.drawRect(rect, rectPaint);
+        canvas.drawRect(rect, mRectPaint);
 
         // Renders the barcode at the bottom of the box.
-        canvas.drawText(Objects.requireNonNull(barcode.getRawValue()), rect.left, rect.bottom, barcodePaint);
+        canvas.drawText(Objects.requireNonNull(mBarcode.getRawValue()), rect.left, rect.bottom, mBarcodePaint);
     }
 }

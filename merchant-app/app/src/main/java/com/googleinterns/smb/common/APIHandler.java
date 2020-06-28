@@ -11,7 +11,6 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -24,12 +23,12 @@ public class APIHandler {
     private static final String DIRECTIONS_API_BASE = "https://maps.googleapis.com";
     private static final String CONSUMER_API_BASE = "https://kirana-g.uc.r.appspot.com/";
 
-    private Retrofit retrofit;
+    private Retrofit mRetrofit;
     // Mapping for multiple API handlers, for each base API
-    private static Map<String, APIHandler> apiHandlers = new HashMap<>();
+    private static Map<String, APIHandler> mApiHandlers = new HashMap<>();
 
     private APIHandler(String baseUrl) {
-        retrofit = new Retrofit.Builder()
+        mRetrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -37,11 +36,11 @@ public class APIHandler {
 
     private static APIHandler getInstance(String baseUrl) {
         // Get API handler for this base API
-        if (apiHandlers.get(baseUrl) == null) {
+        if (mApiHandlers.get(baseUrl) == null) {
             APIHandler apiHandler = new APIHandler(baseUrl);
-            apiHandlers.put(baseUrl, apiHandler);
+            mApiHandlers.put(baseUrl, apiHandler);
         }
-        return apiHandlers.get(baseUrl);
+        return mApiHandlers.get(baseUrl);
     }
 
     /**
@@ -57,7 +56,7 @@ public class APIHandler {
     }
 
     public static DirectionService getDirectionService() {
-        return getInstance(DIRECTIONS_API_BASE).retrofit.create(DirectionService.class);
+        return getInstance(DIRECTIONS_API_BASE).mRetrofit.create(DirectionService.class);
     }
 
     public interface ConsumerService {
@@ -72,6 +71,6 @@ public class APIHandler {
     }
 
     public static ConsumerService getConsumerService() {
-        return getInstance(CONSUMER_API_BASE).retrofit.create(ConsumerService.class);
+        return getInstance(CONSUMER_API_BASE).mRetrofit.create(ConsumerService.class);
     }
 }

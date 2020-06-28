@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Bill item model
@@ -20,7 +19,11 @@ import java.util.Map;
 public class BillItem extends Product {
 
     private static final String TAG = BillItem.class.getName();
-    @PropertyName("quantity")
+
+    // Field constants
+    public static final String FIELD_QUANTITY = "quantity";
+
+    @PropertyName(FIELD_QUANTITY)
     private int qty = 1;
 
     // Empty constructor for firebase
@@ -32,25 +35,27 @@ public class BillItem extends Product {
         super(product);
     }
 
+    /**
+     * Get billitem from JSON object. See {@link com.googleinterns.smb.service.FirebaseCloudMessagingService}
+     */
     public BillItem(JSONObject orderJSONObject) {
         try {
-            if (orderJSONObject.has("EAN")) {
-                setEAN(orderJSONObject.getString("EAN"));
+            // Required fields
+            setQty(orderJSONObject.getInt(BillItem.FIELD_QUANTITY));
+            setProductName(orderJSONObject.getString(Product.FIELD_PRODUCT_NAME));
+
+            // Optional fields
+            if (orderJSONObject.has(Product.FIELD_EAN)) {
+                setEAN(orderJSONObject.getString(Product.FIELD_EAN));
             }
-            if (orderJSONObject.has("MRP")) {
-                setMRP(orderJSONObject.getDouble("MRP"));
-            } else {
-                setMRP(0.0);
+            if (orderJSONObject.has(Product.FIELD_MRP)) {
+                setMRP(orderJSONObject.getDouble(Product.FIELD_MRP));
             }
-            setQty(orderJSONObject.getInt("quantity"));
-            if (orderJSONObject.has("discounted_price")) {
-                setDiscountedPrice(orderJSONObject.getDouble("discounted_price"));
-            } else {
-                setDiscountedPrice(0.0);
+            if (orderJSONObject.has(Product.FIELD_DISCOUNTED_PRICE)) {
+                setDiscountedPrice(orderJSONObject.getDouble(Product.FIELD_DISCOUNTED_PRICE));
             }
-            setProductName(orderJSONObject.getString("product_name"));
-            if (orderJSONObject.has("image_url")) {
-                setImageURL(orderJSONObject.getString("image_url"));
+            if (orderJSONObject.has(Product.FIELD_IMAGE_URL)) {
+                setImageURL(orderJSONObject.getString(Product.FIELD_IMAGE_URL));
             }
         } catch (JSONException e) {
             Log.e(TAG, "Invalid JSON", e);
@@ -69,12 +74,12 @@ public class BillItem extends Product {
         return billItems;
     }
 
-    @PropertyName("quantity")
+    @PropertyName(FIELD_QUANTITY)
     public int getQty() {
         return qty;
     }
 
-    @PropertyName("quantity")
+    @PropertyName(FIELD_QUANTITY)
     public void setQty(int qty) {
         this.qty = qty;
     }

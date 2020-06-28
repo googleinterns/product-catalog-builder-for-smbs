@@ -21,7 +21,7 @@ import com.googleinterns.smb.model.Offer;
 import java.util.List;
 
 /**
- * Dialog for adding discount in billing activity
+ * Dialog to view offers in {@link com.googleinterns.smb.ProductOfferActivity}. See {@link com.googleinterns.smb.adapter.ProductOfferAdapter}
  */
 public class ViewOfferDialogFragment extends DialogFragment implements OfferAdapter.OfferActionListener {
 
@@ -35,12 +35,12 @@ public class ViewOfferDialogFragment extends DialogFragment implements OfferAdap
 
     private static final String TAG = ViewOfferDialogFragment.class.getName();
     private View mDialogView;
-    private List<Offer> offers;
-    private OffersDialogInterface listener;
+    private List<Offer> mOffers;
+    private OffersDialogInterface mListener;
 
     public ViewOfferDialogFragment(List<Offer> offers, OffersDialogInterface listener) {
-        this.offers = offers;
-        this.listener = listener;
+        mOffers = offers;
+        mListener = listener;
     }
 
     @NonNull
@@ -70,10 +70,10 @@ public class ViewOfferDialogFragment extends DialogFragment implements OfferAdap
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.view_offer_dialog, null);
+        mDialogView = inflater.inflate(R.layout.dialog_view_offer, null);
 
         RecyclerView recyclerView = mDialogView.findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(new OfferAdapter(this, offers));
+        recyclerView.setAdapter(new OfferAdapter(this, mOffers));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
@@ -81,22 +81,22 @@ public class ViewOfferDialogFragment extends DialogFragment implements OfferAdap
             }
         });
 
-        Button addOffer = mDialogView.findViewById(R.id.add_offer);
+        Button addOffer = mDialogView.findViewById(R.id.button_add_offer);
         addOffer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAddOfferSelect();
+                mListener.onAddOfferSelect();
             }
         });
     }
 
     @Override
     public void onEditOfferSelect(int position) {
-        listener.onEditOfferSelect(position);
+        mListener.onEditOfferSelect(position);
     }
 
     @Override
     public void onDeleteOfferSelect(int position) {
-        listener.onDeleteOfferSelect(position);
+        mListener.onDeleteOfferSelect(position);
     }
 }

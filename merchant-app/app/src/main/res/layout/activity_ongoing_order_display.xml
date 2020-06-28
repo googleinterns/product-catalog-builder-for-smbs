@@ -12,7 +12,7 @@
         tools:context=".NewOrderDisplayActivity">
 
         <TextView
-            android:id="@+id/customer_name"
+            android:id="@+id/text_view_customer_name"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,14 +25,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/time_elapsed"
+            android:id="@+id/text_view_time_elapsed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:text="3 minutes ago"
-            app:layout_constraintBottom_toBottomOf="@id/customer_name"
+            app:layout_constraintBottom_toBottomOf="@id/text_view_customer_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/customer_name" />
+            app:layout_constraintTop_toTopOf="@+id/text_view_customer_name" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
             android:visibility="gone"
             app:cardCornerRadius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/customer_name">
+            app:layout_constraintTop_toBottomOf="@+id/text_view_customer_name">
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Body1"
@@ -54,7 +54,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/order_details"
+            android:id="@+id/card_view_order_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -63,7 +63,7 @@
             android:elevation="0dp"
             app:cardCornerRadius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/customer_name">
+            app:layout_constraintTop_toBottomOf="@+id/text_view_customer_name">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -71,11 +71,11 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/text_view_total"
+                    android:id="@+id/label_total_price"
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Order total:"
+                    android:text="@string/order_total"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -83,12 +83,12 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_view_total"
+                    app:layout_constraintBottom_toBottomOf="@+id/label_total_price"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/text_view_total">
+                    app:layout_constraintTop_toTopOf="@+id/label_total_price">
 
                     <TextView
-                        android:id="@+id/text_view_rupee"
+                        android:id="@+id/label_rupee"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                         android:textColor="@color/price" />
 
                     <TextView
-                        android:id="@+id/total_price"
+                        android:id="@+id/text_view_total_price"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -106,36 +106,36 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/label_order_date"
+                    android:id="@+id/label_time_of_order"
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Time of order:"
+                    android:text="@string/time_of_order"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_view_total" />
+                    app:layout_constraintTop_toBottomOf="@id/label_total_price" />
 
                 <TextView
-                    android:id="@+id/time_of_order"
+                    android:id="@+id/text_view_time_of_order"
                     style="@style/TextAppearance.AppCompat.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="02:00 pm"
-                    app:layout_constraintBottom_toBottomOf="@+id/label_order_date"
+                    app:layout_constraintBottom_toBottomOf="@+id/label_time_of_order"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/label_order_date" />
+                    app:layout_constraintTop_toTopOf="@+id/label_time_of_order" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/address_card"
+            android:id="@+id/card_view_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             app:cardCornerRadius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/order_details">
+            app:layout_constraintTop_toBottomOf="@id/card_view_order_details">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,11 +148,11 @@
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Customer Address"
+                    android:text="@string/customer_address"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/address"
+                    android:id="@+id/text_view_address"
                     style="@style/TextAppearance.AppCompat.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -165,12 +165,12 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/action_call"
+                        android:id="@+id/button_call"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Call"
+                        android:text="@string/call"
                         android:textAllCaps="false"
                         app:icon="@drawable/ic_action_call"
                         app:layout_constraintStart_toStartOf="parent"
@@ -186,7 +186,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/address_card" />
+            app:layout_constraintTop_toBottomOf="@+id/card_view_address" />
 
         <TextView
             android:id="@+id/label_products"
@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
-            android:text="Products"
+            android:text="@string/products"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/navigation_section" />
@@ -222,14 +222,14 @@
             app:layout_constraintTop_toBottomOf="@+id/recycler_view">
 
             <android.widget.Button
-                android:id="@+id/deliver"
+                android:id="@+id/button_deliver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
                 android:drawablePadding="8dp"
                 android:padding="16dp"
-                android:text="Deliver with Dunzo" />
+                android:text="@string/deliver_with_dunzo" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

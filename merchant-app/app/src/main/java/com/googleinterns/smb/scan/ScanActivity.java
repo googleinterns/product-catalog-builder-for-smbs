@@ -1,4 +1,4 @@
-package com.googleinterns.smb;
+package com.googleinterns.smb.scan;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.googleinterns.smb.R;
 import com.googleinterns.smb.common.CameraSource;
 import com.googleinterns.smb.common.CameraSourcePreview;
 import com.googleinterns.smb.common.GraphicOverlay;
@@ -34,20 +35,20 @@ public abstract class ScanActivity extends AppCompatActivity
 
     protected static final int PERMISSION_REQUESTS = 1;
     protected static final String TAG = ScanActivity.class.getName();
-    protected CameraSource cameraSource = null;
-    protected GraphicOverlay fireFaceOverlay;
-    protected CameraSourcePreview firePreview;
+    protected CameraSource mCameraSource = null;
+    protected GraphicOverlay mGraphicOverlay;
+    protected CameraSourcePreview mCameraPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        // Set content view and init child views
+        // Set content view and init subclass views
         initViews();
 
         // Initialise camera preview views
-        fireFaceOverlay = findViewById(R.id.fireFaceOverlay);
-        firePreview = findViewById(R.id.firePreview);
+        mGraphicOverlay = findViewById(R.id.graphic_overlay);
+        mCameraPreview = findViewById(R.id.camera_preview);
 
         // Get camera and read/write permissions
         if (allPermissionsGranted()) {
@@ -61,8 +62,8 @@ public abstract class ScanActivity extends AppCompatActivity
 
     private void createCameraSource() {
         // If there's no existing cameraSource, create one.
-        if (cameraSource == null) {
-            cameraSource = new CameraSource(this, fireFaceOverlay);
+        if (mCameraSource == null) {
+            mCameraSource = new CameraSource(this, mGraphicOverlay);
         }
         Log.i(TAG, "Using Image Label Detector Processor");
         try {
@@ -99,7 +100,7 @@ public abstract class ScanActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.help) {
-            View view = findViewById(R.id.help_layout);
+            View view = findViewById(R.id.layout_help);
             view.setVisibility(View.VISIBLE);
         }
         return super.onOptionsItemSelected(item);
@@ -111,19 +112,19 @@ public abstract class ScanActivity extends AppCompatActivity
      * again when the camera source is created.
      */
     private void startCameraSource() {
-        if (cameraSource != null) {
+        if (mCameraSource != null) {
             try {
-                if (firePreview == null) {
+                if (mCameraPreview == null) {
                     Log.d(TAG, "resume: Preview is null");
                 }
-                if (fireFaceOverlay == null) {
+                if (mGraphicOverlay == null) {
                     Log.d(TAG, "resume: graphOverlay is null");
                 }
-                firePreview.start(cameraSource, fireFaceOverlay);
+                mCameraPreview.start(mCameraSource, mGraphicOverlay);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to start camera source.", e);
-                cameraSource.release();
-                cameraSource = null;
+                mCameraSource.release();
+                mCameraSource = null;
             }
         }
     }
@@ -141,24 +142,30 @@ public abstract class ScanActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        firePreview.stop();
+        mCameraPreview.stop();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (cameraSource != null) {
-            cameraSource.release();
+        if (mCameraSource != null) {
+            mCameraSource.release();
         }
     }
+
+    abstract protected boolean isProductDetected();
 
     /**
      * Finish scanning process
      */
     public void finishScan(View view) {
-        firePreview.stop();
-        if (cameraSource != null) {
-            cameraSource.release();
+        if (!isProductDetected()) {
+            UIUtils.showToast(this, "No products detected");
+            return;
+        }
+        mCameraPreview.stop();
+        if (mCameraSource != null) {
+            mCameraSource.release();
         }
         // retrieve data and transition to next activity
         createIntent();

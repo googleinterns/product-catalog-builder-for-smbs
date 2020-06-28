@@ -9,14 +9,14 @@
     android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
 
     <ImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/image_view_profile_image"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:contentDescription="@string/profile_icon"
         android:src="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/text_view_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"

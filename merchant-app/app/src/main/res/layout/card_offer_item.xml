@@ -21,17 +21,17 @@
                 style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Discount:"
+                android:text="@string/discount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/discount_value"
+                android:id="@+id/text_view_discount_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="80 % "
                 android:textColor="#4E4444"
-                app:layout_constraintEnd_toEndOf="@+id/validity"
+                app:layout_constraintEnd_toEndOf="@+id/text_view_validity"
                 app:layout_constraintTop_toTopOf="@+id/label_discount" />
 
             <TextView
@@ -40,12 +40,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Validity:"
+                android:text="@string/validity"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_discount" />
 
             <TextView
-                android:id="@+id/validity"
+                android:id="@+id/text_view_validity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -55,7 +55,7 @@
                 app:layout_constraintTop_toTopOf="@+id/label_validity" />
 
             <ImageView
-                android:id="@+id/edit"
+                android:id="@+id/image_view_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -63,12 +63,12 @@
                 android:clickable="true"
                 android:contentDescription="@string/edit"
                 android:focusable="true"
-                app:layout_constraintEnd_toStartOf="@+id/delete"
-                app:layout_constraintTop_toTopOf="@+id/delete"
+                app:layout_constraintEnd_toStartOf="@+id/image_view_delete"
+                app:layout_constraintTop_toTopOf="@+id/image_view_delete"
                 app:srcCompat="@drawable/ic_action_edit" />
 
             <ImageView
-                android:id="@+id/delete"
+                android:id="@+id/image_view_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -84,11 +84,11 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/tag"
                 android:padding="4dp"
-                app:layout_constraintBottom_toBottomOf="@+id/validity"
+                app:layout_constraintBottom_toBottomOf="@+id/text_view_validity"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
-                    android:id="@+id/status"
+                    android:id="@+id/text_view_status"
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -100,9 +100,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
 </LinearLayout>

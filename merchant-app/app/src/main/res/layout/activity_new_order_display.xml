@@ -12,7 +12,7 @@
         tools:context=".NewOrderDisplayActivity">
 
         <TextView
-            android:id="@+id/customer_name"
+            android:id="@+id/text_view_customer_name"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,17 +25,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/time_elapsed"
+            android:id="@+id/text_view_time_elapsed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:text="3 minutes ago"
-            app:layout_constraintBottom_toBottomOf="@id/customer_name"
+            app:layout_constraintBottom_toBottomOf="@id/text_view_customer_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/customer_name" />
+            app:layout_constraintTop_toTopOf="@+id/text_view_customer_name" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/order_details"
+            android:id="@+id/card_view_order_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -44,7 +44,7 @@
             android:elevation="0dp"
             app:cardCornerRadius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/customer_name">
+            app:layout_constraintTop_toBottomOf="@+id/text_view_customer_name">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/text_view_total"
+                    android:id="@+id/label_total_price"
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,12 +64,12 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_view_total"
+                    app:layout_constraintBottom_toBottomOf="@+id/label_total_price"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/text_view_total">
+                    app:layout_constraintTop_toTopOf="@+id/label_total_price">
 
                     <TextView
-                        android:id="@+id/text_view_rupee"
+                        android:id="@+id/label_rupee"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                         android:textColor="@color/price" />
 
                     <TextView
-                        android:id="@+id/total_price"
+                        android:id="@+id/text_view_total_price"
                         style="@style/TextAppearance.AppCompat.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/label_order_date"
+                    android:id="@+id/label_time_of_order"
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,18 +95,18 @@
                     android:text="Time of order:"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_view_total" />
+                    app:layout_constraintTop_toBottomOf="@id/label_total_price" />
 
                 <TextView
-                    android:id="@+id/time_of_order"
+                    android:id="@+id/text_view_time_of_order"
                     style="@style/TextAppearance.AppCompat.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="02:00 pm"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/label_order_date"
+                    app:layout_constraintBottom_toBottomOf="@+id/label_time_of_order"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/label_order_date" />
+                    app:layout_constraintTop_toTopOf="@+id/label_time_of_order" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/order_details" />
+            app:layout_constraintTop_toBottomOf="@+id/card_view_order_details" />
 
         <TextView
             android:id="@+id/label_delivery"
@@ -132,8 +132,8 @@
             app:layout_constraintTop_toBottomOf="@+id/navigation_section" />
 
         <include
-            android:id="@+id/delivery_time_chip_group_view"
-            layout="@layout/delivery_time_chip_group"
+            android:id="@+id/chip_group_delivery_time"
+            layout="@layout/chip_group_delivery_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -148,23 +148,23 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
-            android:text="Products:"
+            android:text="@string/products"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/delivery_time_chip_group_view" />
+            app:layout_constraintTop_toBottomOf="@+id/chip_group_delivery_time" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/accept"
+            app:layout_constraintBottom_toTopOf="@+id/button_accept"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/label_products" />
 
         <Button
-            android:id="@+id/accept"
+            android:id="@+id/button_accept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -177,14 +177,14 @@
             app:layout_constraintTop_toBottomOf="@id/recycler_view" />
 
         <Button
-            android:id="@+id/decline"
+            android:id="@+id/button_decline"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/decline"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/accept"
-            app:layout_constraintEnd_toStartOf="@+id/accept"
-            app:layout_constraintTop_toTopOf="@+id/accept" />
+            app:layout_constraintBottom_toBottomOf="@+id/button_accept"
+            app:layout_constraintEnd_toStartOf="@+id/button_accept"
+            app:layout_constraintTop_toTopOf="@+id/button_accept" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

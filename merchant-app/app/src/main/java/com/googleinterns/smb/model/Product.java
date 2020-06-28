@@ -17,84 +17,26 @@ public class Product implements Serializable {
     private static String DEFAULT_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/mlkitsample-8fffb.appspot.com/o/product_images%2Fno_product_image.jpeg?alt=media&token=93edbbdf-00fc-481a-b5d0-5a3489c9f873";
     private static String TAG = Product.class.getName();
 
-    @PropertyName("product_name")
+    // Firebase field names
+    public static final String FIELD_PRODUCT_NAME = "product_name";
+    public static final String FIELD_MRP = "MRP";
+    public static final String FIELD_DISCOUNTED_PRICE = "discounted_price";
+    public static final String FIELD_IMAGE_URL = "image_url";
+    public static final String FIELD_EAN = "EAN";
+    public static final String FIELD_OFFERS = "offers";
+
+    @PropertyName(FIELD_PRODUCT_NAME)
     private String productName;
-    @PropertyName("MRP")
+    @PropertyName(FIELD_MRP)
     private Double MRP = 0.0;
-    @PropertyName("discounted_price")
+    @PropertyName(FIELD_DISCOUNTED_PRICE)
     private Double discountedPrice;
-    @PropertyName("image_url")
+    @PropertyName(FIELD_IMAGE_URL)
     private String imageURL = DEFAULT_IMAGE_URL;
-    @PropertyName("EAN")
+    @PropertyName(FIELD_EAN)
     private String EAN;
-    @PropertyName("offers")
+    @PropertyName(FIELD_OFFERS)
     private List<Offer> offers = new ArrayList<>();
-
-    @PropertyName("product_name")
-    public String getProductName() {
-        return productName;
-    }
-
-    @PropertyName("product_name")
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    @PropertyName("MRP")
-    public Double getMRP() {
-        return MRP;
-    }
-
-    @Exclude
-    public String getMRPString() {
-        return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getMRP());
-    }
-
-    @PropertyName("MRP")
-    public void setMRP(Double MRP) {
-        this.MRP = MRP;
-    }
-
-    @PropertyName("discounted_price")
-    public Double getDiscountedPrice() {
-        if (discountedPrice == null) {
-            discountedPrice = MRP;
-        }
-        return discountedPrice;
-    }
-
-    @Exclude
-    public String getDiscountedPriceString() {
-        return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getDiscountedPrice());
-    }
-
-    @PropertyName("discounted_price")
-    public void setDiscountedPrice(Double discountedPrice) {
-        this.discountedPrice = discountedPrice;
-    }
-
-    @PropertyName("image_url")
-    public String getImageURL() {
-        if (imageURL == null) {
-            return DEFAULT_IMAGE_URL;
-        }
-        return imageURL;
-    }
-
-    @PropertyName("image_url")
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    @PropertyName("EAN")
-    public String getEAN() {
-        return EAN;
-    }
-
-    @PropertyName("EAN")
-    public void setEAN(String EAN) {
-        this.EAN = EAN;
-    }
 
     /**
      * Empty constructor required by Firebase
@@ -133,12 +75,78 @@ public class Product implements Serializable {
         }
     }
 
-    @PropertyName("offers")
+    @PropertyName(FIELD_PRODUCT_NAME)
+    public String getProductName() {
+        return productName;
+    }
+
+    @PropertyName(FIELD_PRODUCT_NAME)
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    @PropertyName(FIELD_MRP)
+    public Double getMRP() {
+        return MRP;
+    }
+
+    @Exclude
+    public String getMRPString() {
+        return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getMRP());
+    }
+
+    @PropertyName(FIELD_MRP)
+    public void setMRP(Double MRP) {
+        this.MRP = MRP;
+    }
+
+    @PropertyName(FIELD_DISCOUNTED_PRICE)
+    public Double getDiscountedPrice() {
+        if (discountedPrice == null) {
+            discountedPrice = MRP;
+        }
+        return discountedPrice;
+    }
+
+    @Exclude
+    public String getDiscountedPriceString() {
+        return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getDiscountedPrice());
+    }
+
+    @PropertyName(FIELD_DISCOUNTED_PRICE)
+    public void setDiscountedPrice(Double discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
+    @PropertyName(FIELD_IMAGE_URL)
+    public String getImageURL() {
+        if (imageURL == null) {
+            return DEFAULT_IMAGE_URL;
+        }
+        return imageURL;
+    }
+
+    @PropertyName(FIELD_IMAGE_URL)
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    @PropertyName(FIELD_EAN)
+    public String getEAN() {
+        return EAN;
+    }
+
+    @PropertyName(FIELD_EAN)
+    public void setEAN(String EAN) {
+        this.EAN = EAN;
+    }
+
+    @PropertyName(FIELD_OFFERS)
     public List<Offer> getOffers() {
         return offers;
     }
 
-    @PropertyName("offers")
+    @PropertyName(FIELD_OFFERS)
     public void setOffers(List<Offer> offers) {
         this.offers = new ArrayList<>();
         this.offers.addAll(offers);
