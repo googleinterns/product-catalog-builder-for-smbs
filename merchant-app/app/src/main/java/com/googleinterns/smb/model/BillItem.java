@@ -57,31 +57,6 @@ public class BillItem extends Product {
         }
     }
 
-    public BillItem(Map<String, Object> data) {
-        if (data.get("EAN") != null) {
-            setEAN((String) data.get("EAN"));
-        }
-        Double mrp = 0.0;
-        Double discountedPrice = 0.0;
-        if (data.get("MRP") != null) {
-            if (data.get("MRP") instanceof Long) {
-                mrp = ((Long) data.get("MRP")).doubleValue();
-                discountedPrice = ((Long) data.get("discounted_price")).doubleValue();
-            } else {
-                mrp = (Double) data.get("MRP");
-                discountedPrice = (Double) data.get("discounted_price");
-            }
-        }
-        setMRP(mrp);
-        setDiscountedPrice(discountedPrice);
-        Long qty = (Long) data.get("quantity");
-        setQty(qty.intValue());
-        setProductName((String) data.get("product_name"));
-        if (data.get("image_url") != null) {
-            setImageURL((String) data.get("image_url"));
-        }
-    }
-
     /**
      * Utility to get bill item list from products
      */

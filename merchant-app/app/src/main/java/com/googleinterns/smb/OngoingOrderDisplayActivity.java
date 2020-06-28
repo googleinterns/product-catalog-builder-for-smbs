@@ -93,7 +93,7 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
 
         // Initialize locations
         merchantLatLng = Merchant.getInstance().getLatLng();
-        customerLatLng = order.getCustomerLatLng();
+        customerLatLng = order.getCustomerLocation();
 
         // Initialize Map view
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.

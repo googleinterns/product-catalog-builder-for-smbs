@@ -41,7 +41,7 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
             JSONObject data = new JSONObject(remoteMessage.getData());
             try {
                 if (Order.NEW_ORDER.equals(data.getString("status"))) {
-                    Order order = new Order(remoteMessage.getData(), true);
+                    Order order = new Order(remoteMessage.getData());
                     NotificationUtils.createNotificationChannel(this, NotificationUtils.ORDER_CHANNEL);
                     Intent parentIntent = new Intent(this, NewOrdersActivity.class);
                     Intent intent = new Intent(this, NewOrderDisplayActivity.class);
@@ -50,7 +50,7 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
                     PendingIntent pendingIntent = PendingIntent.getActivities(this, START_ORDER_DISPLAY, intents, PendingIntent.FLAG_UPDATE_CURRENT);
                     NotificationUtils.createNotification(this, NotificationUtils.ORDER_CHANNEL, "New order received", "Tap to view", pendingIntent);
                 } else if (Order.ONGOING.equals(data.getString("status"))) {
-                    Order order = new Order(remoteMessage.getData(), true);
+                    Order order = new Order(remoteMessage.getData());
                     NotificationUtils.createNotificationChannel(this, NotificationUtils.ORDER_CHANNEL);
                     Intent parentIntent = new Intent(this, OngoingOrdersActivity.class);
                     Intent intent = new Intent(this, OngoingOrderDisplayActivity.class);

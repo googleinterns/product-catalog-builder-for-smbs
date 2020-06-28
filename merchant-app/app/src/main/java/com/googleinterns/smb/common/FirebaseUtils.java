@@ -115,7 +115,7 @@ public class FirebaseUtils {
                             List<Order> orders = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 Map<String, Object> data = documentSnapshot.getData();
-                                Order order = new Order(data);
+                                Order order = documentSnapshot.toObject(Order.class);
                                 orders.add(order);
                             }
                             listener.onOrderReceived(orders);
@@ -146,7 +146,7 @@ public class FirebaseUtils {
                             List<Order> orders = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 Map<String, Object> data = documentSnapshot.getData();
-                                Order order = new Order(data);
+                                Order order = documentSnapshot.toObject(Order.class);
                                 orders.add(order);
                             }
                             listener.onOrderReceived(orders);

@@ -91,7 +91,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         mapViewHandler = new MapViewHandler(mapFragment);
 
         merchantLatLng = Merchant.getInstance().getLatLng();
-        customerLatLng = order.getCustomerLatLng();
+        customerLatLng = order.getCustomerLocation();
 
         if (merchantLatLng != null) {
             fetchDirections();

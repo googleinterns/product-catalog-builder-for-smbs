@@ -20,7 +20,7 @@ public class Product implements Serializable {
     @PropertyName("product_name")
     private String productName;
     @PropertyName("MRP")
-    private Double MRP;
+    private Double MRP = 0.0;
     @PropertyName("discounted_price")
     private Double discountedPrice;
     @PropertyName("image_url")
