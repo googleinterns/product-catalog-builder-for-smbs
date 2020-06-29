@@ -60,7 +60,7 @@ public class Merchant {
     }
 
     private final static String TAG = "Merchant";
-    private final static String NUM_PRODUCTS = "NUM_PRODUCTS";
+    public final static String NUM_PRODUCTS = "NUM_PRODUCTS";
 
     // Unique merchant UID given by firebase auth
     private String mid;
@@ -171,12 +171,12 @@ public class Merchant {
             listener.onProductFetched(getInventory());
             return;
         }
-        inventory = new HashMap<>();
         Query query = FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products");
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        inventory = new HashMap<>();
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             Product product = new Product(document);
                             inventory.put(product.getEAN(), product);

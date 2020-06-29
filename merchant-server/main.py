@@ -9,6 +9,7 @@ from exceptions import BaseHttpException, InvalidRequest
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route('/')
 def home(methods=['GET']):
     return {"message": "Welcome to merchant side back-end server"}
@@ -87,6 +88,7 @@ def get_inventory():
         "message": "OK"
     }
 
+
 @app.route('/merchants/all', methods=['GET'])
 def get_all_merchants():
     '''
@@ -97,6 +99,23 @@ def get_all_merchants():
         "message": "OK",
         "merchants": merchants
     }
+
+
+@app.route('/merchant/domain/<domain_name>', methods=['GET'])
+def get_mid_from_domain_name(domain_name):
+    '''
+    Get merchant mid from unique domain name
+    '''
+    mid = utils.get_mid(domain_name)
+    merchant = utils.get_merchant(mid)
+    return {
+        "message": "OK",
+        "domain_name": domain_name,
+        "mid": mid,
+        "name": merchant["name"],
+        "store_name": merchant["store_name"]
+    }
+
 
 @app.errorhandler(BaseHttpException)
 def handle_http_exception(error):
