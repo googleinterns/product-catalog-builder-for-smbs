@@ -61,7 +61,14 @@ public class AddDiscountDialogFragment extends DialogFragment {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        double discount = getDiscount();
+                        double discount;
+                        try {
+                            discount = Double.parseDouble((Objects.requireNonNull(mDiscount.getText()).toString()));
+                        } catch (NumberFormatException e) {
+                            Log.e(TAG, "Error: unable to parse discount percent", e);
+                            mDiscountTextLayout.setError("Invalid discount value");
+                            return;
+                        }
                         double total = mListener.getTotalPrice();
                         if (total < discount) {
                             mDiscountTextLayout.setError("Error: discount greater than total");
@@ -75,16 +82,6 @@ public class AddDiscountDialogFragment extends DialogFragment {
             }
         });
         return dialog;
-    }
-
-    private double getDiscount() {
-        double discount = 0;
-        try {
-            discount = Double.parseDouble((Objects.requireNonNull(mDiscount.getText()).toString()));
-        } catch (Exception e) {
-            Log.e(TAG, "Error: unable to parse discount percent", e);
-        }
-        return discount;
     }
 
     @Override

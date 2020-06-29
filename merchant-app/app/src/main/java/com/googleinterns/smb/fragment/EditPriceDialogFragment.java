@@ -65,7 +65,13 @@ public class EditPriceDialogFragment extends DialogFragment {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Double discountedPrice = getDiscountPrice();
+                        Double discountedPrice;
+                        try {
+                            discountedPrice = getDiscountPrice();
+                        } catch (NumberFormatException e) {
+                            mEditTextLayout.setError("Invalid price value");
+                            return;
+                        }
                         // Discount price greater than MRP is not allowed
                         if (mMRP > 0 && discountedPrice > mMRP) {
                             mEditTextLayout.setError("Error: price must be less than MRP");
@@ -82,13 +88,9 @@ public class EditPriceDialogFragment extends DialogFragment {
     }
 
     private Double getDiscountPrice() {
-        Double discountPrice = mMRP;
-        if (mEditTextDiscountPrice != null) {
-            String discountPriceString = Objects.requireNonNull(mEditTextDiscountPrice.getText()).toString();
-            discountPrice = Double.parseDouble(discountPriceString);
-        } else {
-            Log.e(TAG, "Error: unable to get discount price");
-        }
+        Double discountPrice;
+        String discountPriceString = Objects.requireNonNull(mEditTextDiscountPrice.getText()).toString();
+        discountPrice = Double.parseDouble(discountPriceString);
         return discountPrice;
     }
 
@@ -108,7 +110,7 @@ public class EditPriceDialogFragment extends DialogFragment {
         super.onAttach(context);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.dialog_set_price, null);
-        // initialise views
+        // Initialise views
         mEditTextLayout = mDialogView.findViewById(R.id.layout_edit_text_discount_price);
         mEditTextDiscountPrice = mDialogView.findViewById(R.id.edit_text_discount_price);
         mEditTextDiscountPrice.requestFocus();
