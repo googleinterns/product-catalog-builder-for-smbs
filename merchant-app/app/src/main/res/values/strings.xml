@@ -156,4 +156,5 @@
     <string name="dispatched">Dispatched</string>
     <string name="delivered">Delivered</string>
     <string name="add_offer">Add offer</string>
+    <string name="new_product">New product</string>
 </resources>

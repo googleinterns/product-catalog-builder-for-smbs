@@ -16,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.googleinterns.smb.adapter.ProductAdapter;
 import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
 import com.googleinterns.smb.barcodescanning.BarcodeStatusListener;
@@ -56,7 +56,7 @@ public class InventoryActivity extends MainActivity implements
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContentView = inflater.inflate(R.layout.activity_inventory, null, false);
         mContainer.addView(mContentView, 0);
-        FloatingActionButton fabAddProduct = mContentView.findViewById(R.id.fab_add_product);
+        ExtendedFloatingActionButton fabAddProduct = mContentView.findViewById(R.id.fab_add_product);
         fabAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
