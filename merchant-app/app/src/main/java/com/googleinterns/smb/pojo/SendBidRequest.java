@@ -23,6 +23,7 @@ public class SendBidRequest {
     private String userID;
     @SerializedName("orderId")
     private String orderID;
+    @SerializedName("itemDetails")
     private List<OrderItem> items;
     private GeoLocation geoLocation;
     private Long deliveryTime;
@@ -59,7 +60,6 @@ public class SendBidRequest {
         geoLocation.setLongitude(merchant.getLatLng().longitude);
 
         request.setGeoLocation(geoLocation);
-        // TODO get delivery time from directions API
         request.setDeliveryTime((long) 60 * 60);
         return request;
     }

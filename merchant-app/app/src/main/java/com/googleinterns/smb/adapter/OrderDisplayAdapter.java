@@ -159,6 +159,16 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
         return billItems;
     }
 
+    public List<BillItem> getAvailableItems() {
+        List<BillItem> availableItems = new ArrayList<>();
+        for (int i = 0; i < billItems.size(); i++) {
+            if (itemAvailabilities.get(i)) {
+                availableItems.add(billItems.get(i));
+            }
+        }
+        return availableItems;
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         private OrderDisplayAdapter mAdapter;
         private TextView mProductName;

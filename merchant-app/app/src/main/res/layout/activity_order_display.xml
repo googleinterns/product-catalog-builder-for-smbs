@@ -110,6 +110,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
+        <include
+            android:id="@+id/navigation_section"
+            layout="@layout/navigation_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/order_details" />
+
         <TextView
             android:id="@+id/label_delivery"
             style="@style/TextAppearance.AppCompat.Body1"
@@ -120,78 +129,17 @@
             android:text="Delivery in:"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/order_details" />
+            app:layout_constraintTop_toBottomOf="@+id/navigation_section" />
 
-        <ScrollView
-            android:id="@+id/delivery_time_chip_group"
+        <include
+            android:id="@+id/delivery_time_chip_group_view"
+            layout="@layout/delivery_time_chip_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/label_delivery">
-
-            <com.google.android.material.chip.ChipGroup
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                app:checkedChip="@+id/choice_1hour"
-                app:singleSelection="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/choice_10mins"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10 mins" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/choice_15mins"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="15 mins" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/choice_20mins"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="20 mins" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/choice_30mins"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="30 mins" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/choice_45mins"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="45 mins" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/choice_1hour"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1 hour" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/choice_2hours_and_more"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="> 2 hours" />
-
-            </com.google.android.material.chip.ChipGroup>
-        </ScrollView>
+            app:layout_constraintTop_toBottomOf="@id/label_delivery" />
 
         <TextView
             android:id="@+id/label_products"
@@ -203,7 +151,7 @@
             android:text="Products:"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/delivery_time_chip_group" />
+            app:layout_constraintTop_toBottomOf="@+id/delivery_time_chip_group_view" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"

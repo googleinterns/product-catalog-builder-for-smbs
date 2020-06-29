@@ -2,6 +2,7 @@ package com.googleinterns.smb.model;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.Exclude;
 import com.googleinterns.smb.common.UIUtils;
 
 import org.json.JSONException;
@@ -82,6 +83,7 @@ public class BillItem extends Product {
     /**
      * Utility to get bill item list from products
      */
+    @Exclude
     public static List<BillItem> getBillItems(List<Product> products) {
         List<BillItem> billItems = new ArrayList<>();
         for (Product product : products) {
@@ -94,6 +96,7 @@ public class BillItem extends Product {
         return qty;
     }
 
+    @Exclude
     public String getQtyString() {
         return String.format(Locale.getDefault(), "%d", qty);
     }
@@ -102,11 +105,20 @@ public class BillItem extends Product {
         this.qty = qty;
     }
 
+    @Exclude
     public Double getTotalPrice() {
         return qty * getDiscountedPrice();
     }
 
+    @Exclude
     public String getTotalPriceString() {
         return String.format(Locale.getDefault(), UIUtils.RUPEE + " %.2f", getTotalPrice());
+    }
+
+    @Override
+    public Map<String, Object> createFirebaseDocument() {
+        Map<String, Object> document = super.createFirebaseDocument();
+        document.put("quantity", getQty());
+        return document;
     }
 }

@@ -41,7 +41,6 @@
     <string name="tap_to_dimiss">Tap to dimiss</string>
     <string name="help">Help</string>
     <string name="scan_text_ocr">Scan Text OCR</string>
-    <string name="add">Add</string>
     <string name="discard">Discard</string>
     <string name="suggested_products">Suggested products</string>
     <string name="clear_all">Clear all</string>
@@ -49,8 +48,6 @@
     <string name="create_a_bill">Create a bill</string>
     <string name="set_quantity">Set quantity</string>
     <string name="quick_add_message">Newly detected products have been added to your inventory</string>
-    <string name="products_added_to_inventory">Product(s) added to inventory</string>
-    <string name="data_update_failed">Error: data update failed</string>
     <string name="set_discount">Set discount</string>
     <string name="debug_tools">Debug tools</string>
     <string name="no_internet_connection">No internet connection</string>
@@ -67,7 +64,6 @@
     <string name="google_logo">google logo</string>
     <string name="app_title_msg">Digital Bharat ka Kirana app</string>
     <string name="sign_in_with_google">Sign in with Google</string>
-    <string name="call">Call</string>
     <string name="empty_inventory_msg">No products in your inventory</string>
     <string name="empty_new_orders_msg">New orders will appear here</string>
     <string name="empty_ongoing_orders_msg">Ongoing orders will appear here</string>
