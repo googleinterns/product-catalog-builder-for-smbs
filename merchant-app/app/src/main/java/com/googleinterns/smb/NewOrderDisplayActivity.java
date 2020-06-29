@@ -16,6 +16,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.chip.ChipGroup;
 import com.googleinterns.smb.adapter.OrderDisplayAdapter;
 import com.googleinterns.smb.common.APIHandler;
+import com.googleinterns.smb.common.APIHandler.ConsumerService;
+import com.googleinterns.smb.common.APIHandler.DirectionService;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.DeliveryTimePicker;
 import com.googleinterns.smb.common.FirebaseUtils;
@@ -91,7 +93,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
         merchantLatLng = Merchant.getInstance().getLatLng();
         customerLatLng = order.getCustomerLatLng();
 
-        APIHandler.DirectionService directionService = APIHandler.getDirectionService();
+        DirectionService directionService = APIHandler.getDirectionService();
         Call<DirectionResponse> route = directionService.getRoute(
                 CommonUtils.getStringFromLatLng(merchantLatLng),
                 CommonUtils.getStringFromLatLng(customerLatLng),
@@ -172,7 +174,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements OrderD
     private void sendBidRequest() {
         SendBidRequest request = SendBidRequest.createSendBidRequest(order, orderDisplayAdapter);
         request.setDeliveryTime((long) deliveryTimePicker.getDeliveryTimeInSeconds());
-        APIHandler.ConsumerService service = APIHandler.getConsumerService();
+        ConsumerService service = APIHandler.getConsumerService();
         Call<Void> response = service.sendBid(request);
         response.enqueue(new Callback<Void>() {
             @Override

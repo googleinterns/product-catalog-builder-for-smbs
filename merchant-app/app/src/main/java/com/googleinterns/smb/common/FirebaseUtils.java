@@ -158,22 +158,22 @@ public class FirebaseUtils {
     public static void acceptOrder(Order order, List<BillItem> billItems) {
         String oid = order.getOid();
         Merchant merchant = Merchant.getInstance();
-        DocumentReference order_ref = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
+        DocumentReference orderRef = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        batch.update(order_ref, "status", Order.ACCEPTED);
+        batch.update(orderRef, "status", Order.ACCEPTED);
         List<Map<String, Object>> items = new ArrayList<>();
         for (BillItem billItem : billItems) {
             items.add(billItem.createFirebaseDocument());
         }
-        batch.update(order_ref, "items", items);
+        batch.update(orderRef, "items", items);
         batch.commit();
     }
 
     public static void declineOrder(Order order) {
         String oid = order.getOid();
         Merchant merchant = Merchant.getInstance();
-        DocumentReference order_ref = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
-        order_ref.update("status", Order.DECLINED)
+        DocumentReference orderRef = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
+        orderRef.update("status", Order.DECLINED)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
