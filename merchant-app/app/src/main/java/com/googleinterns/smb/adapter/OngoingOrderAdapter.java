@@ -13,6 +13,9 @@ import com.googleinterns.smb.model.Order;
 
 import java.util.List;
 
+/**
+ * Recycler view adapter to display ongoing orders. see {@link com.googleinterns.smb.OngoingOrdersActivity}
+ */
 public class OngoingOrderAdapter extends OrderAdapter {
     public OngoingOrderAdapter(OrderSelectListener listener, List<Order> orders) {
         super(listener, orders);
@@ -21,7 +24,7 @@ public class OngoingOrderAdapter extends OrderAdapter {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ongoing_order, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_ongoing_order, parent, false);
         return createViewHolder(view);
     }
 
@@ -29,18 +32,25 @@ public class OngoingOrderAdapter extends OrderAdapter {
     public void onBindViewHolder(@NonNull final OrderAdapter.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         final ViewHolder viewHolder = (ViewHolder) holder;
-        final Order order = orders.get(position);
+        final Order order = mOrders.get(position);
+        // Initialise card_new_order status, and disable all previous card_new_order states
         switch (order.getStatus()) {
             case Order.ONGOING:
-                viewHolder.toggleGroup.check(R.id.in_progress);
+                viewHolder.mOrderStatusToggle.check(R.id.button_in_progress);
                 break;
             case Order.DISPATCHED:
-                viewHolder.toggleGroup.check(R.id.dispatched);
+                viewHolder.mInProgress.setEnabled(false);
+                viewHolder.mDispatched.setClickable(false);
+                viewHolder.mOrderStatusToggle.check(R.id.button_dispatched);
                 break;
             case Order.DELIVERED:
-                viewHolder.toggleGroup.check(R.id.delivered);
+                viewHolder.mInProgress.setEnabled(false);
+                viewHolder.mDispatched.setEnabled(false);
+                viewHolder.mDelivered.setClickable(false);
+                viewHolder.mOrderStatusToggle.check(R.id.button_delivered);
         }
-        viewHolder.toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+        // Setup card_new_order status toggles
+        viewHolder.mOrderStatusToggle.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
                 if (!isChecked) {
@@ -52,16 +62,17 @@ public class OngoingOrderAdapter extends OrderAdapter {
                     }
                     group.uncheck(id);
                 }
+                // On card_new_order status update disable previous states and notify updated status
                 switch (checkedId) {
-                    case R.id.dispatched:
-                        viewHolder.inProgress.setEnabled(false);
-                        viewHolder.dispatched.setClickable(false);
+                    case R.id.button_dispatched:
+                        viewHolder.mInProgress.setEnabled(false);
+                        viewHolder.mDispatched.setClickable(false);
                         order.notifyOrderDispatch();
                         break;
-                    case R.id.delivered:
-                        viewHolder.inProgress.setEnabled(false);
-                        viewHolder.dispatched.setEnabled(false);
-                        viewHolder.delivered.setClickable(false);
+                    case R.id.button_delivered:
+                        viewHolder.mInProgress.setEnabled(false);
+                        viewHolder.mDispatched.setEnabled(false);
+                        viewHolder.mDelivered.setClickable(false);
                         order.notifyOrderDelivered();
                 }
             }
@@ -75,17 +86,17 @@ public class OngoingOrderAdapter extends OrderAdapter {
 
     static class ViewHolder extends OrderAdapter.ViewHolder {
 
-        private MaterialButtonToggleGroup toggleGroup;
-        private Button inProgress;
-        private Button dispatched;
-        private Button delivered;
+        private MaterialButtonToggleGroup mOrderStatusToggle;
+        private Button mInProgress;
+        private Button mDispatched;
+        private Button mDelivered;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            toggleGroup = itemView.findViewById(R.id.order_progress);
-            inProgress = itemView.findViewById(R.id.in_progress);
-            dispatched = itemView.findViewById(R.id.dispatched);
-            delivered = itemView.findViewById(R.id.delivered);
+            mOrderStatusToggle = itemView.findViewById(R.id.toggle_order_progress);
+            mInProgress = itemView.findViewById(R.id.button_in_progress);
+            mDispatched = itemView.findViewById(R.id.button_dispatched);
+            mDelivered = itemView.findViewById(R.id.button_delivered);
         }
     }
 

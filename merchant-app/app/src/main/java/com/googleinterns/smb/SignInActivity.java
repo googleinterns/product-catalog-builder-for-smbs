@@ -14,18 +14,21 @@ import com.google.android.gms.common.SignInButton;
 
 import java.util.Collections;
 
+/**
+ * Google auth signIn activity.
+ */
 public class SignInActivity extends AppCompatActivity {
 
     private static final int START_SIGN_IN = 1;
 
-    private ProgressBar progressBar;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        progressBar = findViewById(R.id.progress_bar);
-        SignInButton signInButton = findViewById(R.id.sign_in);
+        mProgressBar = findViewById(R.id.progress_bar);
+        SignInButton signInButton = findViewById(R.id.button_sign_in);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,14 +53,14 @@ public class SignInActivity extends AppCompatActivity {
                 .setIsSmartLockEnabled(false)
                 .build();
         startActivityForResult(intent, START_SIGN_IN);
-        progressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == START_SIGN_IN) {
-            progressBar.setVisibility(View.INVISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
             if (resultCode == RESULT_OK) {
                 Intent intent = new Intent(this, InventoryActivity.class);
                 startActivity(intent);

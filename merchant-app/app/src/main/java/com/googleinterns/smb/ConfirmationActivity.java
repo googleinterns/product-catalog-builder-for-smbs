@@ -28,7 +28,7 @@ import java.util.List;
 public class ConfirmationActivity extends AppCompatActivity implements
         Merchant.OnDataUpdatedListener,
         FirebaseUtils.BarcodeProductQueryListener,
-        ProductAdapter.ProductUpdateListener {
+        ProductAdapter.ProductActionListener {
 
     // Recycler view adapter for displaying products
     private ProductAdapter mProductAdapter;
@@ -53,7 +53,7 @@ public class ConfirmationActivity extends AppCompatActivity implements
         }
 
         // FAB for adding all products in list to inventory
-        FloatingActionButton mFABDone = findViewById(R.id.done);
+        FloatingActionButton mFABDone = findViewById(R.id.fab_done);
         mFABDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +81,7 @@ public class ConfirmationActivity extends AppCompatActivity implements
      */
     private void initRecyclerView(List<Product> products) {
         // Hide progress bar
-        View view = findViewById(R.id.progressBar);
+        View view = findViewById(R.id.progress_bar);
         view.setVisibility(View.GONE);
         if (products.isEmpty()) {
             displayMessageOnEmpty();
@@ -126,7 +126,7 @@ public class ConfirmationActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from merchant.addProducts(), on successful addition of products
+     * Callback from {@link Merchant#addProducts(Merchant.OnDataUpdatedListener, List)}, on successful addition of products
      */
     @Override
     public void onDataUpdateSuccess() {
@@ -135,7 +135,7 @@ public class ConfirmationActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from merchant.addProducts(), on database update failure
+     * Callback from {@link Merchant#addProducts(Merchant.OnDataUpdatedListener, List)}, on database update failure
      */
     @Override
     public void onDataUpdateFailure() {
@@ -143,7 +143,7 @@ public class ConfirmationActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from FirebaseUtils.queryProducts()
+     * Callback from {@link FirebaseUtils#queryProducts(Context, List)}
      *
      * @param products corresponding to scanned barcode EANs
      */

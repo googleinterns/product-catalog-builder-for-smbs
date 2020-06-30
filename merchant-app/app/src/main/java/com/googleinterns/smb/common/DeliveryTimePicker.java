@@ -12,11 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Delivery time picker for merchant to select estimated delivery time. See {@link com.googleinterns.smb.NewOrderDisplayActivity}
+ */
 public class DeliveryTimePicker {
 
     // Choice constants, delivery time choices in seconds
-    private Map<Integer, Integer> choiceChipToSeconds = new HashMap<Integer, Integer>() {
+    private Map<Integer, Integer> mChoiceChipToSeconds = new HashMap<Integer, Integer>() {
         {
+            // Choice chip options
             put(R.id.choice_10mins, 10 * 60);
             put(R.id.choice_15mins, 15 * 60);
             put(R.id.choice_20mins, 20 * 60);
@@ -27,41 +31,41 @@ public class DeliveryTimePicker {
         }
     };
 
-    private ChipGroup deliveryTimeChipGroup;
-    private int deliveryTimeInSeconds;
-    private boolean isDeliveryTimeSet = false;
+    private ChipGroup mDeliveryTimeChipGroup;
+    private int mDeliveryTimeInSeconds;
+    private boolean mIsDeliveryTimeSet = false;
 
 
     public DeliveryTimePicker(ChipGroup deliveryTimeChipGroup) {
-        this.deliveryTimeChipGroup = deliveryTimeChipGroup;
+        mDeliveryTimeChipGroup = deliveryTimeChipGroup;
         // Set default delivery time
         deliveryTimeChipGroup.check(R.id.choice_1hour);
-        deliveryTimeInSeconds = choiceChipToSeconds.get(R.id.choice_1hour);
+        mDeliveryTimeInSeconds = mChoiceChipToSeconds.get(R.id.choice_1hour);
         deliveryTimeChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ChipGroup group, int checkedId) {
-                isDeliveryTimeSet = true;
-                deliveryTimeInSeconds = choiceChipToSeconds.get(checkedId);
+                mIsDeliveryTimeSet = true;
+                mDeliveryTimeInSeconds = mChoiceChipToSeconds.get(checkedId);
             }
         });
     }
 
     public int getDeliveryTimeInSeconds() {
-        return deliveryTimeInSeconds;
+        return mDeliveryTimeInSeconds;
     }
 
     /**
      * Set default delivery time using travel time information from Directions API
      */
     public void setDefaultDeliveryTime(int estimatedDeliveryTimeInSeconds) {
-        if (isDeliveryTimeSet) {
+        if (mIsDeliveryTimeSet) {
             return;
         }
         List<Pair<Integer, Integer>> chipIdDeliveryTimePairs = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : choiceChipToSeconds.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : mChoiceChipToSeconds.entrySet()) {
             Integer deliveryTime = entry.getValue();
             Integer chipId = entry.getKey();
-            chipIdDeliveryTimePairs.add(new Pair<Integer, Integer>(chipId, deliveryTime));
+            chipIdDeliveryTimePairs.add(new Pair<>(chipId, deliveryTime));
         }
         Collections.sort(chipIdDeliveryTimePairs, new Comparator<Pair<Integer, Integer>>() {
             @Override
@@ -69,18 +73,19 @@ public class DeliveryTimePicker {
                 return o1.second - o2.second;
             }
         });
+        // Find first choice chip with time more than estimated delivery time
         for (int i = 0; i < chipIdDeliveryTimePairs.size(); i++) {
             int chipId = chipIdDeliveryTimePairs.get(i).first;
             int deliveryTime = chipIdDeliveryTimePairs.get(i).second;
             if (estimatedDeliveryTimeInSeconds <= deliveryTime) {
-                deliveryTimeInSeconds = deliveryTime;
-                deliveryTimeChipGroup.check(chipId);
+                mDeliveryTimeInSeconds = deliveryTime;
+                mDeliveryTimeChipGroup.check(chipId);
                 return;
             }
         }
         // Set largest value if no time is within estimated time
         Pair<Integer, Integer> lastPair = chipIdDeliveryTimePairs.get(chipIdDeliveryTimePairs.size() - 1);
-        deliveryTimeChipGroup.check(lastPair.first);
-        deliveryTimeInSeconds = lastPair.second;
+        mDeliveryTimeChipGroup.check(lastPair.first);
+        mDeliveryTimeInSeconds = lastPair.second;
     }
 }

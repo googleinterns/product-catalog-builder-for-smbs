@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -24,17 +25,18 @@ import java.util.Objects;
  */
 public class EditQtyDialogFragment extends DialogFragment {
 
-    public interface OptionSelectListener {
-        void onConfirm(int qty);
+    public interface QtyConfirmationListener {
+        void onQtyConfirm(int qty);
     }
 
     private static final String TAG = "EditPriceDialogFragment";
-    private OptionSelectListener listener;
+    private QtyConfirmationListener mListener;
     private View mDialogView;
     private TextInputEditText mEditTextQty;
+    private TextInputLayout mEditTextLayout;
 
-    public EditQtyDialogFragment(OptionSelectListener listener) {
-        this.listener = listener;
+    public EditQtyDialogFragment(QtyConfirmationListener listener) {
+        mListener = listener;
     }
 
     @NonNull
@@ -49,25 +51,38 @@ public class EditQtyDialogFragment extends DialogFragment {
                         UIUtils.closeKeyboard(requireContext());
                     }
                 })
-                .setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.done, null); // Listener overridden later
+        final Dialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        // Manually set on click listener to positive button for validation before dismissing the dialog
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View v) {
+                        int qty;
+                        try {
+                            qty = getQty();
+                        } catch (NumberFormatException e) {
+                            mEditTextLayout.setError("Invalid quantity");
+                            return;
+                        }
                         UIUtils.closeKeyboard(requireContext());
-                        updateQty(getQty());
+                        updateQty(qty);
+                        dismiss();
                     }
                 });
-        return builder.create();
+            }
+        });
+        return dialog;
     }
 
     private int getQty() {
         int mQty;
-        try {
-            String qtyString = Objects.requireNonNull(mEditTextQty.getText()).toString();
-            mQty = Integer.parseInt(qtyString);
-        } catch (Exception e) {
-            Log.e(TAG, "Error: unable to get quantity");
-            mQty = 1;
-        }
+        String qtyString = Objects.requireNonNull(mEditTextQty.getText()).toString();
+        mQty = Integer.parseInt(qtyString);
         return mQty;
     }
 
@@ -75,8 +90,8 @@ public class EditQtyDialogFragment extends DialogFragment {
      * Calls the registered listener with the updated value of quantity
      */
     private void updateQty(int qty) {
-        if (listener != null) {
-            listener.onConfirm(qty);
+        if (mListener != null) {
+            mListener.onQtyConfirm(qty);
         } else {
             Log.e(TAG, "Error while updating quantity");
         }
@@ -86,10 +101,10 @@ public class EditQtyDialogFragment extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.set_qty, null);
+        mDialogView = inflater.inflate(R.layout.dialog_set_qty, null);
         // Initialise views
-        TextInputLayout mEditTextLayout = mDialogView.findViewById(R.id.text_layout_qty);
-        mEditTextQty = mDialogView.findViewById(R.id.text_field_qty);
+        mEditTextLayout = mDialogView.findViewById(R.id.layout_edit_text_qty);
+        mEditTextQty = mDialogView.findViewById(R.id.edit_text_qty);
         mEditTextQty.requestFocus();
         UIUtils.showKeyboard(requireContext());
     }

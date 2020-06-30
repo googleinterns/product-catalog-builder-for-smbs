@@ -16,19 +16,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
-import com.googleinterns.smb.MainActivity;
+import com.googleinterns.smb.R;
 import com.googleinterns.smb.model.BillItem;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
 import com.googleinterns.smb.model.Product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
- * Utility class for performing common firestore queries
+ * Utility class for performing common Firebase Firestore queries
  */
 public class FirebaseUtils {
 
@@ -62,7 +62,7 @@ public class FirebaseUtils {
         try {
             listener = (BarcodeProductQueryListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement OnProductReceivedListener");
+            throw new ClassCastException(context + " must implement " + BarcodeProductQueryListener.class.getName());
         }
         if (barcodes.isEmpty()) {
             listener.onQueryComplete(new ArrayList<Product>());
@@ -70,7 +70,7 @@ public class FirebaseUtils {
         }
         Query query = FirebaseFirestore.getInstance().collection("products");
         // Filter products containing these barcodes
-        query = query.whereIn("EAN", barcodes);
+        query = query.whereIn(Product.FIELD_EAN, barcodes);
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -78,7 +78,7 @@ public class FirebaseUtils {
                         List<Product> products = new ArrayList<>();
                         for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                             DocumentSnapshot documentSnapshot = documentChange.getDocument();
-                            Product product = new Product(documentSnapshot);
+                            Product product = documentSnapshot.toObject(Product.class);
                             products.add(product);
                         }
                         listener.onQueryComplete(products);
@@ -88,25 +88,30 @@ public class FirebaseUtils {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "Firebase Error: ", e);
-                        UIUtils.showToast(context, "Could'nt fetch products from database");
+                        UIUtils.showToast(context, context.getString(R.string.fetch_error));
                     }
                 });
     }
 
+    /**
+     * Query current new orders from the database
+     */
     public static void getNewOrders(final Context context) {
         final OnOrderReceivedListener listener;
         try {
             listener = (OnOrderReceivedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement OnOrderReceivedListener");
+            throw new ClassCastException(context + " must implement " + OnOrderReceivedListener.class.getName());
         }
+
         Merchant merchant = Merchant.getInstance();
         Query query = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders");
         long currentTime = System.currentTimeMillis();
         long boundTime = currentTime - ORDER_MIN * 60 * 1000;
+
         // Get all orders after "boundTime" i.e. not older than ORDER_MIN
-        query = query.whereGreaterThan("timestamp", boundTime);
-        query = query.whereEqualTo("status", Order.NEW_ORDER);
+        query = query.whereGreaterThan(Order.FIELD_TIMESTAMP, boundTime);
+        query = query.whereEqualTo(Order.FIELD_STATUS, Order.NEW_ORDER);
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -114,30 +119,32 @@ public class FirebaseUtils {
                         if (task.isSuccessful()) {
                             List<Order> orders = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
-                                Map<String, Object> data = documentSnapshot.getData();
-                                Order order = new Order(data);
+                                Order order = documentSnapshot.toObject(Order.class);
                                 orders.add(order);
                             }
                             listener.onOrderReceived(orders);
                         } else {
                             Log.e(TAG, "Firebase Error: ", task.getException());
-                            UIUtils.showToast(context, "Could'nt fetch orders from database");
+                            UIUtils.showToast(context, context.getString(R.string.fetch_error));
                         }
                     }
                 });
-
     }
 
+    /**
+     * Query ongoing orders from the database
+     */
     public static void getOngoingOrders(final Context context) {
         final OnOrderReceivedListener listener;
         try {
             listener = (OnOrderReceivedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement OnOrderReceivedListener");
+            throw new ClassCastException(context + " must implement " + OnOrderReceivedListener.class.getName());
         }
+
         Merchant merchant = Merchant.getInstance();
         Query query = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders");
-        query = query.whereEqualTo("status", Order.ONGOING);
+        query = query.whereIn("status", Arrays.asList(Order.ONGOING, Order.DISPATCHED, Order.DELIVERED));
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -145,49 +152,42 @@ public class FirebaseUtils {
                         if (task.isSuccessful()) {
                             List<Order> orders = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
-                                Map<String, Object> data = documentSnapshot.getData();
-                                Order order = new Order(data);
+                                Order order = documentSnapshot.toObject(Order.class);
                                 orders.add(order);
                             }
                             listener.onOrderReceived(orders);
                         } else {
                             Log.e(TAG, "Firebase Error: ", task.getException());
-                            UIUtils.showToast(context, "Could'nt fetch orders from database");
+                            UIUtils.showToast(context, context.getString(R.string.fetch_error));
                         }
                     }
                 });
     }
 
+    /**
+     * Accept customer card_new_order. Update card_new_order details in database
+     *
+     * @param order     Originally placed card_new_order
+     * @param billItems Available items
+     */
     public static void acceptOrder(Order order, List<BillItem> billItems) {
         String oid = order.getOid();
         Merchant merchant = Merchant.getInstance();
         DocumentReference orderRef = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        batch.update(orderRef, "status", Order.ACCEPTED);
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (BillItem billItem : billItems) {
-            items.add(billItem.createFirebaseDocument());
-        }
-        batch.update(orderRef, "items", items);
+        batch.update(orderRef, Order.FIELD_STATUS, Order.ACCEPTED);
+        batch.update(orderRef, Order.FIELD_ITEMS, billItems);
         batch.commit();
     }
 
-    public static void declineOrder(Order order) {
-        String oid = order.getOid();
-        Merchant merchant = Merchant.getInstance();
-        DocumentReference orderRef = FirebaseFirestore.getInstance().collection("merchants/" + merchant.getMid() + "/orders").document(oid);
-        orderRef.update("status", Order.DECLINED)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        UIUtils.showToast(MainActivity.getContext(), "Order declined");
-                    }
-                });
-    }
-
+    /**
+     * Check if given domain is already taken or not
+     *
+     * @param domain Queried domain
+     */
     public static void isDomainAvailable(String domain, final DomainAvaliabilityCheckListener listener) {
-        final DocumentReference doc_ref = FirebaseFirestore.getInstance().collection("domains/").document(domain);
-        doc_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        final DocumentReference domainRef = FirebaseFirestore.getInstance().collection("domains/").document(domain);
+        domainRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -200,4 +200,30 @@ public class FirebaseUtils {
         });
     }
 
+    /**
+     * Update card_new_order status in firestore
+     *
+     * @param oid       Order ID
+     * @param newStatus Updated status
+     */
+    public static void updateOrderStatus(String oid, String newStatus) {
+        Merchant merchant = Merchant.getInstance();
+        DocumentReference orderRef = FirebaseFirestore.getInstance()
+                .collection("merchants/" + merchant.getMid() + "/orders")
+                .document(oid);
+        orderRef.update(Order.FIELD_STATUS, newStatus);
+    }
+
+    /**
+     * Update product with new offers
+     *
+     * @param product Product object with updated offers
+     */
+    public static void updateProductOffers(Product product) {
+        String ean = product.getEAN();
+        String mid = Merchant.getInstance().getMid();
+        FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products")
+                .document(ean)
+                .update(Product.FIELD_OFFERS, product.getOffers());
+    }
 }

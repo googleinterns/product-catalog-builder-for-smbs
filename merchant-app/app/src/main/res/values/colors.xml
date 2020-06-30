@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#7C4DFF</color>
+    <color name="colorPrimary">#1976d2</color>
+    <color name="colorPrimaryDark">#004ba0</color>
+    <color name="colorAccent">#9c27b0</color>
+    <color name="colorSecondary">#1976d2</color>
     <color name="white">#FFFFFF</color>
     <color name="price">#B12704</color>
     <color name="discount">#79EA86</color>

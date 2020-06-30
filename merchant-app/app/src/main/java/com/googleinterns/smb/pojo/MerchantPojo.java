@@ -13,6 +13,17 @@ public class MerchantPojo {
 
     }
 
+    // Field constants
+    public static final String FIELD_MID = "mid";
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_EMAIL = "email";
+    public static final String FIELD_TOKEN = "token";
+    public static final String FIELD_NUM_PRODUCTS = "num_products";
+    public static final String FIELD_LOCATION = "location";
+    public static final String FIELD_ADDRESS = "address";
+    public static final String FIELD_STORE_NAME = "store_name";
+    public static final String FIELD_DOMAIN_NAME = "domain_name";
+
     // Unique merchant UID given by firebase auth
     @PropertyName("mid")
     private String mid;

@@ -48,7 +48,7 @@ public class Merchant {
     }
 
     /**
-     * Listener interface to notify newly detected products during billing
+     * Listener interface to notify newly detected products during billing. See {@link com.googleinterns.smb.BillingActivity}
      */
     public interface NewProductsFoundListener {
         void onNewProductsFound(List<Product> newProducts);
@@ -63,6 +63,7 @@ public class Merchant {
 
     private final static String TAG = Merchant.class.getName();
     public final static String NUM_PRODUCTS = "NUM_PRODUCTS";
+
 
     // Unique merchant UID given by firebase auth
     private String mid;
@@ -160,7 +161,7 @@ public class Merchant {
     }
 
     /**
-     * Get singleton merchant instance
+     * Get merchant instance
      *
      * @return merchant instance
      */
@@ -170,18 +171,6 @@ public class Merchant {
         }
         mInstance = new Merchant();
         return mInstance;
-    }
-
-    /**
-     * Fetch inventory and store. Overloaded function (without-callback version)
-     */
-    public void fetchProducts() {
-        fetchProducts(new OnProductFetchedListener() {
-            @Override
-            public void onProductFetched(List<Product> products) {
-                // Ignore callback
-            }
-        });
     }
 
     /**
@@ -199,7 +188,7 @@ public class Merchant {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         inventory = new HashMap<>();
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            Product product = new Product(document);
+                            Product product = document.toObject(Product.class);
                             inventory.put(product.getEAN(), product);
                         }
                         numProducts = inventory.size();
@@ -212,6 +201,19 @@ public class Merchant {
                         Log.e(TAG, "Firebase Error: ", e);
                     }
                 });
+    }
+
+    /**
+     * Fetch inventory and store in memory.
+     * Overloaded function (without-callback version)
+     */
+    public void fetchProducts() {
+        fetchProducts(new OnProductFetchedListener() {
+            @Override
+            public void onProductFetched(List<Product> products) {
+                // Ignore callback
+            }
+        });
     }
 
     private int getStoredNumProducts() {
@@ -250,14 +252,13 @@ public class Merchant {
         for (Product product : products) {
             String collectionPath = "merchants/" + mid + "/products";
             DocumentReference documentReference = FirebaseFirestore.getInstance().collection(collectionPath).document(product.getEAN());
-            Map<String, Object> data = product.createFirebaseDocument();
-            batch.set(documentReference, data);
+            batch.set(documentReference, product);
             inventory.put(product.getEAN(), product);
         }
         numProducts = inventory.size();
         storeNumProducts();
         DocumentReference merchant = FirebaseFirestore.getInstance().collection("merchants").document(mid);
-        batch.update(merchant, "num_products", numProducts);
+        batch.update(merchant, MerchantPojo.FIELD_NUM_PRODUCTS, numProducts);
         batch.commit()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -295,7 +296,7 @@ public class Merchant {
         FirebaseFirestore.getInstance()
                 .collection("merchants")
                 .document(mid)
-                .update("num_products", numProducts);
+                .update(MerchantPojo.FIELD_NUM_PRODUCTS, numProducts);
     }
 
     /**
@@ -306,7 +307,7 @@ public class Merchant {
         FirebaseFirestore.getInstance()
                 .collection("merchants/" + mid + "/products")
                 .document(product.getEAN())
-                .set(product.createFirebaseDocument())
+                .set(product)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -369,10 +370,6 @@ public class Merchant {
         return photoUri;
     }
 
-    public int getNumProducts() {
-        return numProducts;
-    }
-
     public LatLng getLatLng() {
         return latLng;
     }
@@ -393,14 +390,14 @@ public class Merchant {
         this.address = address;
         FirebaseFirestore.getInstance().collection("merchants")
                 .document(mInstance.getMid())
-                .update("address", address);
+                .update(MerchantPojo.FIELD_ADDRESS, address);
     }
 
     public void setStoreName(String storeName) {
         this.storeName = storeName;
         FirebaseFirestore.getInstance().collection("merchants")
                 .document(mInstance.getMid())
-                .update("store_name", storeName);
+                .update(MerchantPojo.FIELD_STORE_NAME, storeName);
     }
 
     public void setLatLng(LatLng latLng) {
@@ -408,17 +405,18 @@ public class Merchant {
         List<Double> location = Arrays.asList(latLng.latitude, latLng.longitude);
         FirebaseFirestore.getInstance().collection("merchants")
                 .document(mInstance.getMid())
-                .update("location", location);
+                .update(MerchantPojo.FIELD_LOCATION, location);
     }
 
     public void setDomainName(String domainName) {
         this.domainName = domainName;
         FirebaseFirestore.getInstance().collection("merchants")
                 .document(mInstance.getMid())
-                .update("domain_name", domainName);
+                .update(MerchantPojo.FIELD_DOMAIN_NAME, domainName);
         Map<String, Object> data = new HashMap<>();
-        data.put("domain_name", domainName);
-        data.put("mid", getMid());
+
+        data.put(MerchantPojo.FIELD_DOMAIN_NAME, domainName);
+        data.put(MerchantPojo.FIELD_MID, getMid());
         FirebaseFirestore.getInstance()
                 .collection("domains")
                 .document(domainName)

@@ -16,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.googleinterns.smb.adapter.ProductAdapter;
 import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
 import com.googleinterns.smb.barcodescanning.BarcodeStatusListener;
@@ -25,6 +25,8 @@ import com.googleinterns.smb.common.VideoToBarcodeTask;
 import com.googleinterns.smb.fragment.AddProductDialogFragment;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Product;
+import com.googleinterns.smb.scan.ScanBarcodeActivity;
+import com.googleinterns.smb.scan.ScanTextActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,17 +36,17 @@ public class InventoryActivity extends MainActivity implements
         AddProductDialogFragment.OptionSelectListener,
         BarcodeStatusListener,
         Merchant.OnDataUpdatedListener,
-        ProductAdapter.ProductUpdateListener {
+        ProductAdapter.ProductActionListener {
 
     private static final String TAG = InventoryActivity.class.getName();
     private static final int PICK_IMAGE = 1;
     private static final int PICK_VIDEO = 2;
 
     // Video to barcode converter task
-    private AsyncTask<?, ?, ?> task;
+    private AsyncTask<?, ?, ?> mTask;
     // Dialog to display navigation options
     private DialogFragment mDialogFragment;
-    private View contentView;
+    private View mContentView;
     private ProductAdapter mProductAdapter;
 
     @Override
@@ -52,9 +54,9 @@ public class InventoryActivity extends MainActivity implements
         super.onCreate(savedInstanceState);
         setTitle("Inventory");
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        contentView = inflater.inflate(R.layout.activity_inventory, null, false);
-        container.addView(contentView, 0);
-        FloatingActionButton fabAddProduct = contentView.findViewById(R.id.add_product);
+        mContentView = inflater.inflate(R.layout.activity_inventory, null, false);
+        mContainer.addView(mContentView, 0);
+        ExtendedFloatingActionButton fabAddProduct = mContentView.findViewById(R.id.fab_add_product);
         fabAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +119,7 @@ public class InventoryActivity extends MainActivity implements
      */
     private void initRecyclerView(List<Product> products) {
         // Hide progress bar
-        View view = contentView.findViewById(R.id.progressBar);
+        View view = mContentView.findViewById(R.id.progress_bar);
         view.setVisibility(View.GONE);
         if (products.isEmpty()) {
             displayMessageOnEmpty();
@@ -125,7 +127,7 @@ public class InventoryActivity extends MainActivity implements
         }
         mProductAdapter = new ProductAdapter(products, this, getSupportFragmentManager());
         // Initialize recycler view
-        RecyclerView recyclerView = contentView.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = mContentView.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(mProductAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
@@ -136,7 +138,7 @@ public class InventoryActivity extends MainActivity implements
     }
 
     private void displayMessageOnEmpty() {
-        View emptyInventory = contentView.findViewById(R.id.empty_inventory);
+        View emptyInventory = mContentView.findViewById(R.id.empty_inventory);
         emptyInventory.setVisibility(View.VISIBLE);
     }
 
@@ -160,8 +162,8 @@ public class InventoryActivity extends MainActivity implements
                 ProgressDialog mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 mProgressDialog.setMessage(getString(R.string.processing));
-                task = new VideoToBarcodeTask(this, this, videoUri, mProgressDialog);
-                task.execute();
+                mTask = new VideoToBarcodeTask(this, this, videoUri, mProgressDialog);
+                mTask.execute();
                 mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.show();
             } catch (Exception e) {
@@ -172,7 +174,8 @@ public class InventoryActivity extends MainActivity implements
     }
 
     /**
-     * This status callback can be received directly from BarcodeScanningProcessor or from VideoToBarcode task on completion.
+     * This status callback can be received directly from {@link BarcodeScanningProcessor} or
+     * from {@link VideoToBarcodeTask} task on completion.
      *
      * @param barcodes array of EAN strings
      */
@@ -200,8 +203,8 @@ public class InventoryActivity extends MainActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (task != null) {
-            task.cancel(true);
+        if (mTask != null) {
+            mTask.cancel(true);
         }
     }
 
@@ -212,7 +215,7 @@ public class InventoryActivity extends MainActivity implements
     @Override
     public void onDataUpdateFailure() {
         // Delete failed
-        UIUtils.showNoConnectionMessage(this, container);
+        UIUtils.showNoConnectionMessage(this, mContainer);
     }
 
     @Override

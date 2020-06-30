@@ -16,26 +16,26 @@ import com.googleinterns.smb.model.Merchant;
  */
 public class DebugActivity extends MainActivity {
 
-    private String mid;
+    private String mMid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_debug, null, false);
-        container.addView(contentView, 0);
+        mContainer.addView(contentView, 0);
         Merchant merchant = Merchant.getInstance();
-        mid = merchant.getMid();
-        TextView midTextView = contentView.findViewById(R.id.text_view_uid);
-        midTextView.setText(mid);
+        mMid = merchant.getMid();
+        TextView midTextView = contentView.findViewById(R.id.text_view_mid);
+        midTextView.setText(mMid);
     }
 
     /**
-     * onClick for  copy to clipboard button
+     * onClick for copy to clipboard button
      */
     public void copyToClipBoard(View view) {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("mid", mid);
+        ClipData clip = ClipData.newPlainText("mid", mMid);
         assert clipboard != null;
         clipboard.setPrimaryClip(clip);
         UIUtils.showToast(this, "Copied to clipboard");

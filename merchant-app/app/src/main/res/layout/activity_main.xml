@@ -17,9 +17,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/background_material_dark"
             android:elevation="4dp"
-            android:theme="?attr/actionBarTheme"
+            android:theme="@style/ToolBarStyle"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
 
         <FrameLayout
@@ -28,7 +27,6 @@
             android:layout_height="match_parent">
 
         </FrameLayout>
-
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -36,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
+        app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

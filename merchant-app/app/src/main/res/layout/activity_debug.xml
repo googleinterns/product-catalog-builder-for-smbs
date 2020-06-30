@@ -8,21 +8,20 @@
     tools:context=".DebugActivity">
 
     <TextView
-        android:id="@+id/text_view_uid"
+        android:id="@+id/text_view_mid"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:text=""
-        style="@style/TextAppearance.AppCompat.Medium"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:onClick="copyToClipBoard"
-        android:text="Copy to clipboard"
+        android:text="@string/copy_to_clipboard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_uid" />
+        app:layout_constraintTop_toBottomOf="@id/text_view_mid" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,10 +14,12 @@ import com.googleinterns.smb.R;
  */
 public class UIUtils {
 
-    private static final String TAG = "UIUtils";
+    private static final String TAG = UIUtils.class.getName();
 
     // Constants
     public static final String RUPEE = "\u20b9";
+    public static final String PERCENT = "%";
+    public static final String NIL_DATE = "--/--/----";
 
     // Utility class should not be instantiated
     private UIUtils() {

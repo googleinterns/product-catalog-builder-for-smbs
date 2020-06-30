@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <com.googleinterns.smb.common.CameraSourcePreview
-            android:id="@+id/firePreview"
+            android:id="@+id/camera_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -18,14 +18,14 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.googleinterns.smb.common.GraphicOverlay
-                android:id="@+id/fireFaceOverlay"
+                android:id="@+id/graphic_overlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
         </com.googleinterns.smb.common.CameraSourcePreview>
 
         <LinearLayout
-            android:id="@+id/help_layout"
+            android:id="@+id/layout_help"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#99000000"
@@ -36,7 +36,7 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/help_text"
+                android:id="@+id/text_view_help"
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

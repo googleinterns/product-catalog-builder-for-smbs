@@ -24,25 +24,29 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Merchant;
+import com.googleinterns.smb.scan.ScanBarcodeActivity;
 
+/**
+ * Parent activity for all navigation drawer children activities.
+ */
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getName();
     private static final int START_SIGN_IN = 3;
-    private static Context applicationContext;
+    private static Context mApplicationContext;
 
-    private boolean isSigningIn = false;
-    private DrawerLayout drawer;
-    private NavigationView navigationView;
-    protected FrameLayout container;
+    private boolean mIsSigningIn = false;
+    private DrawerLayout mDrawer;
+    private NavigationView mNavigationView;
+    protected FrameLayout mContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        applicationContext = getApplicationContext();
+        mApplicationContext = getApplicationContext();
         setContentView(R.layout.activity_main);
-        container = findViewById(R.id.container);
+        mContainer = findViewById(R.id.container);
 
         // Enable Firestore logging
         FirebaseFirestore.setLoggingEnabled(true);
@@ -59,12 +63,12 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_drawer);
-        navigationView.setNavigationItemSelectedListener(this);
+        mDrawer = findViewById(R.id.drawer_layout);
+        mNavigationView = findViewById(R.id.navigation_drawer);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
     }
 
@@ -101,12 +105,12 @@ public class MainActivity extends AppCompatActivity implements
                 AuthUI.getInstance().signOut(this);
                 startSignIn();
         }
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     private boolean isSignInRequired() {
-        return (!isSigningIn && FirebaseAuth.getInstance().getCurrentUser() == null);
+        return (!mIsSigningIn && FirebaseAuth.getInstance().getCurrentUser() == null);
     }
 
     /**
@@ -158,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == START_SIGN_IN) {
-            isSigningIn = false;
+            mIsSigningIn = false;
             if (resultCode != RESULT_OK && isSignInRequired()) {
                 startSignIn();
             } else if (resultCode == RESULT_OK) {
@@ -174,10 +178,10 @@ public class MainActivity extends AppCompatActivity implements
             // Initialize merchant
             Merchant merchant = Merchant.getInstance();
             merchant.fetchProducts();
-            View headerLayout = navigationView.getHeaderView(0);
-            TextView username = headerLayout.findViewById(R.id.username);
+            View headerLayout = mNavigationView.getHeaderView(0);
+            TextView username = headerLayout.findViewById(R.id.text_view_username);
             TextView email = headerLayout.findViewById(R.id.email);
-            ImageView profileImage = headerLayout.findViewById(R.id.profile_image);
+            ImageView profileImage = headerLayout.findViewById(R.id.image_view_profile_image);
             username.setText(merchant.getName());
             email.setText(merchant.getEmail());
             Glide.with(profileImage.getContext())
@@ -194,14 +198,14 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
 
     public static Context getContext() {
-        return applicationContext;
+        return mApplicationContext;
     }
 }

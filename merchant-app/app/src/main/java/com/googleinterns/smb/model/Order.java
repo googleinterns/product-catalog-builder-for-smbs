@@ -3,6 +3,11 @@ package com.googleinterns.smb.model;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.PropertyName;
+import com.googleinterns.smb.common.APIHandler;
+import com.googleinterns.smb.common.FirebaseUtils;
+import com.googleinterns.smb.pojo.OrderStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,9 +20,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
- * Class to model the customer order
+ * Class to model the customer card_new_order
  */
 public class Order implements Serializable {
 
@@ -31,62 +41,67 @@ public class Order implements Serializable {
     public static final String DISPATCHED = "DISPATCHED";
     public static final String DELIVERED = "DELIVERED";
 
-    private String customerName;
-    private String customerAddress;
-    private String customerUserId;
-    private String oid;
-    private List<BillItem> billItems = new ArrayList<>();
-    private String status;
-    private long timestamp;
-    private List<Double> customerLatLng;
+    // Field constants
+    public static final String FIELD_CUSTOMER_NAME = "customer_name";
+    public static final String FIELD_CUSTOMER_ADDRESS = "customer_address";
+    public static final String FIELD_USER_ID = "user_id";
+    public static final String FIELD_OID = "oid";
+    public static final String FIELD_ITEMS = "items";
+    public static final String FIELD_STATUS = "status";
+    public static final String FIELD_TIMESTAMP = "timestamp";
+    public static final String FIELD_LOCATION = "location";
+    public static final String FIELD_CUSTOMER_CONTACT = "customer_contact";
 
+    @PropertyName(FIELD_CUSTOMER_NAME)
+    private String customerName;
+    @PropertyName(FIELD_CUSTOMER_ADDRESS)
+    private String customerAddress;
+    @PropertyName(FIELD_USER_ID)
+    private String customerUserId;
+    @PropertyName(FIELD_OID)
+    private String oid;
+    @PropertyName(FIELD_ITEMS)
+    private List<BillItem> billItems = new ArrayList<>();
+    @PropertyName(FIELD_STATUS)
+    private String status;
+    @PropertyName(FIELD_TIMESTAMP)
+    private long timestamp;
+    @PropertyName(FIELD_LOCATION)
+    private List<Double> customerLatLng;
+    @PropertyName(FIELD_CUSTOMER_CONTACT)
+    private String customerContact;
+
+    /**
+     * Empty constructor for Firebase
+     */
     public Order() {
 
     }
 
-    public Order(Map<String, Object> data) {
-        customerUserId = (String) data.get("user_id");
-        customerName = (String) data.get("customer_name");
-        customerAddress = (String) data.get("customer_address");
-        oid = (String) data.get("oid");
-        status = (String) data.get("status");
-        timestamp = (long) data.get("timestamp");
-        customerLatLng = (List<Double>) data.get("location");
-        List<Map<String, Object>> items = (List<Map<String, Object>>) data.get("items");
-        for (Map<String, Object> item : items) {
-            BillItem billItem = new BillItem(item);
-            billItems.add(billItem);
+    public Order(Map<String, String> data) {
+        customerUserId = data.get(FIELD_USER_ID);
+        customerName = data.get(FIELD_CUSTOMER_NAME);
+        customerAddress = data.get(FIELD_CUSTOMER_ADDRESS);
+        oid = data.get(FIELD_OID);
+        status = data.get(FIELD_STATUS);
+        timestamp = Long.parseLong(Objects.requireNonNull(data.get(FIELD_TIMESTAMP)));
+        if (data.containsKey(FIELD_CUSTOMER_CONTACT)) {
+            customerContact = data.get(FIELD_CUSTOMER_CONTACT);
         }
-    }
-
-    public Order(Map<String, String> data, boolean remoteMessage) {
-        customerUserId = data.get("user_id");
-        customerName = data.get("customer_name");
-        customerAddress = data.get("customer_address");
-        oid = data.get("oid");
-        status = data.get("status");
-        timestamp = Long.parseLong(data.get("timestamp"));
         try {
-            JSONArray items = new JSONArray(data.get("items"));
+            JSONArray items = new JSONArray(data.get(FIELD_ITEMS));
             for (int i = 0; i < items.length(); i++) {
                 BillItem billItem = new BillItem(items.getJSONObject(i));
                 billItems.add(billItem);
             }
-            JSONArray location = new JSONArray(data.get("location"));
+            JSONArray location = new JSONArray(data.get(FIELD_LOCATION));
             customerLatLng = Arrays.asList(location.getDouble(0), location.getDouble(1));
         } catch (JSONException e) {
-            Log.e(TAG, "Error while initialising order", e);
+            Log.e(TAG, "Error while initialising card_new_order", e);
         }
     }
 
-    public String getCustomerAddress() {
-        return customerAddress;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
+    @Exclude
     public Double getOrderTotal() {
         Double total = 0.0;
         for (BillItem billItem : billItems) {
@@ -95,10 +110,7 @@ public class Order implements Serializable {
         return total;
     }
 
-    public List<BillItem> getBillItems() {
-        return billItems;
-    }
-
+    @Exclude
     public String getTimeElapsedString(long currentTime) {
         long diffInSec = (currentTime - timestamp) / 1000;
         if (diffInSec < 60) {
@@ -117,6 +129,7 @@ public class Order implements Serializable {
         return "1 day ago";
     }
 
+    @Exclude
     public String getTimeOfOrder() {
         Date date = new Date(timestamp);
         Calendar calendar = Calendar.getInstance();
@@ -134,6 +147,7 @@ public class Order implements Serializable {
         return String.format(Locale.getDefault(), "%d:%02d %s", hours, minutes, period);
     }
 
+    @Exclude
     public int getItemCount() {
         int numItems = 0;
         for (BillItem billItem : billItems) {
@@ -142,24 +156,13 @@ public class Order implements Serializable {
         return numItems;
     }
 
-    public LatLng getCustomerLatLng() {
-        LatLng latLng = new LatLng(customerLatLng.get(0), customerLatLng.get(1));
-        return latLng;
-    }
-
-    public String getCustomerUserId() {
-        return customerUserId;
-    }
-
-    public String getOid() {
-        return oid;
-    }
-
     public void notifyOrderDispatch() {
         if (!status.equals(Order.ONGOING))
             return;
         status = DISPATCHED;
-        // API call dispatch
+        FirebaseUtils.updateOrderStatus(oid, DISPATCHED);
+        // Consumer side API call to notify card_new_order dispatch
+        notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DISPATCHED_STATUS_MESSAGE);
     }
 
     public void notifyOrderDelivered() {
@@ -169,10 +172,126 @@ public class Order implements Serializable {
             notifyOrderDispatch();
         }
         status = DELIVERED;
-        // API call delivered
+        FirebaseUtils.updateOrderStatus(oid, DELIVERED);
+        // Consumer side API call to notify card_new_order delivered
+        notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DELIVERED_STATUS_MESSAGE);
     }
 
+    public void decline() {
+        FirebaseUtils.updateOrderStatus(oid, DECLINED);
+    }
+
+    private void notifyNewOrderStatus(String userID, String orderID, String newStatus) {
+        // Notify new card_new_order status to consumer side
+        APIHandler.ConsumerService service = APIHandler.getConsumerService();
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setUserId(getCustomerUserId());
+        orderStatus.setOrderId(oid);
+        orderStatus.setStatus(newStatus);
+        Call<Void> request = service.notifyOrderStatus(orderStatus);
+        request.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+            }
+        });
+    }
+
+    @Exclude
+    public LatLng getCustomerLocation() {
+        return new LatLng(customerLatLng.get(0), customerLatLng.get(1));
+    }
+
+    @PropertyName(FIELD_CUSTOMER_NAME)
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    @PropertyName(FIELD_CUSTOMER_NAME)
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    @PropertyName(FIELD_CUSTOMER_ADDRESS)
+    public String getCustomerAddress() {
+        return customerAddress;
+    }
+
+    @PropertyName(FIELD_CUSTOMER_ADDRESS)
+    public void setCustomerAddress(String customerAddress) {
+        this.customerAddress = customerAddress;
+    }
+
+    @PropertyName(FIELD_USER_ID)
+    public String getCustomerUserId() {
+        return customerUserId;
+    }
+
+    @PropertyName(FIELD_USER_ID)
+    public void setCustomerUserId(String customerUserId) {
+        this.customerUserId = customerUserId;
+    }
+
+    @PropertyName(FIELD_OID)
+    public String getOid() {
+        return oid;
+    }
+
+    @PropertyName(FIELD_OID)
+    public void setOid(String oid) {
+        this.oid = oid;
+    }
+
+    @PropertyName(FIELD_ITEMS)
+    public List<BillItem> getBillItems() {
+        return billItems;
+    }
+
+    @PropertyName(FIELD_ITEMS)
+    public void setBillItems(List<BillItem> billItems) {
+        this.billItems = billItems;
+    }
+
+    @PropertyName(FIELD_STATUS)
     public String getStatus() {
         return status;
+    }
+
+    @PropertyName(FIELD_STATUS)
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @PropertyName(FIELD_TIMESTAMP)
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    @PropertyName(FIELD_TIMESTAMP)
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @PropertyName(FIELD_LOCATION)
+    public void setCustomerLatLng(List<Double> customerLatLng) {
+        this.customerLatLng = customerLatLng;
+    }
+
+    @PropertyName(FIELD_LOCATION)
+    public List<Double> getCustomerLatLng() {
+        return customerLatLng;
+    }
+
+    @PropertyName(FIELD_CUSTOMER_CONTACT)
+    public String getCustomerContact() {
+        return customerContact;
+    }
+
+    @PropertyName(FIELD_CUSTOMER_CONTACT)
+    public void setCustomerContact(String customerContact) {
+        this.customerContact = customerContact;
     }
 }

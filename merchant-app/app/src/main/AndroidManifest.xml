@@ -59,11 +59,11 @@
         <activity android:name=".BillingActivity" />
         <activity android:name=".ConfirmationActivity" />
         <activity
-            android:name=".ScanBarcodeActivity"
+            android:name=".scan.ScanBarcodeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ScanTextActivity"
+            android:name=".scan.ScanTextActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -75,7 +75,12 @@
         <activity
             android:name=".LocationPickerActivity"
             android:parentActivityName=".SettingsActivity" />
-        <activity android:name=".SettingsActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".OfferDetailsActivity"
+            android:parentActivityName=".ProductOfferActivity" />
 
         <service
             android:name=".service.FirebaseCloudMessagingService"

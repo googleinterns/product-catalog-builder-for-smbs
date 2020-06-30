@@ -49,7 +49,6 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
     private ByteBuffer processingImage;
 
     @GuardedBy("this")
-
     private FrameMetadata processingMetaData;
 
     public VisionProcessorBase() {

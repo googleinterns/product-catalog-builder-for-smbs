@@ -9,10 +9,15 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.googleinterns.smb.model.Product;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Utility class for common utility functions
+ */
 public class CommonUtils {
 
     // Utility class shouldn't be instantiated
@@ -73,11 +78,11 @@ public class CommonUtils {
         return false;
     }
 
-    public static String getFormattedTime(long diffInSec) {
-        if (diffInSec < 60) {
-            return String.format(Locale.getDefault(), "%d seconds", diffInSec);
+    public static String getFormattedElapsedTime(long timeElapsedInSec) {
+        if (timeElapsedInSec < 60) {
+            return String.format(Locale.getDefault(), "%d seconds", timeElapsedInSec);
         }
-        long diffInMin = diffInSec / 60;
+        long diffInMin = timeElapsedInSec / 60;
         if (diffInMin < 60) {
             String minutes = diffInMin == 1 ? "minute" : "minutes";
             return String.format(Locale.getDefault(), "%d %s", diffInMin, minutes);
@@ -89,8 +94,8 @@ public class CommonUtils {
         }
         return "1 day";
     }
-    
-    public static String getStringFromLatLng(LatLng latLng) {
+
+    public static String getCommaFormattedLatLng(LatLng latLng) {
         return String.format(Locale.getDefault(), "%f,%f", latLng.latitude, latLng.longitude);
     }
 
@@ -100,5 +105,18 @@ public class CommonUtils {
         }
         double distanceInKms = (double) distanceInMeters / 1000;
         return String.format(Locale.getDefault(), "%.2f km", distanceInKms);
+    }
+
+    public static String getFormattedDate(Long timeInMillis) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return dateFormat.format(timeInMillis);
+    }
+
+    public static long getTodayUTCInMillis() {
+        Calendar now = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+        today.clear();
+        today.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+        return today.getTimeInMillis();
     }
 }

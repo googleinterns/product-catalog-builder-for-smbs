@@ -37,11 +37,12 @@ public class LocationPickerActivity extends AppCompatActivity implements
     private static final String TAG = LocationPickerActivity.class.getName();
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     // Setting default location to New Delhi, India
-    private static final LatLng defaultLocation = new LatLng(28.6139, 77.2090);
+    private static final LatLng mDefaultLocation = new LatLng(28.6139, 77.2090);
 
-    private GoogleMap googleMap;
-    private boolean isGPSAvailable = false;
-    private LatLng lastLocation;
+
+    private GoogleMap mGoogleMap;
+    private boolean mIsGPSAvailable = false;
+    private LatLng mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +51,18 @@ public class LocationPickerActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_location_picker);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Button confirm = findViewById(R.id.confirm_location);
+        Button confirm = findViewById(R.id.button_confirm_location);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (lastLocation == null) {
+                if (mLastLocation == null) {
                     return;
                 }
                 Intent data = new Intent();
-                data.putExtra("latitude", lastLocation.latitude);
-                data.putExtra("longitude", lastLocation.longitude);
-                UIUtils.showToast(LocationPickerActivity.this, "Location set");
+                data.putExtra("latitude", mLastLocation.latitude);
+                data.putExtra("longitude", mLastLocation.longitude);
+                UIUtils.showToast(LocationPickerActivity.this,
+                        LocationPickerActivity.this.getString(R.string.location_set));
                 setResult(RESULT_OK, data);
                 finish();
             }
@@ -80,18 +82,18 @@ public class LocationPickerActivity extends AppCompatActivity implements
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
-        this.googleMap = googleMap;
+        this.mGoogleMap = googleMap;
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(defaultLocation, 10);
-        googleMap.animateCamera(cameraUpdate);
-        if (isGPSAvailable) {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 10);
+        googleMap.moveCamera(cameraUpdate);
+        if (mIsGPSAvailable) {
             googleMap.setMyLocationEnabled(true);
         }
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
-                lastLocation = googleMap.getCameraPosition().target;
+                mLastLocation = googleMap.getCameraPosition().target;
             }
         });
     }
@@ -103,9 +105,9 @@ public class LocationPickerActivity extends AppCompatActivity implements
             switch (resultCode) {
                 case RESULT_OK:
                     // All required changes were successfully made
-                    isGPSAvailable = true;
-                    if (googleMap != null) {
-                        googleMap.setMyLocationEnabled(true);
+                    mIsGPSAvailable = true;
+                    if (mGoogleMap != null) {
+                        mGoogleMap.setMyLocationEnabled(true);
                     }
                     break;
                 case RESULT_CANCELED:
@@ -125,6 +127,9 @@ public class LocationPickerActivity extends AppCompatActivity implements
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
+    /**
+     * Prompt user to enable GPS
+     */
     @AfterPermissionGranted(REQUEST_LOCATION_PERMISSION)
     private void promptEnableGPS() {
         LocationRequest locationRequest = LocationRequest.create();
@@ -136,9 +141,9 @@ public class LocationPickerActivity extends AppCompatActivity implements
             public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
                 try {
                     LocationSettingsResponse response = task.getResult(ApiException.class);
-                    isGPSAvailable = true;
-                    if (googleMap != null) {
-                        googleMap.setMyLocationEnabled(true);
+                    mIsGPSAvailable = true;
+                    if (mGoogleMap != null) {
+                        mGoogleMap.setMyLocationEnabled(true);
                     }
                 } catch (ApiException exception) {
                     switch (exception.getStatusCode()) {

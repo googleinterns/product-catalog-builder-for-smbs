@@ -41,24 +41,23 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService {
             JSONObject data = new JSONObject(remoteMessage.getData());
             try {
                 if (Order.NEW_ORDER.equals(data.getString("status"))) {
-                    Order order = new Order(remoteMessage.getData(), true);
+                    Order order = new Order(remoteMessage.getData());
                     NotificationUtils.createNotificationChannel(this, NotificationUtils.ORDER_CHANNEL);
                     Intent parentIntent = new Intent(this, NewOrdersActivity.class);
                     Intent intent = new Intent(this, NewOrderDisplayActivity.class);
-                    intent.putExtra("order", order);
+                    intent.putExtra("card_new_order", order);
                     Intent[] intents = new Intent[]{parentIntent, intent};
                     PendingIntent pendingIntent = PendingIntent.getActivities(this, START_ORDER_DISPLAY, intents, PendingIntent.FLAG_UPDATE_CURRENT);
-                    NotificationUtils.createNotification(this, NotificationUtils.ORDER_CHANNEL, "New order received", "Tap to view", pendingIntent);
+                    NotificationUtils.createNotification(this, NotificationUtils.ORDER_CHANNEL, "New card_new_order received", "Tap to view", pendingIntent);
                 } else if (Order.ONGOING.equals(data.getString("status"))) {
-                    Order order = new Order(remoteMessage.getData(), true);
-                    Log.d(TAG, "Ongoing order received" + order.toString());
+                    Order order = new Order(remoteMessage.getData());
                     NotificationUtils.createNotificationChannel(this, NotificationUtils.ORDER_CHANNEL);
                     Intent parentIntent = new Intent(this, OngoingOrdersActivity.class);
                     Intent intent = new Intent(this, OngoingOrderDisplayActivity.class);
-                    intent.putExtra("order", order);
+                    intent.putExtra("card_new_order", order);
                     Intent[] intents = new Intent[]{parentIntent, intent};
                     PendingIntent pendingIntent = PendingIntent.getActivities(this, START_ORDER_DISPLAY, intents, PendingIntent.FLAG_UPDATE_CURRENT);
-                    NotificationUtils.createNotification(this, NotificationUtils.ORDER_CHANNEL, "Order confirmed", "Customer has confirmed order, you can start delivery", pendingIntent);
+                    NotificationUtils.createNotification(this, NotificationUtils.ORDER_CHANNEL, "Order confirmed", "Customer has confirmed card_new_order, you can start delivery", pendingIntent);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "JSON parse exception", e);

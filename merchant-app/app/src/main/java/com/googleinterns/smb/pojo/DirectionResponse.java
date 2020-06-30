@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * POJO class to capture response from Directions API call.
+ * POJO class to capture response from Directions API call. See {@link com.googleinterns.smb.common.APIHandler}
  */
 public class DirectionResponse {
 
@@ -44,7 +44,7 @@ public class DirectionResponse {
         return getRoutes().get(0).getOverviewPolyline().getPath();
     }
 
-    public class Route {
+    public static class Route {
 
         @SerializedName("legs")
         @Expose
@@ -71,7 +71,7 @@ public class DirectionResponse {
         }
     }
 
-    public class Leg {
+    public static class Leg {
 
         @SerializedName("distance")
         @Expose
@@ -99,7 +99,7 @@ public class DirectionResponse {
 
     }
 
-    public class Duration {
+    public static class Duration {
 
         @SerializedName("value")
         @Expose
@@ -115,7 +115,7 @@ public class DirectionResponse {
 
     }
 
-    public class Distance {
+    public static class Distance {
 
         @SerializedName("value")
         @Expose
@@ -131,7 +131,7 @@ public class DirectionResponse {
 
     }
 
-    public class OverviewPolyline {
+    public static class OverviewPolyline {
 
         @SerializedName("points")
         @Expose

@@ -31,7 +31,6 @@ import com.googleinterns.smb.common.CameraImageGraphic;
 import com.googleinterns.smb.common.FrameMetadata;
 import com.googleinterns.smb.common.GraphicOverlay;
 import com.googleinterns.smb.common.VisionProcessorBase;
-import com.googleinterns.smb.model.Product;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,14 +45,13 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
     private static final String TAG = BarcodeScanningProcessor.class.getName();
 
-    private final FirebaseVisionBarcodeDetector detector;
+    private final FirebaseVisionBarcodeDetector mDetector;
     private Set<String> mDetectedBarcodes = new HashSet<>();
     // Number of iterations to check to confirm reliability of barcode detected
     private static final int DEBOUNCE = 3;
-    private int frameNumber = 0;
+    private int mFrameNumber = 0;
     // Set of barcodes detected in previous frames
-    private Set<String>[] last = new HashSet[DEBOUNCE];
-    private List<Product> products = new ArrayList<>();
+    private Set<String>[] mLast = new HashSet[DEBOUNCE];
 
     public BarcodeScanningProcessor() {
         // Using EAN_13 barcode format
@@ -62,13 +60,13 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
                         .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_EAN_13)
                         .build();
         // Remove 'options' parameter to detect all types of barcode formats. However, this leads to slower processing
-        detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options);
+        mDetector = FirebaseVision.getInstance().getVisionBarcodeDetector(options);
     }
 
     @Override
     public void stop() {
         try {
-            detector.close();
+            mDetector.close();
         } catch (IOException e) {
             Log.e(TAG, "Exception thrown while trying to close Barcode Detector: " + e);
         }
@@ -76,7 +74,7 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
     @Override
     protected Task<List<FirebaseVisionBarcode>> detectInImage(FirebaseVisionImage image) {
-        return detector.detectInImage(image);
+        return mDetector.detectInImage(image);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
             graphicOverlay.add(imageGraphic);
         }
         Set<String> currentFrameBarcodes = new HashSet<>();
-        int currentFrameIdx = frameNumber % DEBOUNCE;
+        int currentFrameIdx = mFrameNumber % DEBOUNCE;
         for (int i = 0; i < barcodes.size(); ++i) {
             FirebaseVisionBarcode barcode = barcodes.get(i);
             currentFrameBarcodes.add(barcode.getRawValue());
@@ -101,7 +99,7 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
                 // Present in current frame so ignore
                 if (j == currentFrameIdx)
                     continue;
-                if (!last[j].contains(barcode.getRawValue()))
+                if (!mLast[j].contains(barcode.getRawValue()))
                     exists = false;
             }
             // If present in all DEBOUNCE frames, then add to final set. This improves accuracy
@@ -113,9 +111,9 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
             }
         }
         // Update current idx barcodes
-        last[currentFrameIdx] = currentFrameBarcodes;
+        mLast[currentFrameIdx] = currentFrameBarcodes;
         // Update frame number
-        frameNumber++;
+        mFrameNumber++;
         graphicOverlay.postInvalidate();
     }
 

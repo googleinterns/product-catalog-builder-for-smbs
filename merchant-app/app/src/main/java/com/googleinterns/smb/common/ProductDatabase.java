@@ -24,7 +24,7 @@ public class ProductDatabase {
     private static final String TAG = ProductDatabase.class.getName();
     private static final int CONFIDENCE_THRESHOLD = 90;
 
-    private List<Product> products = new ArrayList<>();
+    private List<Product> mProducts = new ArrayList<>();
 
     /**
      * Load database into memory
@@ -36,12 +36,11 @@ public class ProductDatabase {
                     public void onSuccess(QuerySnapshot documentSnapshots) {
                         for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
                             DocumentSnapshot documentSnapshot = documentChange.getDocument();
-                            Product product = new Product(documentSnapshot);
-                            products.add(product);
+                            Product product = documentSnapshot.toObject(Product.class);
+                            mProducts.add(product);
                         }
                     }
                 });
-        // TODO handle on failure listener
     }
 
     /**
@@ -54,7 +53,7 @@ public class ProductDatabase {
         // Matched products
         Set<Product> matchedProducts = new HashSet<>();
         for (String searchString : searchStrings) {
-            List<BoundExtractedResult<Product>> extractedResults = FuzzySearch.extractSorted(searchString, products, new ToStringFunction<Product>() {
+            List<BoundExtractedResult<Product>> extractedResults = FuzzySearch.extractSorted(searchString, mProducts, new ToStringFunction<Product>() {
                 @Override
                 public String apply(Product item) {
                     return item.getProductName();

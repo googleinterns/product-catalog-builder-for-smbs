@@ -30,7 +30,7 @@ import java.util.Locale;
 public class BillingActivity extends AppCompatActivity implements
         FirebaseUtils.BarcodeProductQueryListener,
         AddDiscountDialogFragment.DiscountDialogInterface,
-        BillAdapter.QtyChangeListener,
+        BillAdapter.TotalPriceChangeListener,
         Merchant.OnDataUpdatedListener,
         Merchant.NewProductsFoundListener {
 
@@ -52,11 +52,11 @@ public class BillingActivity extends AppCompatActivity implements
         merchant = Merchant.getInstance();
 
         // Initialise views
-        mTextViewTotalPrice = findViewById(R.id.total_price);
-        mTextViewDiscountPrice = findViewById(R.id.discount);
-        mTextViewFinalPrice = findViewById(R.id.final_price);
-        Button addDiscount = findViewById(R.id.add_discount);
-        Button finish = findViewById(R.id.finish);
+        mTextViewTotalPrice = findViewById(R.id.text_view_total_price);
+        mTextViewDiscountPrice = findViewById(R.id.text_view_discount);
+        mTextViewFinalPrice = findViewById(R.id.text_view_final_price);
+        Button addDiscount = findViewById(R.id.button_add_discount);
+        Button finish = findViewById(R.id.button_finish);
 
         // Set onclick listener for discount update
         addDiscount.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +99,7 @@ public class BillingActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from FirebaseUtils.queryProducts() convert from barcodes to products
+     * Callback from {@link FirebaseUtils#queryProducts(Context, List)} convert from barcodes to products
      *
      * @param products products corresponding to EANs
      */
@@ -108,21 +108,21 @@ public class BillingActivity extends AppCompatActivity implements
         // Products with updated merchant price, and detect new products if any
         List<Product> updatedProduct = merchant.getUpdatedProducts(this, products);
         initRecyclerView(products);
-        View view = findViewById(R.id.progressBar);
+        View view = findViewById(R.id.progress_bar);
         view.setVisibility(View.GONE);
     }
 
     /**
-     * Callback from discount dialog
+     * Callback from {@link AddDiscountDialogFragment.DiscountDialogInterface}
      *
      * @param discount discount set by user
      */
     @Override
     public void onDiscountSelect(double discount) {
         // Replace add discount button with discount price layout
-        View view = findViewById(R.id.add_discount_layout);
+        View view = findViewById(R.id.layout_add_discount);
         view.setVisibility(View.GONE);
-        view = findViewById(R.id.discount_layout);
+        view = findViewById(R.id.layout_discount);
         view.setVisibility(View.VISIBLE);
         mDiscount = discount;
         updatePriceTextViews();
@@ -136,18 +136,18 @@ public class BillingActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from bill adapter (on change in quantity and hence change in total price)
+     * Callback from {@link BillAdapter.TotalPriceChangeListener} (on change in quantity and hence change in total price)
      *
      * @param newPrice new total price of all items
      */
     @Override
-    public void onQtyChange(double newPrice) {
+    public void onNewTotalPrice(double newPrice) {
         mTotalPrice = newPrice;
         updatePriceTextViews();
     }
 
     /**
-     * Create intent for starting billing activity
+     * Create intent for starting {@link BillingActivity}
      */
     public static Intent makeIntentFromBarcodes(Context context, List<String> barcodes) {
         return new Intent(context, BillingActivity.class)
@@ -155,15 +155,15 @@ public class BillingActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback from merchant.addProducts(), on successful addition of products
+     * Callback from {@link Merchant#addProducts(Merchant.OnDataUpdatedListener, List)}, on successful addition of products
      */
     @Override
     public void onDataUpdateSuccess() {
-        Snackbar.make(findViewById(R.id.billing_layout), R.string.quick_add_message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.layout_billing), R.string.quick_add_message, Snackbar.LENGTH_LONG).show();
     }
 
     /**
-     * Callback from merchant.addProducts(), on database update failure
+     * Callback from {@link Merchant#addProducts(Merchant.OnDataUpdatedListener, List)}, on database update failure
      */
     @Override
     public void onDataUpdateFailure() {

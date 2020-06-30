@@ -47,7 +47,7 @@ def confirm_order(mid):
     merchant = utils.get_merchant(mid)
     data = request.get_json()
     oid = data["oid"]
-    order = utils.confirm_order(mid, oid)
+    order = utils.confirm_order(mid, oid, data["customer_contact"])
     fcm.notify_confirm_order(utils.get_token(merchant), order)
     return {"message": "OK"}
 
