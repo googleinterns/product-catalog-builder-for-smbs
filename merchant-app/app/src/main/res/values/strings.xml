@@ -98,4 +98,5 @@
     <string name="store_name">Store name</string>
     <string name="domain_name_help_info">You can choose to provide a domain name for your store which will allow more customers to access your store.</string>
     <string name="domain_name_label">Domain name (optional)</string>
+    <string name="location_permission_rationale">Location permissions are required for you to access current location.</string>
 </resources>

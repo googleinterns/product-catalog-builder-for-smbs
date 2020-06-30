@@ -3,7 +3,6 @@ package com.googleinterns.smb;
 import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -30,7 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.googleinterns.smb.common.UIUtils;
 
-public class LocationPickerActivity extends AppCompatActivity implements OnMapReadyCallback {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class LocationPickerActivity extends AppCompatActivity implements
+        OnMapReadyCallback {
 
     private static final String TAG = LocationPickerActivity.class.getName();
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -40,7 +42,6 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     private GoogleMap googleMap;
     private boolean isGPSAvailable = false;
     private LatLng lastLocation;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +65,16 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 finish();
             }
         });
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION);
-        } else {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+
+        if (EasyPermissions.hasPermissions(this, perms)) {
             // Permission satisfied
             promptEnableGPS();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this,
+                    getString(R.string.location_permission_rationale),
+                    REQUEST_LOCATION_PERMISSION, perms);
         }
     }
 
@@ -117,16 +120,12 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                promptEnableGPS();
-            } else {
-                setResult(RESULT_CANCELED);
-                finish();
-            }
-        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
+    @AfterPermissionGranted(REQUEST_LOCATION_PERMISSION)
     private void promptEnableGPS() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
