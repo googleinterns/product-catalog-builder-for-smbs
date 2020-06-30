@@ -24,7 +24,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         void onOrderSelect(Order order);
     }
 
-    private List<Order> orders;
+    protected List<Order> orders;
     private OrderSelectListener mListener;
 
     public OrderAdapter(OrderSelectListener listener, List<Order> orders) {

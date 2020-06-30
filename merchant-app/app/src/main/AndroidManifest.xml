@@ -2,11 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.googleinterns.smb">
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality.
-    -->
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -55,6 +51,9 @@
             android:name=".NewOrderDisplayActivity"
             android:parentActivityName=".NewOrdersActivity" />
         <activity
+            android:name=".ProductOfferActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".DebugActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".BillingActivity" />
@@ -68,11 +67,15 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".common.preference.SettingsActivity"
+            android:name=".common.preference.CameraSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LocationPickerActivity"
+            android:parentActivityName=".SettingsActivity" />
+        <activity android:name=".SettingsActivity" />
 
         <service
             android:name=".service.FirebaseCloudMessagingService"

@@ -15,4 +15,14 @@
     <style name="AppTheme.BrandedLaunch" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/launcher</item>
     </style>
+
+    <style name="TooltipStyle">
+        <item name="cornerRadius">8dp</item>
+        <item name="textAppearance">@style/TextAppearance.AppCompat.Small</item>
+        <item name="android:gravity">top</item>
+        <item name="backgroundColor">#95A0FE</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 </resources>

@@ -24,8 +24,10 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.googleinterns.smb.MainActivity;
+import com.googleinterns.smb.pojo.MerchantPojo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +61,7 @@ public class Merchant {
         void onProductFetched(List<Product> products);
     }
 
-    private final static String TAG = "Merchant";
+    private final static String TAG = Merchant.class.getName();
     public final static String NUM_PRODUCTS = "NUM_PRODUCTS";
 
     // Unique merchant UID given by firebase auth
@@ -75,7 +77,13 @@ public class Merchant {
     // Number of products in inventory
     private int numProducts;
     // Merchant LatLng
-    private LatLng latLng = new LatLng(23.012265, 72.587970);
+    private LatLng latLng;
+    // Merchant address
+    private String address;
+    // Merchant store name
+    private String storeName;
+    // Merchant domain name
+    private String domainName;
     // Merchant inventory
     private Map<String, Product> inventory;
 
@@ -95,11 +103,7 @@ public class Merchant {
         email = user.getEmail();
         photoUri = user.getPhotoUrl();
         numProducts = getStoredNumProducts();
-        final Map<String, Object> data = new HashMap<>();
-        data.put("mid", mid);
-        data.put("name", name);
-        data.put("email", email);
-        data.put("num_products", 0);
+
         FirebaseFirestore.getInstance().collection("merchants")
                 .document(mid)
                 .get()
@@ -110,15 +114,32 @@ public class Merchant {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (!document.exists()) {
+                                // New merchant sign in
+                                MerchantPojo merchantPojo = new MerchantPojo();
+                                merchantPojo.setMid(mid);
+                                merchantPojo.setName(name);
+                                merchantPojo.setEmail(email);
+                                merchantPojo.setNumProducts(numProducts);
+
                                 FirebaseFirestore.getInstance().collection("merchants")
                                         .document(mid)
-                                        .set(data);
+                                        .set(merchantPojo);
                             } else {
-                                oldToken = document.getString("token");
-                                numProducts = document.getLong("num_products").intValue();
+                                // Merchant already exists
+                                MerchantPojo merchantPojo = document.toObject(MerchantPojo.class);
+                                oldToken = merchantPojo.getToken();
+                                numProducts = merchantPojo.getNumProducts();
+                                storeName = merchantPojo.getStoreName();
+                                address = merchantPojo.getAddress();
+                                List<Double> location = merchantPojo.getLocation();
+                                if (location != null) {
+                                    latLng = new LatLng(location.get(0), location.get(1));
+                                }
+                                domainName = merchantPojo.getDomainName();
                                 storeNumProducts();
                             }
                             final String finalOldToken = oldToken;
+                            // Check if device token has changed. If yes, then update new token in database
                             FirebaseInstanceId.getInstance().getInstanceId()
                                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                                         @Override
@@ -354,5 +375,53 @@ public class Merchant {
 
     public LatLng getLatLng() {
         return latLng;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("address", address);
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("store_name", storeName);
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
+        List<Double> location = Arrays.asList(latLng.latitude, latLng.longitude);
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("location", location);
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+        FirebaseFirestore.getInstance().collection("merchants")
+                .document(mInstance.getMid())
+                .update("domain_name", domainName);
+        Map<String, Object> data = new HashMap<>();
+        data.put("domain_name", domainName);
+        data.put("mid", getMid());
+        FirebaseFirestore.getInstance()
+                .collection("domains")
+                .document(domainName)
+                .set(data);
     }
 }

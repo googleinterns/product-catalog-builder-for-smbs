@@ -12,7 +12,7 @@ import com.googleinterns.smb.R;
  * Hosts the preference fragment to configure settings for a demo activity that specified by the
  * {@link LaunchSource}.
  */
-public class SettingsActivity extends AppCompatActivity {
+public class CameraSettingsActivity extends AppCompatActivity {
 
     public static final String EXTRA_LAUNCH_SOURCE = "extra_launch_source";
 
@@ -35,7 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_camera_settings);
 
         LaunchSource launchSource =
                 (LaunchSource) getIntent().getSerializableExtra(EXTRA_LAUNCH_SOURCE);

@@ -73,4 +73,30 @@
     <string name="delivered">Delivered</string>
     <string name="empty_scan_list_msg">No products scanned</string>
     <string name="empty_scan">Empty scan</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="offers">Offers</string>
+    <string name="pick_location_marker">Pick location marker</string>
+    <string name="save">Save</string>
+    <string name="set_location">Set Location</string>
+    <string name="store_location">Store Location</string>
+    <string name="store_address">Store address</string>
+    <string name="store_name">Store name</string>
+    <string name="domain_name_help_info">You can choose to provide a domain name for your store which will allow more customers to access your store.</string>
+    <string name="domain_name_label">Domain name (optional)</string>
+    <string name="location_permission_rationale">Location permissions are required for you to access current location.</string>
 </resources>

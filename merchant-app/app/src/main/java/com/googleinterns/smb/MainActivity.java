@@ -3,7 +3,6 @@ package com.googleinterns.smb;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -87,6 +86,12 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.menu_create_bill:
                 onBillSelect();
                 break;
+            case R.id.menu_offers:
+                onOfferSelect();
+                break;
+            case R.id.menu_settings:
+                onSettingSelect();
+                break;
             case R.id.menu_debug_tools:
                 Intent intent = new Intent(this, DebugActivity.class);
                 startActivity(intent);
@@ -113,29 +118,40 @@ public class MainActivity extends AppCompatActivity implements
         finish();
     }
 
-    public void onBillSelect() {
+    private void onBillSelect() {
         Intent intent = new Intent(this, ScanBarcodeActivity.class);
         // Start barcode scanner for creating bill
         intent.putExtra(ScanBarcodeActivity.CREATE_BILL, true);
         startActivity(intent);
     }
 
-    public void onNewOrderSelect() {
+    private void onNewOrderSelect() {
         Intent intent = new Intent(this, NewOrdersActivity.class);
         startActivity(intent);
         finish();
     }
 
-    public void onOngoingOrderSelect() {
+    private void onOngoingOrderSelect() {
         Intent intent = new Intent(this, OngoingOrdersActivity.class);
         startActivity(intent);
         finish();
     }
 
-    public void onInventorySelect() {
+    private void onInventorySelect() {
         Intent intent = new Intent(this, InventoryActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void onOfferSelect() {
+        Intent intent = new Intent(this, ProductOfferActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void onSettingSelect() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override

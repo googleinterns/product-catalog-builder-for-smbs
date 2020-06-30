@@ -19,7 +19,7 @@ import com.googleinterns.smb.common.CameraSource;
 import com.googleinterns.smb.common.CameraSourcePreview;
 import com.googleinterns.smb.common.GraphicOverlay;
 import com.googleinterns.smb.common.UIUtils;
-import com.googleinterns.smb.common.preference.SettingsActivity;
+import com.googleinterns.smb.common.preference.CameraSettingsActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,8 +94,8 @@ public abstract class ScanActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, SettingsActivity.LaunchSource.LIVE_PREVIEW);
+            Intent intent = new Intent(this, CameraSettingsActivity.class);
+            intent.putExtra(CameraSettingsActivity.EXTRA_LAUNCH_SOURCE, CameraSettingsActivity.LaunchSource.LIVE_PREVIEW);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.help) {
