@@ -40,7 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Activity to display new card_new_order
+ * Activity to display new order
  */
 public class NewOrderDisplayActivity extends AppCompatActivity implements NewOrderItemAdapter.PriceChangeListener {
 
@@ -62,10 +62,10 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements NewOrd
         setTitle("Order");
         mTotalPrice = findViewById(R.id.text_view_total_price);
         TextView mTextViewCustomerName = findViewById(R.id.text_view_customer_name);
-        mOrder = (Order) getIntent().getSerializableExtra("card_new_order");
+        mOrder = (Order) getIntent().getSerializableExtra("order");
 
-        // Initialise views with card_new_order information
-        mTextViewCustomerName.setText(String.format(Locale.getDefault(), "%s's card_new_order", mOrder.getCustomerName()));
+        // Initialise views with order information
+        mTextViewCustomerName.setText(String.format(Locale.getDefault(), "%s's order", mOrder.getCustomerName()));
         TextView timeElapsed = findViewById(R.id.text_view_time_elapsed);
         timeElapsed.setText(mOrder.getTimeElapsedString(System.currentTimeMillis()));
         TextView timeOfOrder = findViewById(R.id.text_view_time_of_order);
@@ -143,7 +143,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements NewOrd
     public void onOrderAccept() {
         if (mMerchantLatLng == null) {
             Intent intent = new Intent(this, SettingsActivity.class);
-            UIUtils.showToast(this, "Details required to place card_new_order");
+            UIUtils.showToast(this, "Details required to place order");
             startActivityForResult(intent, REQUEST_MERCHANT_DETAILS);
             return;
         }
@@ -152,7 +152,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements NewOrd
             UIUtils.showToast(this, getString(R.string.no_items_marked_available));
             return;
         }
-        // Update database with accepted card_new_order details
+        // Update database with accepted order details
         FirebaseUtils.acceptOrder(mOrder, availableItems);
         sendBidRequest();
     }
@@ -164,7 +164,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements NewOrd
 
 
     /**
-     * Send bid request / card_new_order acceptance to consumer side API. See {@link com.googleinterns.smb.common.APIHandler.ConsumerService}
+     * Send bid request / order acceptance to consumer side API. See {@link com.googleinterns.smb.common.APIHandler.ConsumerService}
      */
     private void sendBidRequest() {
         SendBidRequest request = SendBidRequest.createSendBidRequest(mOrder, mNewOrderItemAdapter);

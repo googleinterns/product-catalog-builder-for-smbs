@@ -107,7 +107,7 @@ public class BottomSheetItemAdapter extends RecyclerView.Adapter<BottomSheetItem
             mProductName = itemView.findViewById(R.id.text_view_product_name);
             mMRP = itemView.findViewById(R.id.text_view_mrp);
             mProductImage = itemView.findViewById(R.id.image_view_product);
-            mAdd = itemView.findViewById(R.id.add);
+            mAdd = itemView.findViewById(R.id.button_add_item);
         }
     }
 }
