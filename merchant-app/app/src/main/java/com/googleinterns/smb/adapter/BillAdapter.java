@@ -73,23 +73,39 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
                 .load(billItem.getImageURL())
                 .fitCenter()
                 .into(holder.mProductImage);
-        // Setup edit dialog
-        holder.mEditQty.setOnClickListener(new View.OnClickListener() {
+        holder.mIncQty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditQtyDialogFragment editQtyDialogFragment = new EditQtyDialogFragment(new EditQtyDialogFragment.QtyConfirmationListener() {
-                    @Override
-                    public void onQtyConfirm(int qty) {
-                        onConfirm(qty, position);
-                    }
-                });
-                editQtyDialogFragment.show(mFragmentManager, EditQtyDialogFragment.class.getName());
+                int currQty = billItem.getQty();
+                onQtyChange(currQty + 1, position);
+            }
+        });
+        holder.mDecQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currQty = billItem.getQty();
+                if (currQty == 0) {
+                    return;
+                }
+                onQtyChange(currQty - 1, position);
             }
         });
         holder.mRemoveItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onRemove(position);
+            }
+        });
+        holder.mQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditQtyDialogFragment editQtyDialogFragment = new EditQtyDialogFragment(new EditQtyDialogFragment.QtyConfirmationListener() {
+                    @Override
+                    public void onQtyConfirm(int qty) {
+                        onQtyChange(qty, position);
+                    }
+                });
+                editQtyDialogFragment.show(mFragmentManager, EditQtyDialogFragment.class.getName());
             }
         });
     }
@@ -99,10 +115,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         return mBillItems.size();
     }
 
-    /**
-     * Callback on change in item quantity from {@link EditQtyDialogFragment.QtyConfirmationListener}
-     */
-    private void onConfirm(int qty, int position) {
+    private void onQtyChange(int qty, int position) {
         mBillItems.get(position).setQty(qty);
         // Update listener with new total price
         mListener.onNewTotalPrice(getTotalPrice());
@@ -125,7 +138,8 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         private TextView mTotalPrice;
         private ImageView mProductImage;
         private TextView mQty;
-        private ImageButton mEditQty;
+        private View mIncQty;
+        private View mDecQty;
         private ImageButton mRemoveItem;
 
         ViewHolder(@NonNull View itemView) {
@@ -135,8 +149,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             mProductImage = itemView.findViewById(R.id.image_view_product);
             mQty = itemView.findViewById(R.id.text_view_qty);
             mTotalPrice = itemView.findViewById(R.id.text_view_total);
-            mEditQty = itemView.findViewById(R.id.button_edit_qty);
             mRemoveItem = itemView.findViewById(R.id.button_remove);
+            mIncQty = itemView.findViewById(R.id.view_increment_qty);
+            mDecQty = itemView.findViewById(R.id.view_decrement_qty);
         }
     }
 }

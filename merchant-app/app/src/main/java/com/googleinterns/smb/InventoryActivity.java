@@ -52,7 +52,7 @@ public class InventoryActivity extends MainActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Inventory");
+        setTitle("Product catalog");
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContentView = inflater.inflate(R.layout.activity_inventory, null, false);
         mContainer.addView(mContentView, 0);

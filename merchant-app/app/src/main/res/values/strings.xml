@@ -2,7 +2,7 @@
     <string name="app_name">Google Kirana</string>
 
     <!-- Settings related strings. -->
-    <string name="pref_screen_title_live_preview">Live preview settings</string>
+    <string name="pref_screen_title_live_preview">Camera settings</string>
     <string name="menu_item_settings">Settings</string>
 
     <!-- Strings for camera settings. -->
