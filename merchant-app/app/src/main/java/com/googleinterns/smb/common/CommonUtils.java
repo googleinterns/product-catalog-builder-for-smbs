@@ -27,7 +27,7 @@ public class CommonUtils {
 
     public static final String DETECTED_BARCODES = "DETECTED_BARCODES";
     public static final String DETECTED_PRODUCTS = "DETECTED_PRODUCTS";
-    private static final String TAG = "CommonUtils";
+    private static final String TAG = CommonUtils.class.getName();
 
     /**
      * Utility to get barcodes from serialised data in intent.

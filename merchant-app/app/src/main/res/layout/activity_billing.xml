@@ -16,11 +16,24 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:minHeight="350dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button_add_products"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:padding="0dp"
+            android:text="Add more"
+            app:icon="@drawable/ic_action_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_view" />
+
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -39,7 +52,7 @@
             android:layout_marginTop="16dp"
             android:orientation="vertical"
             android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/recycler_view">
+            app:layout_constraintTop_toBottomOf="@id/button_add_products">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -163,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:padding="0dp"
-                    android:text="Remove"
+                    android:text="Remove discount"
                     android:textColor="@color/price"
                     app:icon="@drawable/ic_remove"
                     app:iconTint="@color/price"

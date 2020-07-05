@@ -33,6 +33,10 @@ import java.util.List;
 public abstract class ScanActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+    // Request type constants
+    public static final String CREATE_BILL = "CREATE_BILL";
+    public static final String SCAN = "SCAN";
+
     protected static final int PERMISSION_REQUESTS = 1;
     protected static final String TAG = ScanActivity.class.getName();
     protected CameraSource mCameraSource = null;
@@ -167,14 +171,14 @@ public abstract class ScanActivity extends AppCompatActivity
         if (mCameraSource != null) {
             mCameraSource.release();
         }
-        // retrieve data and transition to next activity
-        createIntent();
+        // Retrieve data and transition to next activity
+        transition();
     }
 
     /**
      * Create intent for next activity after scanning is finished
      */
-    abstract protected void createIntent();
+    abstract protected void transition();
 
     private String[] getRequiredPermissions() {
         try {

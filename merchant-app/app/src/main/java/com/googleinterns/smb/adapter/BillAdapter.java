@@ -53,6 +53,17 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         return totalPrice;
     }
 
+    /**
+     * Add new product to bill item list
+     */
+    public void addProduct(Product product) {
+        BillItem billItem = new BillItem(product);
+        int position = mBillItems.size();
+        mBillItems.add(billItem);
+        notifyItemInserted(position);
+        mListener.onNewTotalPrice(getTotalPrice());
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

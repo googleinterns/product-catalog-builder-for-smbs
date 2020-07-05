@@ -6,9 +6,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.googleinterns.smb.R;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Offer;
 
 import java.util.List;
@@ -45,6 +47,13 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
         holder.mDiscountValue.setText(offer.getOfferAmountString());
         holder.mValidity.setText(offer.getValidity());
         holder.mStatus.setText(offer.getStatus());
+        if (offer.getStatus().equals(Offer.EXPIRED)) {
+            holder.mStatusLayout.setBackgroundResource(R.drawable.tag_danger);
+            holder.mStatus.setTextColor(UIUtils.COLOR_DANGER);
+        } else {
+            holder.mStatusLayout.setBackgroundResource(R.drawable.tag_ok);
+            holder.mStatus.setTextColor(UIUtils.COLOR_OK);
+        }
         holder.mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +81,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
         private View mDelete;
         private View mEdit;
         private TextView mStatus;
+        private ConstraintLayout mStatusLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +90,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
             mDelete = itemView.findViewById(R.id.image_view_delete);
             mEdit = itemView.findViewById(R.id.image_view_edit);
             mStatus = itemView.findViewById(R.id.text_view_status);
+            mStatusLayout = itemView.findViewById(R.id.layout_status);
         }
     }
 }

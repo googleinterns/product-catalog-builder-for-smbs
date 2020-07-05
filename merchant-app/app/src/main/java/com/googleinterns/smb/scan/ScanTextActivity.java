@@ -89,7 +89,7 @@ public class ScanTextActivity extends ScanActivity implements
     }
 
     @Override
-    protected void createIntent() {
+    protected void transition() {
         List<Product> selectedProducts = productBottomSheet.getSelectedProducts();
         Log.d(TAG, "Product list");
         for (int i = 0; i < selectedProducts.size(); i++) {

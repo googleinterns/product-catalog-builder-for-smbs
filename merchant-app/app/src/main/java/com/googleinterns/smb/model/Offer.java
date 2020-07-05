@@ -28,8 +28,8 @@ public class Offer implements Serializable {
 
     }
 
-    private static final String VALID = "Valid";
-    private static final String EXPIRED = "Expired";
+    public static final String VALID = "Valid";
+    public static final String EXPIRED = "Expired";
 
     @PropertyName("offer_type")
     private OfferType offerType;

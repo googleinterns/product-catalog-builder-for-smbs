@@ -2,7 +2,7 @@
     android:width="18dp"
     android:height="18dp"
 
-    android:tint="#212121"
+    android:tint="#333333"
     android:viewportWidth="19.8"
     android:viewportHeight="19.8">
     <group
