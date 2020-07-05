@@ -68,7 +68,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 EditPriceDialogFragment editPriceDialogFragment = new EditPriceDialogFragment(new EditPriceDialogFragment.PriceConfirmationListener() {
                     @Override
                     public void onPriceConfirm(Double discountPrice) {
-                        onConfirm(discountPrice, position);
+                        onConfirm(discountPrice, holder.getAdapterPosition());
                     }
                 }, product.getMRP());
                 editPriceDialogFragment.show(mFragmentManager, EditPriceDialogFragment.class.getName());
@@ -77,7 +77,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onDocumentRemoved(position);
+                onDocumentRemoved(holder.getAdapterPosition());
             }
         });
     }

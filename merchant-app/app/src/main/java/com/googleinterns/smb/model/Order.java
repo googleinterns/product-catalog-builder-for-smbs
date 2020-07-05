@@ -27,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Class to model the customer card_new_order
+ * Class to model the customer order
  */
 public class Order implements Serializable {
 
@@ -97,7 +97,7 @@ public class Order implements Serializable {
             JSONArray location = new JSONArray(data.get(FIELD_LOCATION));
             customerLatLng = Arrays.asList(location.getDouble(0), location.getDouble(1));
         } catch (JSONException e) {
-            Log.e(TAG, "Error while initialising card_new_order", e);
+            Log.e(TAG, "Error while initialising order", e);
         }
     }
 
@@ -161,7 +161,7 @@ public class Order implements Serializable {
             return;
         status = DISPATCHED;
         FirebaseUtils.updateOrderStatus(oid, DISPATCHED);
-        // Consumer side API call to notify card_new_order dispatch
+        // Consumer side API call to notify order dispatch
         notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DISPATCHED_STATUS_MESSAGE);
     }
 
@@ -173,7 +173,7 @@ public class Order implements Serializable {
         }
         status = DELIVERED;
         FirebaseUtils.updateOrderStatus(oid, DELIVERED);
-        // Consumer side API call to notify card_new_order delivered
+        // Consumer side API call to notify order delivered
         notifyNewOrderStatus(getCustomerUserId(), oid, APIHandler.ConsumerService.DELIVERED_STATUS_MESSAGE);
     }
 
@@ -182,7 +182,7 @@ public class Order implements Serializable {
     }
 
     private void notifyNewOrderStatus(String userID, String orderID, String newStatus) {
-        // Notify new card_new_order status to consumer side
+        // Notify new order status to consumer side
         APIHandler.ConsumerService service = APIHandler.getConsumerService();
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setUserId(getCustomerUserId());

@@ -33,7 +33,7 @@ public class OngoingOrderAdapter extends OrderAdapter {
         super.onBindViewHolder(holder, position);
         final ViewHolder viewHolder = (ViewHolder) holder;
         final Order order = mOrders.get(position);
-        // Initialise card_new_order status, and disable all previous card_new_order states
+        // Initialise order status, and disable all previous order states
         switch (order.getStatus()) {
             case Order.ONGOING:
                 viewHolder.mOrderStatusToggle.check(R.id.button_in_progress);
@@ -49,7 +49,7 @@ public class OngoingOrderAdapter extends OrderAdapter {
                 viewHolder.mDelivered.setClickable(false);
                 viewHolder.mOrderStatusToggle.check(R.id.button_delivered);
         }
-        // Setup card_new_order status toggles
+        // Setup order status toggles
         viewHolder.mOrderStatusToggle.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
@@ -62,7 +62,7 @@ public class OngoingOrderAdapter extends OrderAdapter {
                     }
                     group.uncheck(id);
                 }
-                // On card_new_order status update disable previous states and notify updated status
+                // On order status update disable previous states and notify updated status
                 switch (checkedId) {
                     case R.id.button_dispatched:
                         viewHolder.mInProgress.setEnabled(false);

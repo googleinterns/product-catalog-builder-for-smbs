@@ -88,7 +88,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 int currQty = billItem.getQty();
-                onQtyChange(currQty + 1, position);
+                onQtyChange(currQty + 1, holder.getAdapterPosition());
             }
         });
         holder.mDecQty.setOnClickListener(new View.OnClickListener() {
@@ -98,13 +98,13 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
                 if (currQty == 0) {
                     return;
                 }
-                onQtyChange(currQty - 1, position);
+                onQtyChange(currQty - 1, holder.getAdapterPosition());
             }
         });
         holder.mRemoveItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onRemove(position);
+                onRemove(holder.getAdapterPosition());
             }
         });
         holder.mQty.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +113,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
                 EditQtyDialogFragment editQtyDialogFragment = new EditQtyDialogFragment(new EditQtyDialogFragment.QtyConfirmationListener() {
                     @Override
                     public void onQtyConfirm(int qty) {
-                        onQtyChange(qty, position);
+                        onQtyChange(qty, holder.getAdapterPosition());
                     }
                 });
                 editQtyDialogFragment.show(mFragmentManager, EditQtyDialogFragment.class.getName());

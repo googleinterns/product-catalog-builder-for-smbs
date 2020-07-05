@@ -57,14 +57,14 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
         holder.mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onEditOfferSelect(position);
+                mListener.onEditOfferSelect(holder.getAdapterPosition());
             }
         });
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onDeleteOfferSelect(position);
-                notifyItemRemoved(position);
+                mListener.onDeleteOfferSelect(holder.getAdapterPosition());
+                notifyItemRemoved(holder.getAdapterPosition());
             }
         });
     }

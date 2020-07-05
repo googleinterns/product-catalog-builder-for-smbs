@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Recycler view adapter for displaying card_new_order items in {@link com.googleinterns.smb.NewOrdersActivity}
+ * Recycler view adapter for displaying order items in {@link com.googleinterns.smb.NewOrdersActivity}
  */
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
 
@@ -41,7 +41,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        // Initialise card_new_order view
+        // Initialise order view
         Order order = mOrders.get(position);
         holder.mCustomerName.setText(order.getCustomerName());
         holder.mCustomerAddress.setText(order.getCustomerAddress());
@@ -56,7 +56,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         holder.mOrderCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onOrderSelect(mOrders.get(position));
+                mListener.onOrderSelect(mOrders.get(holder.getAdapterPosition()));
             }
         });
 

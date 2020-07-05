@@ -446,8 +446,8 @@ public class CameraSource {
         for (Camera.Size previewSize : supportedPreviewSizes) {
             float previewAspectRatio = (float) previewSize.width / (float) previewSize.height;
 
-            // By looping through the picture sizes in card_new_order, we favor the higher resolutions.
-            // We choose the highest resolution in card_new_order to support taking the full resolution
+            // By looping through the picture sizes in order, we favor the higher resolutions.
+            // We choose the highest resolution in order to support taking the full resolution
             // picture later.
             for (Camera.Size pictureSize : supportedPictureSizes) {
                 float pictureAspectRatio = (float) pictureSize.width / (float) pictureSize.height;

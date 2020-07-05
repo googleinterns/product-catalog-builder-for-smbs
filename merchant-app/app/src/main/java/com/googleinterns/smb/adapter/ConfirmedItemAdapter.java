@@ -17,7 +17,7 @@ import com.googleinterns.smb.model.BillItem;
 import java.util.List;
 
 /**
- * Recycler view adapter for displaying confirmed card_new_order items in {@link com.googleinterns.smb.OngoingOrderDisplayActivity}
+ * Recycler view adapter for displaying confirmed order items in {@link com.googleinterns.smb.OngoingOrderDisplayActivity}
  */
 public class ConfirmedItemAdapter extends RecyclerView.Adapter<ConfirmedItemAdapter.ViewHolder> {
 
@@ -34,7 +34,6 @@ public class ConfirmedItemAdapter extends RecyclerView.Adapter<ConfirmedItemAdap
         return new ViewHolder(view);
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Initialise bill item view

@@ -165,9 +165,9 @@ public class FirebaseUtils {
     }
 
     /**
-     * Accept customer card_new_order. Update card_new_order details in database
+     * Accept customer order. Update order details in database
      *
-     * @param order     Originally placed card_new_order
+     * @param order     Originally placed order
      * @param billItems Available items
      */
     public static void acceptOrder(Order order, List<BillItem> billItems) {
@@ -201,7 +201,7 @@ public class FirebaseUtils {
     }
 
     /**
-     * Update card_new_order status in firestore
+     * Update order status in firestore
      *
      * @param oid       Order ID
      * @param newStatus Updated status
