@@ -32,7 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Activity to display a particular ongoing card_new_order.
+ * Activity to display a particular ongoing order.
  */
 public class OngoingOrderDisplayActivity extends AppCompatActivity {
 
@@ -48,7 +48,7 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle("Order");
         setContentView(R.layout.activity_ongoing_order_display);
-        order = (Order) getIntent().getSerializableExtra("card_new_order");
+        order = (Order) getIntent().getSerializableExtra("order");
         initViews();
     }
 
@@ -57,7 +57,7 @@ public class OngoingOrderDisplayActivity extends AppCompatActivity {
         timeElapsed.setText(order.getTimeElapsedString(System.currentTimeMillis()));
 
         TextView customerName = findViewById(R.id.text_view_customer_name);
-        customerName.setText(String.format(Locale.getDefault(), "%s's card_new_order", order.getCustomerName()));
+        customerName.setText(String.format(Locale.getDefault(), "%s's order", order.getCustomerName()));
 
         TextView orderTotal = findViewById(R.id.text_view_total_price);
         orderTotal.setText(String.format(Locale.getDefault(), "%.2f", order.getOrderTotal()));

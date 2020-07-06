@@ -53,13 +53,13 @@ public class SettingsActivity extends AppCompatActivity {
         Merchant merchant = Merchant.getInstance();
         final TextInputEditText storeName = findViewById(R.id.edit_text_store_name);
         final TextInputLayout storeNameLayout = findViewById(R.id.layout_edit_text_store_name);
-        if (merchant.getStoreName() != null) {
+        if (merchant.getStoreName() != null && savedInstanceState == null) {
             storeName.setText(merchant.getStoreName());
         }
 
         final TextInputEditText storeAddress = findViewById(R.id.edit_text_store_address);
         final TextInputLayout storeAddressLayout = findViewById(R.id.layout_edit_text_store_address);
-        if (merchant.getAddress() != null) {
+        if (merchant.getAddress() != null && savedInstanceState == null) {
             storeAddress.setText(merchant.getAddress());
         }
 
@@ -123,7 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mTextLayoutDomainName = findViewById(R.id.layout_edit_text_domain_name);
         mEditTextDomainName = findViewById(R.id.edit_text_domain_name);
-        if (merchant.getDomainName() != null) {
+        if (merchant.getDomainName() != null && savedInstanceState == null) {
             mEditTextDomainName.setText(merchant.getDomainName());
             mDomainName = merchant.getDomainName();
         }

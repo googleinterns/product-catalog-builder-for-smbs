@@ -66,7 +66,7 @@ public class OngoingOrdersActivity extends MainActivity implements
     @Override
     public void onOrderSelect(Order order) {
         Intent intent = new Intent(this, OngoingOrderDisplayActivity.class);
-        intent.putExtra("card_new_order", order);
+        intent.putExtra("order", order);
         startActivity(intent);
     }
 

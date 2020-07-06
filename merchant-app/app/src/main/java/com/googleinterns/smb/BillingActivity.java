@@ -47,7 +47,7 @@ public class BillingActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billing);
-        setTitle("Bill");
+        setTitle("Billing");
         // Get current merchant instance
         merchant = Merchant.getInstance();
 
@@ -63,14 +63,14 @@ public class BillingActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 AddDiscountDialogFragment addDiscountDialogFragment = new AddDiscountDialogFragment();
-                addDiscountDialogFragment.show(getSupportFragmentManager(), "Add discount dialog");
+                addDiscountDialogFragment.show(getSupportFragmentManager(), AddDiscountDialogFragment.class.getName());
             }
         });
         mTextViewDiscountPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddDiscountDialogFragment addDiscountDialogFragment = new AddDiscountDialogFragment();
-                addDiscountDialogFragment.show(getSupportFragmentManager(), "Add discount dialog");
+                addDiscountDialogFragment.show(getSupportFragmentManager(), AddDiscountDialogFragment.class.getName());
             }
         });
         finish.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class BillingActivity extends AppCompatActivity implements
     @Override
     public void onQueryComplete(List<Product> products) {
         // Products with updated merchant price, and detect new products if any
-        List<Product> updatedProduct = merchant.getUpdatedProducts(this, products);
+        merchant.getUpdatedProducts(this, products);
         initRecyclerView(products);
         View view = findViewById(R.id.progress_bar);
         view.setVisibility(View.GONE);

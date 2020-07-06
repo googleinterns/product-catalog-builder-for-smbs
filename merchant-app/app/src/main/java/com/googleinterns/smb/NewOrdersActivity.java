@@ -69,7 +69,7 @@ public class NewOrdersActivity extends MainActivity implements
     @Override
     public void onOrderSelect(Order order) {
         Intent intent = new Intent(this, NewOrderDisplayActivity.class);
-        intent.putExtra("card_new_order", (Serializable) order);
+        intent.putExtra("order", (Serializable) order);
         startActivity(intent);
     }
 }

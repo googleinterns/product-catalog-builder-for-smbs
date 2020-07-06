@@ -132,7 +132,7 @@
             app:layout_constraintTop_toBottomOf="@+id/navigation_section" />
 
         <include
-            android:id="@+id/chip_group_delivery_time"
+            android:id="@+id/layout_chip_group_delivery_time"
             layout="@layout/chip_group_delivery_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
             android:text="@string/products"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chip_group_delivery_time" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_chip_group_delivery_time" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
