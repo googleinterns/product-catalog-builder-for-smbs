@@ -1,18 +1,22 @@
 package com.googleinterns.smb.scan;
 
+import android.content.Intent;
 import android.widget.TextView;
 
+import com.google.android.gms.common.internal.service.Common;
 import com.googleinterns.smb.BillingActivity;
 import com.googleinterns.smb.ConfirmationActivity;
 import com.googleinterns.smb.R;
 import com.googleinterns.smb.barcodescanning.BarcodeScanningProcessor;
+import com.googleinterns.smb.common.CommonUtils;
+
+import java.io.Serializable;
 
 /**
  * Specialisation of {@link ScanActivity} to implement Barcode scanning functionality.
  */
 public class ScanBarcodeActivity extends ScanActivity {
 
-    public static final String CREATE_BILL = "CREATE_BILL";
     private BarcodeScanningProcessor mDetector;
 
     @Override
@@ -36,9 +40,14 @@ public class ScanBarcodeActivity extends ScanActivity {
     }
 
     @Override
-    protected void createIntent() {
+    protected void transition() {
         if (getIntent().hasExtra(CREATE_BILL)) {
             startActivity(BillingActivity.makeIntentFromBarcodes(this, mDetector.getDetectedBarCodes()));
+        } else if (getIntent().hasExtra(SCAN)) {
+            Intent data = new Intent();
+            data.putExtra(CommonUtils.DETECTED_BARCODES, (Serializable) mDetector.getDetectedBarCodes());
+            setResult(RESULT_OK, data);
+            finish();
         } else {
             startActivity(ConfirmationActivity.makeIntentFromBarcodes(this, mDetector.getDetectedBarCodes()));
         }

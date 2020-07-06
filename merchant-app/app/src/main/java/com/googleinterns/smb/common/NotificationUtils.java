@@ -30,7 +30,7 @@ public class NotificationUtils {
     private static final String TAG = NotificationUtils.class.getName();
 
     // Notification channel IDs
-    // Channel for card_new_order notifications
+    // Channel for order notifications
     public static final int ORDER_CHANNEL = 0;
     // Channel for merchant engagement notifications
     public static final int UPDATE_CHANNEL = 1;
@@ -45,7 +45,7 @@ public class NotificationUtils {
             "Update Notifications");
     // Channel descriptions
     private static final List<String> channelDescriptions = Arrays.asList(
-            "Customer card_new_order notifications",
+            "Customer order notifications",
             "Other updates notifications");
 
     public static void createNotificationChannel(Context context, int channel) {

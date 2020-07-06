@@ -65,18 +65,18 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
                             @Override
                             public void onAddOfferSelect() {
                                 mViewOfferDialogFragment.dismiss();
-                                mListener.onAddOfferSelect(position);
+                                mListener.onAddOfferSelect(holder.getAdapterPosition());
                             }
 
                             @Override
                             public void onEditOfferSelect(int offerIdx) {
                                 mViewOfferDialogFragment.dismiss();
-                                mListener.onEditOfferSelect(position, offerIdx);
+                                mListener.onEditOfferSelect(holder.getAdapterPosition(), offerIdx);
                             }
 
                             @Override
                             public void onDeleteOfferSelect(int offerIdx) {
-                                mListener.onDeleteOfferSelect(position, offerIdx);
+                                mListener.onDeleteOfferSelect(holder.getAdapterPosition(), offerIdx);
                             }
                         });
                 mViewOfferDialogFragment.show(mFragmentManager, ViewOfferDialogFragment.class.getName());

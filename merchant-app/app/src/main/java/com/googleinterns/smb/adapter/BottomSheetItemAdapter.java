@@ -48,7 +48,7 @@ public class BottomSheetItemAdapter extends RecyclerView.Adapter<BottomSheetItem
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product product = mProducts.get(position);
+        Product product = mProducts.get(holder.getAdapterPosition());
         holder.mProductName.setText(product.getProductName());
         holder.mMRP.setText(product.getMRPString());
         Glide.with(holder.mProductImage.getContext())
@@ -58,7 +58,7 @@ public class BottomSheetItemAdapter extends RecyclerView.Adapter<BottomSheetItem
         holder.mAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onProductAdded(position);
+                onProductAdded(holder.getAdapterPosition());
             }
         });
     }

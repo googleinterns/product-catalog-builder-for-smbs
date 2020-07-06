@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Recycler view adapter for displaying card_new_order items in card_new_order display activity
+ * Recycler view adapter for displaying order items in order display activity
  */
 public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapter.ViewHolder> {
 
@@ -100,23 +100,23 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                         new EditPriceDialogFragment.PriceConfirmationListener() {
                             @Override
                             public void onPriceConfirm(Double discountPrice) {
-                                NewOrderItemAdapter.this.onConfirm(discountPrice, position);
+                                NewOrderItemAdapter.this.onConfirm(discountPrice, holder.getAdapterPosition());
                             }
                         }, billItem.getMRP());
                 editQtyDialogFragment.show(mFragmentManager, EditPriceDialogFragment.class.getName());
             }
         });
-        holder.mCheckBoxAvailable.setChecked(mItemAvailabilities.get(position));
+        holder.mCheckBoxAvailable.setChecked(mItemAvailabilities.get(holder.getAdapterPosition()));
         holder.mCheckBoxAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Display error message if product is marked available without setting price first
-                if (isChecked && mBillItems.get(position).getDiscountedPrice() <= 0.0) {
+                if (isChecked && mBillItems.get(holder.getAdapterPosition()).getDiscountedPrice() <= 0.0) {
                     UIUtils.showToast(mContext, mContext.getString(R.string.set_price_msg));
                     buttonView.setChecked(false);
                     return;
                 }
-                mItemAvailabilities.set(position, isChecked);
+                mItemAvailabilities.set(holder.getAdapterPosition(), isChecked);
                 mListener.onPriceChange(getTotalPrice());
             }
         });

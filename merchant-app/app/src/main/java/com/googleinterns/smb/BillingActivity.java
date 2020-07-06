@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,8 +20,10 @@ import com.googleinterns.smb.common.FirebaseUtils;
 import com.googleinterns.smb.fragment.AddDiscountDialogFragment;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Product;
+import com.googleinterns.smb.scan.ScanBarcodeActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,6 +38,7 @@ public class BillingActivity extends AppCompatActivity implements
         Merchant.NewProductsFoundListener {
 
     private static final String TAG = BillingActivity.class.getName();
+    private static final int RC_ADD_PRODUCTS = 1;
 
     private TextView mTextViewTotalPrice;
     private TextView mTextViewDiscountPrice;
@@ -42,6 +46,7 @@ public class BillingActivity extends AppCompatActivity implements
     private double mTotalPrice = 0.0;
     private double mDiscount = 0.0;
     private Merchant merchant;
+    private BillAdapter billAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,8 @@ public class BillingActivity extends AppCompatActivity implements
         mTextViewFinalPrice = findViewById(R.id.text_view_final_price);
         Button addDiscount = findViewById(R.id.button_add_discount);
         Button finish = findViewById(R.id.button_finish);
+        Button removeDiscount = findViewById(R.id.button_remove_discount);
+        Button addProducts = findViewById(R.id.button_add_products);
 
         // Set onclick listener for discount update
         addDiscount.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +73,21 @@ public class BillingActivity extends AppCompatActivity implements
                 addDiscountDialogFragment.show(getSupportFragmentManager(), AddDiscountDialogFragment.class.getName());
             }
         });
+        removeDiscount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDiscountRemoved();
+            }
+        });
+        addProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BillingActivity.this, ScanBarcodeActivity.class);
+                intent.putExtra(ScanBarcodeActivity.SCAN, 1);
+                startActivityForResult(intent, RC_ADD_PRODUCTS);
+            }
+        });
+
         mTextViewDiscountPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +102,7 @@ public class BillingActivity extends AppCompatActivity implements
             }
         });
 
+        initRecyclerView(new ArrayList<>());
         // Retrieve products from scanned barcode EANs
         FirebaseUtils.queryProducts(this, CommonUtils.getBarcodes(getIntent()));
     }
@@ -88,12 +111,17 @@ public class BillingActivity extends AppCompatActivity implements
     private void initRecyclerView(List<Product> products) {
         // Initialise recycler view to display bill items
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        BillAdapter billAdapter = new BillAdapter(this, products, getSupportFragmentManager());
+        billAdapter = new BillAdapter(this, products, getSupportFragmentManager());
         recyclerView.setAdapter(billAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
                 return true;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
             }
         });
     }
@@ -107,7 +135,9 @@ public class BillingActivity extends AppCompatActivity implements
     public void onQueryComplete(List<Product> products) {
         // Products with updated merchant price, and detect new products if any
         merchant.getUpdatedProducts(this, products);
-        initRecyclerView(products);
+        for (Product product : products) {
+            billAdapter.addProduct(product);
+        }
         View view = findViewById(R.id.progress_bar);
         view.setVisibility(View.GONE);
     }
@@ -124,7 +154,23 @@ public class BillingActivity extends AppCompatActivity implements
         view.setVisibility(View.GONE);
         view = findViewById(R.id.layout_discount);
         view.setVisibility(View.VISIBLE);
+        view = findViewById(R.id.layout_remove_discount);
+        view.setVisibility(View.VISIBLE);
         mDiscount = discount;
+        updatePriceTextViews();
+    }
+
+    /**
+     * Callback from Remove discount button
+     */
+    private void onDiscountRemoved() {
+        View view = findViewById(R.id.layout_add_discount);
+        view.setVisibility(View.VISIBLE);
+        view = findViewById(R.id.layout_discount);
+        view.setVisibility(View.GONE);
+        view = findViewById(R.id.layout_remove_discount);
+        view.setVisibility(View.GONE);
+        mDiscount = 0.0;
         updatePriceTextViews();
     }
 
@@ -178,5 +224,17 @@ public class BillingActivity extends AppCompatActivity implements
     @Override
     public void onNewProductsFound(List<Product> newProducts) {
         merchant.addProducts(this, newProducts);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RC_ADD_PRODUCTS) {
+                View view = findViewById(R.id.progress_bar);
+                view.setVisibility(View.VISIBLE);
+                FirebaseUtils.queryProducts(this, CommonUtils.getBarcodes(data));
+            }
+        }
     }
 }

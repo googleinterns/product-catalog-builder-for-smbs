@@ -21,6 +21,10 @@ public class UIUtils {
     public static final String PERCENT = "%";
     public static final String NIL_DATE = "--/--/----";
 
+    // Colors
+    public static final int COLOR_DANGER = 0xFFB12704;
+    public static final int COLOR_OK = 0xFF35AA42;
+
     // Utility class should not be instantiated
     private UIUtils() {
 
