@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.googleinterns.smb.adapter.ProductOfferAdapter;
 import com.googleinterns.smb.common.FirebaseUtils;
+import com.googleinterns.smb.common.UIUtils;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Offer;
 import com.googleinterns.smb.model.Product;
@@ -135,11 +136,13 @@ public class ProductOfferActivity extends MainActivity implements ProductOfferAd
                 Product product = mProductOfferAdapter.getProducts().get(mProductIdx);
                 product.getOffers().add(newOffer);
                 FirebaseUtils.updateProductOffers(product);
+                UIUtils.showToast(this, "Offer added");
             } else if (requestCode == OfferDetailsActivity.RC_EDIT_OFFER) {
                 Offer updatedOffer = (Offer) data.getSerializableExtra("offer");
                 Product product = mProductOfferAdapter.getProducts().get(mProductIdx);
                 product.getOffers().set(mOfferIdx, updatedOffer);
                 FirebaseUtils.updateProductOffers(product);
+                UIUtils.showToast(this, "Offer updated");
             }
         }
     }

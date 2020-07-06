@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,12 +18,14 @@ import com.googleinterns.smb.R;
 import com.googleinterns.smb.fragment.EditPriceDialogFragment;
 import com.googleinterns.smb.model.Product;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Recycler view adapter for displaying products in {@link com.googleinterns.smb.ConfirmationActivity}
  */
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> implements Filterable {
 
     public interface ProductActionListener {
         void onProductDeleted(Product product);
@@ -32,12 +36,40 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     // Fragment manager required for displaying dialogs
     private FragmentManager mFragmentManager;
     private List<Product> mProducts;
+    private List<Product> mProductsAll;
     private ProductActionListener mListener;
+    private Filter filter;
 
     public ProductAdapter(List<Product> products, ProductActionListener listener, FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
         mProducts = products;
+        mProductsAll = new ArrayList<>(mProducts);
         mListener = listener;
+        filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<Product> filteredList = new ArrayList<>();
+                if (constraint.toString().trim().isEmpty()) {
+                    filteredList.addAll(mProductsAll);
+                } else {
+                    for (Product product : mProductsAll) {
+                        if (product.getProductName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                            filteredList.add(product);
+                        }
+                    }
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mProducts.clear();
+                mProducts.addAll((Collection<? extends Product>) results.values);
+                notifyDataSetChanged();
+            }
+        };
     }
 
     @NonNull
@@ -108,6 +140,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     public List<Product> getProducts() {
         return mProducts;
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return filter;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
