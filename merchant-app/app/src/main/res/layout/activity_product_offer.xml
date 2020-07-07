@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:hint="@string/find_products"
+        android:hint="@string/search_here"
         app:endIconDrawable="@drawable/ic_action_search"
         app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Product offer"
+            android:text="Products"
             android:textAllCaps="false"
             android:textSize="12sp" />
 
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Brand offer"
+            android:text="Brands"
             android:textAllCaps="false"
             android:textSize="12sp" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
