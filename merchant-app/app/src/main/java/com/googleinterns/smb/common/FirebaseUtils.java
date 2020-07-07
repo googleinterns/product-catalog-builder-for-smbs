@@ -6,10 +6,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,6 +16,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.googleinterns.smb.R;
 import com.googleinterns.smb.model.BillItem;
+import com.googleinterns.smb.model.Brand;
 import com.googleinterns.smb.model.Merchant;
 import com.googleinterns.smb.model.Order;
 import com.googleinterns.smb.model.Product;
@@ -68,29 +67,28 @@ public class FirebaseUtils {
             listener.onQueryComplete(new ArrayList<Product>());
             return;
         }
-        Query query = FirebaseFirestore.getInstance().collection("products");
-        // Filter products containing these barcodes
-        query = query.whereIn(Product.FIELD_EAN, barcodes);
-        query.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<Product> products = new ArrayList<>();
-                        for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                            DocumentSnapshot documentSnapshot = documentChange.getDocument();
-                            Product product = documentSnapshot.toObject(Product.class);
-                            products.add(product);
+        CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("products");
+        final int[] numTasks = {barcodes.size()};
+        List<Product> products = new ArrayList<>();
+        for (String barcode : barcodes) {
+            DocumentReference document = collectionReference.document(barcode);
+            document.get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot productDocument = task.getResult();
+                                if (productDocument != null && productDocument.exists()) {
+                                    products.add(productDocument.toObject(Product.class));
+                                }
+                            }
+                            numTasks[0]--;
+                            if (numTasks[0] == 0) {
+                                listener.onQueryComplete(products);
+                            }
                         }
-                        listener.onQueryComplete(products);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Firebase Error: ", e);
-                        UIUtils.showToast(context, context.getString(R.string.fetch_error));
-                    }
-                });
+                    });
+        }
     }
 
     /**
@@ -225,5 +223,18 @@ public class FirebaseUtils {
         FirebaseFirestore.getInstance().collection("merchants/" + mid + "/products")
                 .document(ean)
                 .update(Product.FIELD_OFFERS, product.getOffers());
+    }
+
+    /**
+     * Update brand with new offers
+     *
+     * @param brand Brand object with updated offers
+     */
+    public static void updateBrandOffers(Brand brand) {
+        String brandName = brand.getBrandName();
+        String mid = Merchant.getInstance().getMid();
+        FirebaseFirestore.getInstance().collection("merchants/" + mid + "/brands")
+                .document(brandName)
+                .update(Brand.FIELD_OFFERS, brand.getOffers());
     }
 }

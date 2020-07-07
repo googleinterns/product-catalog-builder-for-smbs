@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.googleinterns.smb.R;
-import com.googleinterns.smb.adapter.OfferAdapter;
+import com.googleinterns.smb.adapter.OfferItemAdapter;
 import com.googleinterns.smb.model.Offer;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Dialog to view offers in {@link com.googleinterns.smb.ProductOfferActivity}. See {@link com.googleinterns.smb.adapter.ProductOfferAdapter}
  */
-public class ViewOfferDialogFragment extends DialogFragment implements OfferAdapter.OfferActionListener {
+public class ViewOfferDialogFragment extends DialogFragment implements OfferItemAdapter.OfferActionListener {
 
     public interface OffersDialogInterface {
         void onAddOfferSelect();
@@ -73,7 +73,7 @@ public class ViewOfferDialogFragment extends DialogFragment implements OfferAdap
         mDialogView = inflater.inflate(R.layout.dialog_view_offer, null);
 
         RecyclerView recyclerView = mDialogView.findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(new OfferAdapter(this, mOffers));
+        recyclerView.setAdapter(new OfferItemAdapter(this, mOffers));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
