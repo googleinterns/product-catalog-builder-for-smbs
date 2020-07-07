@@ -38,14 +38,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private List<Product> mProducts;
     private List<Product> mProductsAll;
     private ProductActionListener mListener;
-    private Filter filter;
+    private Filter mFilter;
 
     public ProductAdapter(List<Product> products, ProductActionListener listener, FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
         mProducts = products;
         mProductsAll = new ArrayList<>(mProducts);
         mListener = listener;
-        filter = new Filter() {
+        mFilter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 List<Product> filteredList = new ArrayList<>();
@@ -145,7 +145,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public Filter getFilter() {
-        return filter;
+        return mFilter;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

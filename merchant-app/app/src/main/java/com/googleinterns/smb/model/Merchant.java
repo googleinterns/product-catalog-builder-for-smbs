@@ -61,6 +61,14 @@ public class Merchant {
         void onProductFetched(List<Product> products);
     }
 
+    /**
+     * Listener interface to receive retrieved brands from database
+     */
+    public interface OnBrandFetchedListener {
+        void onBrandFetched(List<Brand> brands);
+    }
+
+
     private final static String TAG = Merchant.class.getName();
     public final static String NUM_PRODUCTS = "NUM_PRODUCTS";
 
@@ -324,7 +332,7 @@ public class Merchant {
      * Given a list of products, update merchant price for those which are present in inventory.
      * Also notify about products which are not present in the inventory
      */
-    public List<Product> getUpdatedProducts(NewProductsFoundListener listener, List<Product> products) {
+    public void getUpdatedProducts(NewProductsFoundListener listener, List<Product> products) {
         List<Product> newProducts = new ArrayList<>();
         for (Product product : products) {
             Product merchantProduct = inventory.get(product.getEAN());
@@ -337,7 +345,6 @@ public class Merchant {
         if (newProducts.size() > 0) {
             listener.onNewProductsFound(newProducts);
         }
-        return products;
     }
 
     private List<Product> getInventory() {
@@ -421,5 +428,30 @@ public class Merchant {
                 .collection("domains")
                 .document(domainName)
                 .set(data);
+    }
+
+    /**
+     * Fetch all brands for the products in merchant's inventory
+     */
+    public void fetchBrands(final OnBrandFetchedListener listener) {
+        Query query = FirebaseFirestore.getInstance().collection("merchants/" + mid + "/brands");
+        query.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<Brand> brands = new ArrayList<>();
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            Brand brand = document.toObject(Brand.class);
+                            brands.add(brand);
+                        }
+                        listener.onBrandFetched(brands);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Firebase Error: ", e);
+                    }
+                });
     }
 }

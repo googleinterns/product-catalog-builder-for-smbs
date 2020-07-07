@@ -62,19 +62,6 @@ public class Product implements Serializable {
         return offers.size();
     }
 
-    @Exclude
-    public String getOfferCountString() {
-        int numOffers = getNumOffers();
-        switch (numOffers) {
-            case 0:
-                return "No offers added";
-            case 1:
-                return "1 offer added";
-            default:
-                return String.format(Locale.getDefault(), "%d offers added", numOffers);
-        }
-    }
-
     @PropertyName(FIELD_PRODUCT_NAME)
     public String getProductName() {
         return productName;

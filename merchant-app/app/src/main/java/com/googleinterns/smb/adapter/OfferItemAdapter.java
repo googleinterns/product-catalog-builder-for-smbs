@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Recycler view adapter to display offers in {@link com.googleinterns.smb.fragment.ViewOfferDialogFragment}
  */
-public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> {
+public class OfferItemAdapter extends RecyclerView.Adapter<OfferItemAdapter.ViewHolder> {
 
     public interface OfferActionListener {
         void onEditOfferSelect(int position);
@@ -29,7 +29,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
     private OfferActionListener mListener;
     private List<Offer> mOffers;
 
-    public OfferAdapter(OfferActionListener listener, List<Offer> offers) {
+    public OfferItemAdapter(OfferActionListener listener, List<Offer> offers) {
         mListener = listener;
         mOffers = offers;
     }

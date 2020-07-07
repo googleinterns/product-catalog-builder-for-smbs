@@ -119,4 +119,15 @@ public class CommonUtils {
         today.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
         return today.getTimeInMillis();
     }
+
+    public static String getOfferCountString(int numOffers) {
+        switch (numOffers) {
+            case 0:
+                return "No offers added";
+            case 1:
+                return "1 offer added";
+            default:
+                return String.format(Locale.getDefault(), "%d offers added", numOffers);
+        }
+    }
 }

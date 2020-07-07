@@ -18,35 +18,35 @@ import com.googleinterns.smb.R;
 import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.OfferActionListener;
 import com.googleinterns.smb.fragment.ViewOfferDialogFragment;
-import com.googleinterns.smb.model.Product;
+import com.googleinterns.smb.model.Brand;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapter.ViewHolder> implements Filterable {
+public class BrandOfferAdapter extends RecyclerView.Adapter<BrandOfferAdapter.ViewHolder> implements Filterable {
 
     private OfferActionListener mListener;
-    private List<Product> mProducts;
-    private List<Product> mProductsAll;
+    private List<Brand> mBrands;
+    private List<Brand> mBrandsAll;
     private FragmentManager mFragmentManager;
     private ViewOfferDialogFragment mViewOfferDialogFragment;
     private Filter mFilter;
 
-    public ProductOfferAdapter(OfferActionListener listener, List<Product> products, FragmentManager fragmentManager) {
+    public BrandOfferAdapter(OfferActionListener listener, List<Brand> brands, FragmentManager fragmentManager) {
         mListener = listener;
-        mProducts = products;
-        mProductsAll = new ArrayList<>(products);
+        mBrands = brands;
+        mBrandsAll = new ArrayList<>(brands);
         mFragmentManager = fragmentManager;
         mFilter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<Product> filteredList = new ArrayList<>();
+                List<Brand> filteredList = new ArrayList<>();
                 if (constraint.toString().trim().isEmpty()) {
-                    filteredList.addAll(mProductsAll);
+                    filteredList.addAll(mBrandsAll);
                 } else {
-                    for (Product product : mProductsAll) {
-                        if (product.getProductName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                    for (Brand product : mBrandsAll) {
+                        if (product.getBrandName().toLowerCase().contains(constraint.toString().toLowerCase())) {
                             filteredList.add(product);
                         }
                     }
@@ -58,8 +58,8 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                mProducts.clear();
-                mProducts.addAll((Collection<? extends Product>) results.values);
+                mBrands.clear();
+                mBrands.addAll((Collection<? extends Brand>) results.values);
                 notifyDataSetChanged();
             }
         };
@@ -68,42 +68,40 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_product_offer, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_brand_offer, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Product product = mProducts.get(position);
-        holder.mProductName.setText(product.getProductName());
-        holder.mMRP.setText(product.getMRPString());
-        holder.mDiscountedPrice.setText(product.getDiscountedPriceString());
-        Glide.with(holder.mProductImage.getContext())
-                .load(product.getImageURL())
+        final Brand brand = mBrands.get(position);
+        holder.mBrandName.setText(brand.getBrandName());
+        Glide.with(holder.mBrandImage.getContext())
+                .load(brand.getBrandImageUrl())
                 .fitCenter()
-                .into(holder.mProductImage);
-        holder.mOfferCount.setText(CommonUtils.getOfferCountString(product.getNumOffers()));
+                .into(holder.mBrandImage);
+        holder.mOfferCount.setText(CommonUtils.getOfferCountString(brand.getNumOffers()));
         holder.mViewOffers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mViewOfferDialogFragment = new ViewOfferDialogFragment(
-                        product.getOffers(),
+                        brand.getOffers(),
                         new ViewOfferDialogFragment.OffersDialogInterface() {
                             @Override
                             public void onAddOfferSelect() {
                                 mViewOfferDialogFragment.dismiss();
-                                mListener.onAddOfferSelect(OfferActionListener.PRODUCT_OFFER, holder.getAdapterPosition());
+                                mListener.onAddOfferSelect(OfferActionListener.BRAND_OFFER, holder.getAdapterPosition());
                             }
 
                             @Override
                             public void onEditOfferSelect(int offerIdx) {
                                 mViewOfferDialogFragment.dismiss();
-                                mListener.onEditOfferSelect(OfferActionListener.PRODUCT_OFFER, holder.getAdapterPosition(), offerIdx);
+                                mListener.onEditOfferSelect(OfferActionListener.BRAND_OFFER, holder.getAdapterPosition(), offerIdx);
                             }
 
                             @Override
                             public void onDeleteOfferSelect(int offerIdx) {
-                                mListener.onDeleteOfferSelect(OfferActionListener.PRODUCT_OFFER, holder.getAdapterPosition(), offerIdx);
+                                mListener.onDeleteOfferSelect(OfferActionListener.BRAND_OFFER, holder.getAdapterPosition(), offerIdx);
                             }
                         });
                 mViewOfferDialogFragment.show(mFragmentManager, ViewOfferDialogFragment.class.getName());
@@ -113,11 +111,11 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
 
     @Override
     public int getItemCount() {
-        return mProducts.size();
+        return mBrands.size();
     }
 
-    public List<Product> getProducts() {
-        return mProducts;
+    public List<Brand> getBrands() {
+        return mBrands;
     }
 
     @Override
@@ -127,19 +125,15 @@ public class ProductOfferAdapter extends RecyclerView.Adapter<ProductOfferAdapte
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mProductName;
-        private TextView mMRP;
-        private TextView mDiscountedPrice;
-        private ImageView mProductImage;
+        private TextView mBrandName;
+        private ImageView mBrandImage;
         private TextView mOfferCount;
         private Button mViewOffers;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mProductName = itemView.findViewById(R.id.text_view_product_name);
-            mMRP = itemView.findViewById(R.id.text_view_mrp);
-            mDiscountedPrice = itemView.findViewById(R.id.text_view_discounted_price);
-            mProductImage = itemView.findViewById(R.id.image_view_product);
+            mBrandName = itemView.findViewById(R.id.text_view_brand_name);
+            mBrandImage = itemView.findViewById(R.id.image_view_brand);
             mOfferCount = itemView.findViewById(R.id.text_view_offer_count);
             mViewOffers = itemView.findViewById(R.id.button_view_offers);
         }
