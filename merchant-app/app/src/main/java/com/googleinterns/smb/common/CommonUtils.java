@@ -25,9 +25,12 @@ public class CommonUtils {
 
     }
 
+    private static final String TAG = CommonUtils.class.getName();
+    // Constants
     public static final String DETECTED_BARCODES = "DETECTED_BARCODES";
     public static final String DETECTED_PRODUCTS = "DETECTED_PRODUCTS";
-    private static final String TAG = CommonUtils.class.getName();
+    public static final String LATITUDE = "LATITUDE";
+    public static final String LONGITUDE = "LONGITUDE";
 
     /**
      * Utility to get barcodes from serialised data in intent.

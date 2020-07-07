@@ -16,8 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.FirebaseUtils;
 import com.googleinterns.smb.common.UIUtils;
+import com.googleinterns.smb.fragment.DomainNameChangeAlertDialog;
+import com.googleinterns.smb.fragment.InvalidDomainNameAlertDialog;
 import com.googleinterns.smb.model.Merchant;
 import com.tooltip.Tooltip;
 
@@ -28,13 +31,16 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = SettingsActivity.class.getName();
     private static final int PICK_LOCATION = 1;
-    private static final int EDIT_LOCATION = 2;
 
     private LatLng mLocation;
     private String mDomainName;
+    private String mSavedDomainName;
 
     private TextInputEditText mEditTextDomainName;
     private TextInputLayout mTextLayoutDomainName;
+
+    private boolean isDomainNameOptionOverridden = false;
+    private boolean isDomainNameChangeConfirmed = false;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -42,14 +48,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle("Settings");
         setContentView(R.layout.activity_settings);
-        Button setLocation = findViewById(R.id.button_set_location);
-        setLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, LocationPickerActivity.class);
-                startActivityForResult(intent, PICK_LOCATION);
-            }
-        });
         Merchant merchant = Merchant.getInstance();
         final TextInputEditText storeName = findViewById(R.id.edit_text_store_name);
         final TextInputLayout storeNameLayout = findViewById(R.id.layout_edit_text_store_name);
@@ -67,6 +65,18 @@ public class SettingsActivity extends AppCompatActivity {
             mLocation = merchant.getLatLng();
         }
 
+        Button setLocation = findViewById(R.id.button_set_location);
+        setLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, LocationPickerActivity.class);
+                if (mLocation != null) {
+                    intent.putExtra(CommonUtils.LATITUDE, mLocation.latitude);
+                    intent.putExtra(CommonUtils.LONGITUDE, mLocation.longitude);
+                }
+                startActivityForResult(intent, PICK_LOCATION);
+            }
+        });
         Button save = findViewById(R.id.button_save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +96,30 @@ public class SettingsActivity extends AppCompatActivity {
                     UIUtils.showToast(SettingsActivity.this, SettingsActivity.this.getString(R.string.no_location_set));
                     allFieldsOk = false;
                 }
+                if (mDomainName == null && !isDomainNameOptionOverridden) {
+                    new InvalidDomainNameAlertDialog(new InvalidDomainNameAlertDialog.OnConfirmListener() {
+                        @Override
+                        public void onConfirm() {
+                            isDomainNameOptionOverridden = true;
+                            save.callOnClick();
+                        }
+                    }).show(getSupportFragmentManager(), InvalidDomainNameAlertDialog.class.getName());
+                    allFieldsOk = false;
+                }
+                if (mDomainName != null &&
+                        mSavedDomainName != null &&
+                        !isDomainNameChangeConfirmed &&
+                        !mDomainName.equals(mSavedDomainName)) {
+                    new DomainNameChangeAlertDialog(new DomainNameChangeAlertDialog.OnConfirmListener() {
+                        @Override
+                        public void onConfirm() {
+                            isDomainNameChangeConfirmed = true;
+                            save.callOnClick();
+                        }
+                    }).show(getSupportFragmentManager(), DomainNameChangeAlertDialog.class.getName());
+                    allFieldsOk = false;
+                }
+
                 if (allFieldsOk) {
                     Merchant merchant = Merchant.getInstance();
                     merchant.setStoreName(storeName.getText().toString());
@@ -126,6 +160,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (merchant.getDomainName() != null && savedInstanceState == null) {
             mEditTextDomainName.setText(merchant.getDomainName());
             mDomainName = merchant.getDomainName();
+            mSavedDomainName = merchant.getDomainName();
         }
         final ProgressBar searchProgressBar = findViewById(R.id.progress_bar_search);
         mEditTextDomainName.addTextChangedListener(new TextWatcher() {
@@ -142,17 +177,20 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(final Editable s) {
                 mTextLayoutDomainName.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                if ("".equals(s.toString().trim())) {
+                String queryDomainName = s.toString().trim();
+                if ("".equals(queryDomainName)) {
+                    searchProgressBar.setVisibility(View.INVISIBLE);
+                    mDomainName = null;
                     return;
                 }
                 searchProgressBar.setVisibility(View.VISIBLE);
                 FirebaseUtils.isDomainAvailable(s.toString(), new FirebaseUtils.DomainAvaliabilityCheckListener() {
                     @Override
                     public void onCheckComplete(boolean isAvailable) {
-                        if (mEditTextDomainName.getText().toString().equals(s.toString())) {
+                        if (mEditTextDomainName.getText().toString().trim().equals(queryDomainName)) {
                             searchProgressBar.setVisibility(View.INVISIBLE);
                             mTextLayoutDomainName.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
-                            if (isAvailable) {
+                            if (isAvailable || mSavedDomainName.equals(queryDomainName)) {
                                 mTextLayoutDomainName.setEndIconDrawable(getDrawable(R.drawable.ic_action_ok_circle));
                                 mDomainName = s.toString();
                             } else {
@@ -169,14 +207,12 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_LOCATION) {
-            if (resultCode == RESULT_OK) {
-                double latitutde = data.getDoubleExtra("latitude", 0.0);
-                double longitude = data.getDoubleExtra("longitude", 0.0);
-                mLocation = new LatLng(latitutde, longitude);
-            } else {
-                UIUtils.showToast(this, getString(R.string.no_location_set));
-            }
+        if (resultCode == RESULT_OK) {
+            double latitutde = data.getDoubleExtra(CommonUtils.LATITUDE, 0.0);
+            double longitude = data.getDoubleExtra(CommonUtils.LONGITUDE, 0.0);
+            mLocation = new LatLng(latitutde, longitude);
+        } else {
+            UIUtils.showToast(this, getString(R.string.no_location_set));
         }
     }
 }
