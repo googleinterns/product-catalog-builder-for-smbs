@@ -416,6 +416,12 @@ public class Merchant {
     }
 
     public void setDomainName(String domainName) {
+        if (this.domainName != null) {
+            // Remove previous domain name if already exists
+            FirebaseFirestore.getInstance().collection("domains")
+                    .document(this.domainName)
+                    .delete();
+        }
         this.domainName = domainName;
         FirebaseFirestore.getInstance().collection("merchants")
                 .document(mInstance.getMid())

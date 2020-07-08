@@ -159,4 +159,7 @@
     <string name="new_product">New product</string>
     <string name="search">Search</string>
     <string name="search_here">Search here</string>
+    <string name="invalid_domain_alert_msg">Valid domain name is not set. Do you want to continue?</string>
+    <string name="domain_name_change_alert_msg">Changing domain name will make all previous domain pages invalid. Do you want to continue?</string>
+    <string name="yes">Yes</string>
 </resources>

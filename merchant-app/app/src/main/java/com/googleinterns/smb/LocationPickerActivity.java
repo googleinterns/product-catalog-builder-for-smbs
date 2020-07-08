@@ -26,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.googleinterns.smb.common.CommonUtils;
 import com.googleinterns.smb.common.UIUtils;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -36,9 +37,6 @@ public class LocationPickerActivity extends AppCompatActivity implements
 
     private static final String TAG = LocationPickerActivity.class.getName();
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    // Setting default location to New Delhi, India
-    private static final LatLng mDefaultLocation = new LatLng(28.6139, 77.2090);
-
 
     private GoogleMap mGoogleMap;
     private boolean mIsGPSAvailable = false;
@@ -49,18 +47,21 @@ public class LocationPickerActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setTitle("Pick location");
         setContentView(R.layout.activity_location_picker);
+
+        // Set default location to previous location if available
+        double latitude = getIntent().getDoubleExtra(CommonUtils.LATITUDE, 28.6139);
+        double longitude = getIntent().getDoubleExtra(CommonUtils.LONGITUDE, 77.2090);
+        mLastLocation = new LatLng(latitude, longitude);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         Button confirm = findViewById(R.id.button_confirm_location);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mLastLocation == null) {
-                    return;
-                }
                 Intent data = new Intent();
-                data.putExtra("latitude", mLastLocation.latitude);
-                data.putExtra("longitude", mLastLocation.longitude);
+                data.putExtra(CommonUtils.LATITUDE, mLastLocation.latitude);
+                data.putExtra(CommonUtils.LONGITUDE, mLastLocation.longitude);
                 UIUtils.showToast(LocationPickerActivity.this,
                         LocationPickerActivity.this.getString(R.string.location_set));
                 setResult(RESULT_OK, data);
@@ -85,7 +86,7 @@ public class LocationPickerActivity extends AppCompatActivity implements
         this.mGoogleMap = googleMap;
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLastLocation, 13);
         googleMap.moveCamera(cameraUpdate);
         if (mIsGPSAvailable) {
             googleMap.setMyLocationEnabled(true);
