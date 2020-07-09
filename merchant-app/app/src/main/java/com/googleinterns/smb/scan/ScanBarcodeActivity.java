@@ -21,7 +21,7 @@ public class ScanBarcodeActivity extends ScanActivity {
 
     @Override
     protected void initViews() {
-        setTitle("Scan Barcode");
+        setTitle(getString(R.string.scan_barcode));
         setContentView(R.layout.activity_scan_barcode);
         TextView helpText = findViewById(R.id.text_view_help);
         helpText.setText(R.string.point_at_a_barcode_to_scan);

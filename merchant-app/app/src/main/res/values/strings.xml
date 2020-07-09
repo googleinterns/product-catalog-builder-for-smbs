@@ -49,7 +49,6 @@
     <string name="set_quantity">Set quantity</string>
     <string name="quick_add_message">Newly detected products have been added to your inventory</string>
     <string name="set_discount">Set discount</string>
-    <string name="debug_tools">Debug tools</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
@@ -57,8 +56,6 @@
     <string name="new_orders">New orders</string>
     <string name="profile_icon">Profile icon</string>
     <string name="inventory">Inventory</string>
-    <string name="ongoing_orders">Ongoing orders</string>
-    <string name="settings">Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="google_logo">google logo</string>
@@ -88,16 +85,15 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
 
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="offers">Offers</string>
     <string name="pick_location_marker">Pick location marker</string>
     <string name="save">Save</string>
     <string name="set_location">Set Location</string>
     <string name="store_location">Store Location</string>
     <string name="store_address">Store address</string>
     <string name="store_name">Store name</string>
-    <string name="domain_name_help_info">You can choose to provide a domain name for your store which will allow more customers to access your store.</string>
-    <string name="domain_name_label">Domain name (optional)</string>
-    <string name="location_permission_rationale">Location permissions are required for you to access current location.</string>
+    <string name="domain_name_help_info">You can choose to provide a URL Path for your store which will allow more customers to access your store.</string>
+    <string name="domain_name_label">Shareable URL Path (optional)</string>
+    <string name="location_permission_rationale">Location permissions are required to access your current location if you want to set your current location as your store location.</string>
     <string name="forever">Forever</string>
     <string name="ok">OK</string>
     <string name="set_price_msg">Set a price to mark available</string>
@@ -132,7 +128,6 @@
     <string name="time_of_order">Time of order:</string>
     <string name="customer_address">Customer Address</string>
     <string name="call">Call</string>
-    <string name="products">Products</string>
     <string name="deliver_with_dunzo">Deliver with Dunzo</string>
     <string name="find_products">Find products</string>
     <string name="price">Price:</string>
@@ -159,7 +154,23 @@
     <string name="new_product">New product</string>
     <string name="search">Search</string>
     <string name="search_here">Search here</string>
-    <string name="invalid_domain_alert_msg">Valid domain name is not set. Do you want to continue?</string>
-    <string name="domain_name_change_alert_msg">Changing domain name will make all previous domain pages invalid. Do you want to continue?</string>
+    <string name="invalid_domain_alert_msg">Valid URL Path is not set. Do you want to continue?</string>
+    <string name="domain_name_change_alert_msg">Changing URL Path will make all previous domain pages invalid. Do you want to continue?</string>
     <string name="yes">Yes</string>
+    <string name="change_location">Change Location</string>
+
+    <!--    Activity titles-->
+    <string name="scan_barcode">Scan Barcode</string>
+    <string name="scan_text">Scan Text</string>
+    <string name="billing">Billing</string>
+    <string name="products">Products</string>
+    <string name="debug_tools">Debug tools</string>
+    <string name="product_catalog">Product catalog</string>
+    <string name="pick_location">Pick location</string>
+    <string name="new_order">New Orders</string>
+    <string name="offer">Offer</string>
+    <string name="order">Order</string>
+    <string name="ongoing_orders">Ongoing orders</string>
+    <string name="offers">Offers</string>
+    <string name="settings">Settings</string>
 </resources>

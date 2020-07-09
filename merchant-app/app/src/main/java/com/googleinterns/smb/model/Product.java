@@ -92,6 +92,23 @@ public class Product implements Serializable {
         if (discountedPrice == null) {
             discountedPrice = MRP;
         }
+        double bestOffer = 0.0;
+        boolean isOfferAvailable = false;
+        for (Offer offer : getOffers()) {
+            double currentOfferPrice = 0.0;
+            if (Offer.EXPIRED.equals(offer.getStatus())) continue;
+            isOfferAvailable = true;
+            if (offer.getOfferType() == Offer.OfferType.PERCENTAGE_OFFER) {
+                currentOfferPrice = MRP * offer.getOfferAmount() / (double) 100;
+            } else {
+                currentOfferPrice = offer.getOfferAmount();
+            }
+            if (currentOfferPrice > bestOffer) {
+                bestOffer = currentOfferPrice;
+            }
+        }
+        double offerDiscountPrice = MRP - bestOffer;
+        if (isOfferAvailable && offerDiscountPrice < discountedPrice) return offerDiscountPrice;
         return discountedPrice;
     }
 

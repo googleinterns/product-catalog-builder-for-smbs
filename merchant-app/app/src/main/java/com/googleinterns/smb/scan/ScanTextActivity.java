@@ -36,7 +36,7 @@ public class ScanTextActivity extends ScanActivity implements
 
     @Override
     protected void initViews() {
-        setTitle("Scan Text");
+        setTitle(getString(R.string.scan_text));
         setContentView(R.layout.activity_scan_text);
         TextView helpText = findViewById(R.id.text_view_help);
         helpText.setText(R.string.point_at_product_text_to_scan);

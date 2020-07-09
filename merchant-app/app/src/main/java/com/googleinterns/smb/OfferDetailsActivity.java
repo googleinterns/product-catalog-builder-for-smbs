@@ -46,7 +46,7 @@ public class OfferDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_details);
-        setTitle("Offer");
+        setTitle(getString(R.string.offer));
         mDiscountType = findViewById(R.id.radio_group_set_discount_type);
         mDiscountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

@@ -45,7 +45,7 @@ public class LocationPickerActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Pick location");
+        setTitle(getString(R.string.pick_location));
         setContentView(R.layout.activity_location_picker);
 
         // Set default location to previous location if available

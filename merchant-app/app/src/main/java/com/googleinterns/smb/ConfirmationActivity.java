@@ -38,7 +38,7 @@ public class ConfirmationActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
-        setTitle("Products");
+        setTitle(getString(R.string.products));
         // Get current merchant
         merchant = Merchant.getInstance();
 

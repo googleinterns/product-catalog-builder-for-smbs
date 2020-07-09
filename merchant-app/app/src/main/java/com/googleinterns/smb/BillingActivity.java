@@ -52,7 +52,7 @@ public class BillingActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billing);
-        setTitle("Billing");
+        setTitle(getString(R.string.billing));
         // Get current merchant instance
         merchant = Merchant.getInstance();
 

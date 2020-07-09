@@ -31,7 +31,7 @@ public class OngoingOrdersActivity extends MainActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Ongoing orders");
+        setTitle(getString(R.string.ongoing_orders));
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContentView = inflater.inflate(R.layout.activity_new_orders, null, false);
         mContainer.addView(mContentView, 0);
