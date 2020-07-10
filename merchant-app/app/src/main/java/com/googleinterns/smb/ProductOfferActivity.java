@@ -7,12 +7,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
@@ -49,7 +47,7 @@ public class ProductOfferActivity extends MainActivity implements OfferActionLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Offers");
+        setTitle(getString(R.string.offers));
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContentView = inflater.inflate(R.layout.activity_product_offer, null, false);
         mContainer.addView(mContentView, 0);
@@ -166,10 +164,12 @@ public class ProductOfferActivity extends MainActivity implements OfferActionLis
         if (type == OfferActionListener.PRODUCT_OFFER) {
             Product product = mProductOfferAdapter.getProducts().get(itemIdx);
             product.getOffers().remove(offerIdx);
+            mProductOfferAdapter.notifyItemChanged(itemIdx);
             FirebaseUtils.updateProductOffers(product);
         } else {
             Brand brand = mBrandOfferAdapter.getBrands().get(itemIdx);
             brand.getOffers().remove(offerIdx);
+            mBrandOfferAdapter.notifyItemChanged(itemIdx);
             FirebaseUtils.updateBrandOffers(brand);
         }
     }
@@ -203,6 +203,9 @@ public class ProductOfferActivity extends MainActivity implements OfferActionLis
                 }
                 UIUtils.showToast(this, "Offer updated");
             }
+            // Refresh views
+            mProductOfferAdapter.notifyDataSetChanged();
+            mBrandOfferAdapter.notifyDataSetChanged();
         }
     }
 }

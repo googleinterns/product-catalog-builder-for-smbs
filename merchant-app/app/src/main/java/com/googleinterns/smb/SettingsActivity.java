@@ -38,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private TextInputEditText mEditTextDomainName;
     private TextInputLayout mTextLayoutDomainName;
+    private Button mSetLocation;
 
     private boolean isDomainNameOptionOverridden = false;
     private boolean isDomainNameChangeConfirmed = false;
@@ -46,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Settings");
+        setTitle(getString(R.string.settings));
         setContentView(R.layout.activity_settings);
         Merchant merchant = Merchant.getInstance();
         final TextInputEditText storeName = findViewById(R.id.edit_text_store_name);
@@ -65,8 +66,11 @@ public class SettingsActivity extends AppCompatActivity {
             mLocation = merchant.getLatLng();
         }
 
-        Button setLocation = findViewById(R.id.button_set_location);
-        setLocation.setOnClickListener(new View.OnClickListener() {
+        mSetLocation = findViewById(R.id.button_set_location);
+        if (mLocation != null) {
+            mSetLocation.setText(R.string.change_location);
+        }
+        mSetLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, LocationPickerActivity.class);
@@ -190,7 +194,7 @@ public class SettingsActivity extends AppCompatActivity {
                         if (mEditTextDomainName.getText().toString().trim().equals(queryDomainName)) {
                             searchProgressBar.setVisibility(View.INVISIBLE);
                             mTextLayoutDomainName.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
-                            if (isAvailable || mSavedDomainName.equals(queryDomainName)) {
+                            if (isAvailable || queryDomainName.equals(mSavedDomainName)) {
                                 mTextLayoutDomainName.setEndIconDrawable(getDrawable(R.drawable.ic_action_ok_circle));
                                 mDomainName = s.toString();
                             } else {
@@ -211,6 +215,7 @@ public class SettingsActivity extends AppCompatActivity {
             double latitutde = data.getDoubleExtra(CommonUtils.LATITUDE, 0.0);
             double longitude = data.getDoubleExtra(CommonUtils.LONGITUDE, 0.0);
             mLocation = new LatLng(latitutde, longitude);
+            mSetLocation.setText(R.string.change_location);
         } else {
             UIUtils.showToast(this, getString(R.string.no_location_set));
         }

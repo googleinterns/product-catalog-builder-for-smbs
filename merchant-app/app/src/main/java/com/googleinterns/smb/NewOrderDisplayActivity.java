@@ -59,7 +59,7 @@ public class NewOrderDisplayActivity extends AppCompatActivity implements NewOrd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_order_display);
-        setTitle("Order");
+        setTitle(getString(R.string.order));
         mTotalPrice = findViewById(R.id.text_view_total_price);
         TextView mTextViewCustomerName = findViewById(R.id.text_view_customer_name);
         mOrder = (Order) getIntent().getSerializableExtra("order");
